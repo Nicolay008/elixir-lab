@@ -124,8 +124,8 @@ legend{font-weight:800;margin-bottom:.5rem}
 @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .phase{display:inline-block;font-weight:800;font-size:.85rem;padding:.2rem .6rem;border-radius:999px;
   background:var(--track);color:var(--elixir);margin-bottom:.5rem}
-.nums{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem}
-.nbtn{border:0;border-radius:.9rem;padding:.85rem 0;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;
+.nums{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem}
+.nbtn{border:0;border-radius:.8rem;padding:.6rem 0;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;
   font-size:1.6rem;color:#fff;cursor:pointer;background:linear-gradient(180deg,var(--elixir-2),var(--elixir))}
 .nbtn:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
 .nbtn.right{background:var(--ok)} .nbtn.wrong{background:var(--bad)} .nbtn:disabled{cursor:default}
@@ -133,7 +133,7 @@ legend{font-weight:800;margin-bottom:.5rem}
 .breakdown li{display:flex;justify-content:space-between;gap:1rem;padding:.35rem 0;border-bottom:1px solid var(--line)}
 .breakdown .leak{color:var(--bad);font-weight:800}
 .hint{font-size:.95rem}
-.cimg{display:block;margin:0 auto .5rem;width:96px;height:115px;object-fit:contain}
+.cimg{display:block;margin:0 auto .5rem;width:132px;height:158px;object-fit:contain}
 .mini{width:2.2em;height:2.6em;object-fit:contain;vertical-align:middle;margin:0 .35em}
 .feed.solo li .mini{width:4.5em;height:5.4em;display:block;margin:0 auto .35rem}
 footer{max-width:30rem;margin:0 auto;padding:0 1rem 1.5rem;font-size:.8rem;color:var(--muted);text-align:center}
@@ -154,9 +154,9 @@ footer{max-width:30rem;margin:0 auto;padding:0 1rem 1.5rem;font-size:.8rem;color
 .legend i{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.35em;vertical-align:-.05em}
 
 .feed li.play{display:flex;align-items:center;gap:.25rem}
-.feed .mini{width:3.4em;height:4.1em}
+.feed .mini{width:4em;height:4.8em}
 .feed.solo li.play{flex-direction:column;justify-content:center}
-.feed.solo li .mini{width:7em;height:8.4em;margin:0 auto .35rem}
+.feed.solo li .mini{width:8.5em;height:10.2em;margin:0 auto .35rem}
 .feed li.play b{font-size:.9rem}
 .feed.noname li.play img + b{display:none}
 
@@ -239,6 +239,52 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .pipette .pg-bulb{fill:var(--elixir);opacity:.85}
 .pipette .pg-liquid{transition:width .45s ease}
 .pipette .pg-txt{font:800 14px Nunito,system-ui,sans-serif;fill:var(--ink)}
+
+/* lista compacta al preguntar: las jugadas pasan a fichas */
+.feed.compact{display:flex;flex-wrap:wrap;gap:.35rem;min-height:0}
+.feed.compact li{border:0;padding:.25rem .45rem;border-radius:.6rem;background:var(--track);font-size:.85rem;animation:none}
+.feed.compact li.start{flex-basis:100%;background:none;padding:0 0 .2rem}
+.feed.compact li.play{gap:.2rem}
+.feed.compact .mini{width:1.8em;height:2.2em;margin:0}
+.feed.compact li.play b{font-size:.75rem;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed.compact .qdrop.sm{width:20px;height:24px;font-size:.8rem;margin-left:.2rem}
+.feed.compact .edrops{margin-left:.3rem}
+.feed.compact .edrop{width:10px;height:12px;animation:none;opacity:1}
+.feed.compact .edrop.lost{opacity:.5}
+
+/* selectores segmentados: un solo bloque con la opción elegida resaltada */
+.seg{gap:4px;padding:4px;border:1.5px solid var(--line);border-radius:1rem;background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.seg>label{min-width:0}
+.seg>label>span{border:0;border-radius:.75rem;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;color:var(--muted);padding:.65rem .35rem;transition:background .15s,color .15s}
+.seg>label>input:checked+span{background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff;box-shadow:0 0 16px var(--glow)}
+.seg>label>input:focus-visible+span{outline:2px solid var(--elixir-2);outline-offset:1px}
+.seg.stages>label>input:checked+span b{background:rgba(255,255,255,.25);color:#fff}
+
+/* modo ciclo */
+.modes .mode.wide{grid-column:1/-1}
+.mode.wide .box{flex-direction:row;align-items:center;gap:.75rem}
+.mode.wide .pv{width:42%;flex:none;margin:0}
+.mode.wide .mtxt{display:flex;flex-direction:column}
+.pv.cyc{gap:.2rem}
+.pv.cyc img{height:44px}
+.pv.cyc .qs{display:grid;place-items:center;width:30px;height:38px;border-radius:.4rem;background:var(--glass);border:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--muted)}
+.cyc-card{padding:1rem .8rem}
+.cyc-label{text-align:left;font-size:.8rem;font-weight:800;color:var(--muted);margin:.35rem 0 .3rem}
+.cyc-deck{display:grid;grid-template-columns:repeat(8,1fr);gap:.25rem;margin-bottom:.4rem}
+.cyc-deck img{width:100%;aspect-ratio:5/6;object-fit:contain}
+.cyc-deck .nm,.cyc-row .nm{display:grid;place-items:center;aspect-ratio:5/6;border-radius:.4rem;background:var(--track);font-size:.55rem;font-weight:800;line-height:1.05;padding:2px;overflow:hidden}
+.cyc-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;perspective:600px}
+.slot{position:relative;aspect-ratio:5/6;border-radius:.6rem;background:var(--track);border:1.5px dashed var(--line);display:grid;place-items:center;
+  font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.6rem;color:var(--muted);overflow:hidden}
+.slot img{width:100%;height:100%;object-fit:contain}
+.slot.known{border-style:solid;border-color:var(--elixir)}
+.slot.target{box-shadow:0 0 0 3px var(--gold)}
+.slot.flip{animation:flip .45s ease}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.cyc-q{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.8rem 0 .2rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.35rem;line-height:1.2}
+.cyc-q img{width:3.2rem;height:3.8rem;object-fit:contain}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.yn .nbtn{font-size:1.5rem;padding:.9rem 0}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}.edrop{animation:none;opacity:1}}
 </style>
 </head>
@@ -264,6 +310,16 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="pv" id="pvCount"></span>
           <span class="mtitle" data-en="Track your opponent">Controla a tu rival</span>
           <span class="mdesc" data-en="Learn to keep count of your opponent’s elixir.">Aprende a llevar la cuenta del elixir de tu rival.</span>
+        </span>
+      </label>
+      <label class="mode wide">
+        <input type="radio" name="mode" value="cycle">
+        <span class="box">
+          <span class="pv cyc" id="pvCycle"></span>
+          <span class="mtxt">
+            <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
+            <span class="mdesc" data-en="Find out which cards your opponent has in hand.">Descubre qué cartas tiene tu rival en la mano.</span>
+          </span>
         </span>
       </label>
     </div>
@@ -306,6 +362,18 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <label class="check"><input type="checkbox" id="showNames" checked> <span data-en="Show card names">Mostrar el nombre de las cartas</span></label>
     </div>
 
+    <div id="cycleOpts" class="hidden">
+      <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;Every card returns after 4 plays&lt;/b&gt;The card your opponent just played goes to the back of the line. Their last 4 cards are never in their hand."><b class="challenge">Cada carta vuelve tras 4 jugadas</b>La carta que el rival acaba de jugar va al final de la fila. Sus últimas 4 cartas nunca están en su mano.</p>
+      <fieldset>
+        <legend data-en="Stage">Etapa</legend>
+        <div class="seg stages">
+          <label><input type="radio" name="cyc" value="1" checked><span data-en="&lt;b&gt;1&lt;/b&gt; In sight"><b>1</b> A la vista</span></label>
+          <label><input type="radio" name="cyc" value="2"><span data-en="&lt;b&gt;2&lt;/b&gt; From memory"><b>2</b> De memoria</span></label>
+          <label><input type="radio" name="cyc" value="3"><span data-en="&lt;b&gt;3&lt;/b&gt; Real match"><b>3</b> Partida real</span></label>
+        </div>
+        <p class="desc" id="d-cyc"></p>
+      </fieldset>
+    </div>
     <button class="btn ghost hidden" id="resumeBtn"></button>
     <button class="btn" id="start" data-en="Start">Empezar</button>
     <button class="btn ghost hidden" id="practiceHard" data-en="Practice my hardest cards">Practicar mis cartas difíciles</button>
@@ -325,7 +393,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     </div>
     <div class="pipette" id="pipette" aria-hidden="true"></div>
     <div class="card" id="card">
-      <img id="cardImg" class="cimg" alt="" width="96" height="115" decoding="async">
+      <img id="cardImg" class="cimg" alt="" width="132" height="158" decoding="async">
       <div class="name display" id="name">—</div>
       <div class="rarity" id="rarity"></div>
       <div class="feedback" id="feedback"></div>
@@ -418,6 +486,47 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       </table></div>
     </div>
   </section>
+  <!-- CYCLE GAME -->
+  <section id="cycle" class="hidden" aria-live="polite">
+    <div class="hud">
+      <span id="yProgress">1 / 10</span>
+      <span class="streak" id="yStreak">Racha 0</span>
+      <span id="yPoints">0</span>
+    </div>
+    <div class="ctrl">
+      <button class="link snd" aria-label="Sonido"></button>
+      <button class="link" id="yQuit" data-en="Finish">Terminar</button>
+    </div>
+    <div class="card cyc-card" id="yCard">
+      <div class="cyc-label" id="yDeckLbl" data-en="Their deck">Su mazo</div>
+      <div class="cyc-deck" id="yDeck"></div>
+      <div class="cyc-label" data-en="In hand">En la mano</div>
+      <div class="cyc-row" id="yHand"></div>
+      <div class="cyc-label" data-en="In line · just played →">En la fila · recién jugada →</div>
+      <div class="cyc-row" id="yQueue"></div>
+      <div id="yAsk" class="hidden">
+        <div class="cyc-q" id="yQ"></div>
+        <div class="feedback" id="yFeedback"></div>
+      </div>
+    </div>
+    <div class="bar hidden" id="yBar" aria-hidden="true"></div>
+    <div class="yn hidden" id="yYN">
+      <button class="nbtn" data-v="1" data-en="Yes">Sí</button>
+      <button class="nbtn" data-v="0" data-en="No">No</button>
+    </div>
+    <button class="btn hidden" id="yNext" style="margin-top:1rem" data-en="Next">Siguiente</button>
+  </section>
+
+  <!-- CYCLE RESULTS -->
+  <section id="cycleResults" class="hidden">
+    <h1 data-en="Your score">Tu marca</h1>
+    <div class="score display" id="yScore"></div>
+    <div class="grade-sub" id="ySub"></div>
+    <div class="banner hidden" id="yRecBanner"></div>
+    <div class="chart" id="cycleChart"></div>
+    <button class="btn" id="yAgain" data-en="Play again">Jugar otra vez</button>
+    <button class="btn ghost" id="yBack" data-en="Change settings">Cambiar ajustes</button>
+  </section>
 </main>
 <dialog id="about">
   <h2 data-en="About Elixir Lab">Acerca de Elixir Lab</h2>
@@ -504,7 +613,7 @@ const heartsTxt=()=>"🏰".repeat(lives)+"💥".repeat(MAX_LIVES-lives)+(crowns?
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{attempts:[],cards:{}};}catch(e){return {attempts:[],cards:{}};}}
 function save(h){try{localStorage.setItem(KEY,JSON.stringify(h));}catch(e){}}
-function show(id){["setup","game","results","count","countResults"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
+function show(id){["setup","game","results","count","countResults","cycle","cycleResults"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
 const fmt = x => LANG==="en"?x.toFixed(1):x.toFixed(1).replace(".",",");
 
 // historic difficulty: errors first, then slowness
@@ -530,18 +639,25 @@ function hardCards(h){
 
 function refreshSetup(){
   updateDescs(); if(CARDS.length){ renderPreviews(); renderBadges(); }
-  renderResume(document.querySelector('input[name="mode"]:checked').value==="count");
-  const isCount=document.querySelector('input[name="mode"]:checked').value==="count";
-  $("costOpts").classList.toggle("hidden",isCount);
+  const mode=document.querySelector('input[name="mode"]:checked').value;
+  const isCount=mode==="count", isCycle=mode==="cycle";
+  renderResume(mode!=="cost");
+  $("costOpts").classList.toggle("hidden",mode!=="cost");
   $("countOpts").classList.toggle("hidden",!isCount);
+  $("cycleOpts").classList.toggle("hidden",!isCycle);
   const h=load();
   const last=h.attempts[h.attempts.length-1];
   const bestH=h.attempts.length?Math.max(...h.attempts.map(attHits)):0;
   $("best").textContent = last ? L(`Última partida: ${attHits(last)} cartas · Récord: ${bestH} cartas`,`Last run: ${attHits(last)} cards · Best: ${bestH} cards`) : "";
-  $("practiceHard").classList.toggle("hidden", isCount || hardCards(h).length===0);
+  $("practiceHard").classList.toggle("hidden", mode!=="cost" || hardCards(h).length===0);
   if(isCount){
     const ch=loadC(); const l=ch.attempts[ch.attempts.length-1];
     const b=ch.attempts.reduce((m,a)=>!m||a.nota>m.nota?a:m,null);
+    $("best").textContent = l ? L(`Última partida: ${troph(l.nota)} 🏆 · Récord: ${troph(b.nota)} 🏆`,`Last run: ${troph(l.nota)} 🏆 · Best: ${troph(b.nota)} 🏆`) : "";
+  }
+  if(isCycle){
+    const yh=loadY(); const l=yh.attempts[yh.attempts.length-1];
+    const b=yh.attempts.reduce((m,a)=>!m||a.nota>m.nota?a:m,null);
     $("best").textContent = l ? L(`Última partida: ${troph(l.nota)} 🏆 · Récord: ${troph(b.nota)} 🏆`,`Last run: ${troph(l.nota)} 🏆 · Best: ${troph(b.nota)} 🏆`) : "";
   }
 }
@@ -701,7 +817,7 @@ function renderHistory(h){
 $("start").addEventListener("click",()=>{
   sfx.swords();
   const m=document.querySelector('input[name="mode"]:checked').value;
-  m==="count"?startCount():startFromSettings();
+  m==="count"?startCount():(m==="cycle"?startCycle():startFromSettings());
 });
 
 // ================= PANTALLA DE INICIO =================
@@ -711,12 +827,14 @@ const DESC=L({
   diff:{facil:`El rival suelta 3 o 4 cartas seguidas, sin reloj. Si aciertas, la siguiente ronda trae una carta más.`,
         intermedio:`Ahora el reloj también cuenta: <b>⏱ 3 segundos = +1 gota de elixir ${IX}</b>. Si aciertas, también suben las cartas.`,
         medio:`Como en el juego: <b>⏱ 2,8 segundos = +1 gota ${IX}</b>, y las 3 últimas rondas son en doble elixir. Solo verás la última carta que jugó.`},
+  cyc:{1:"Ves su mazo y la fila de cartas jugadas. Aprende la regla con todo a la vista.",2:"Ves su mazo, pero cada carta de la fila se oculta al llegar la siguiente: recuérdalas.",3:"Como en el juego: no ves su mazo ni la fila, solo cada carta que juega."},
   rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
 },{
   time:{8:"⏱ 8 s per card. Learn the costs with no pressure.",5:"⏱ 5 s per card. The time you get to decide in a real match.",3:"⏱ 3 s per card. Pro reflexes: you see the card and already know its cost."},
   diff:{facil:`Your opponent drops 3 or 4 cards in a row, no clock. Get it right and the next round adds one more card.`,
         intermedio:`Now the clock counts too: <b>⏱ 3 seconds = +1 elixir drop ${IX}</b>. Get it right and the cards go up too.`,
         medio:`Just like the game: <b>⏱ 2.8 seconds = +1 drop ${IX}</b>, and the last 3 rounds are double elixir. You only see their latest card.`},
+  cyc:{1:"You see their deck and the line of played cards. Learn the rule with everything in sight.",2:"You see their deck, but each card in line hides when the next one arrives: remember them.",3:"Just like the game: no deck, no line, only each card as they play it."},
   rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
 });
 const LEVEL_NAME=L({"Fácil":"Primeros pasos","Intermedio":"Con reloj","Medio":"Partida real","Difícil":"Doble elixir"},{"Fácil":"First steps","Intermedio":"On the clock","Medio":"Real match","Difícil":"Double elixir"});
@@ -734,6 +852,7 @@ function renderPreviews(){
   $("pvCost").innerHTML=cardVisual("Montapuercos")+`<span class="qdrop">?</span>`;
   $("pvCount").className="pv count";
   $("pvCount").innerHTML=cardVisual("Pescador")+cardVisual("Bola de Fuego")+`<span class="clock">⏱</span><span class="qdrop">?</span>`;
+  $("pvCycle").innerHTML=`<span class="qs">?</span><span class="qs">?</span>`+cardVisual("Megacaballero")+`<span class="qs">?</span>`;
 }
 document.querySelectorAll('#setup input[type="radio"]').forEach(r=>r.addEventListener("change",refreshSetup));
 
@@ -880,6 +999,131 @@ function drawBadges(list,boxId,infoId){
 }
 function renderBadges(){ drawBadges(BADGES,"badges","badgeInfo"); drawBadges(CBADGES,"cBadges","cBadgeInfo"); }
 
+
+// ================= MODO CICLO =================
+// regla: 8 cartas, 4 en la mano y 4 en la fila; la carta jugada va al final de la fila
+// y vuelve a la mano tras 4 jugadas, así que las últimas 4 jugadas nunca están en la mano
+const YKEY="elixirCycleV1", Y_ROUNDS=10, Y_TIME=10;
+function loadY(){try{return JSON.parse(localStorage.getItem(YKEY))||{attempts:[]};}catch(e){return {attempts:[]};}}
+function saveY(h){try{localStorage.setItem(YKEY,JSON.stringify(h));}catch(e){}}
+const Y_NAME=L({1:"A la vista",2:"De memoria",3:"Partida real"},{1:"In sight",2:"From memory",3:"Real match"});
+const Y_GROUPS=[{id:1,label:Y_NAME[1],color:"var(--ok)"},{id:2,label:Y_NAME[2],color:"#3FA9F5"},{id:3,label:Y_NAME[3],color:"var(--elixir)"}];
+let yStage=1,yIdx=0,yRes=[],yStreak=0,ySc=null,yTimer=null,yT0=0,yLocked=true,yReveal=null;
+for(let i=0;i<10;i++) $("yBar").appendChild(document.createElement("i"));
+const yImg=c=>c[3]?`<img src="${c[3]}" alt="${c[0]}">`:`<span class="nm">${c[0]}</span>`;
+
+function genCycle(){
+  const deck=pickUnique(8);
+  const order=shuffle(deck), hand=order.slice(0,4), queue=order.slice(4);
+  const plays=[], n=rnd(5,8);
+  for(let i=0;i<n;i++){
+    const c=hand.splice(Math.floor(Math.random()*hand.length),1)[0];
+    plays.push(c); queue.push(c); hand.push(queue.shift());
+  }
+  const inHand=Math.random()<.5;
+  const pool=inHand?hand:queue;
+  const target=pool[Math.floor(Math.random()*pool.length)];
+  // cuántas jugadas lleva la carta en la fila (para explicar la respuesta)
+  const lastIdx=plays.lastIndexOf(target), ago=lastIdx<0?null:plays.length-1-lastIdx;
+  return {deck,plays,hand:[...hand],queue:[...queue],target,inHand,ago};
+}
+function startCycle(){
+  yStage=+document.querySelector('input[name="cyc"]:checked').value;
+  yIdx=0;yRes=[];yStreak=0; show("cycle"); yNextRound();
+}
+function slotHTML(c,cls=""){ return `<div class="slot ${cls}">${c?yImg(c):"?"}</div>`; }
+function yNextRound(){
+  if(yIdx>=Y_ROUNDS) return yFinish();
+  yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
+  ySc=genCycle();
+  $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
+  $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
+  const ex=yRes.filter(r=>r.ok).length; $("yPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
+  $("yCard").className="card cyc-card";
+  const showDeck=yStage<3;
+  $("yDeck").classList.toggle("hidden",!showDeck); $("yDeckLbl").classList.toggle("hidden",!showDeck);
+  $("yDeck").innerHTML=ySc.deck.map(yImg).join("");
+  $("yHand").innerHTML=[0,1,2,3].map(()=>slotHTML(null)).join("");
+  let q=[null,null,null,null];
+  const drawQ=(fresh)=>{ $("yQueue").innerHTML=q.map((c,i)=>{
+      const visible = c && (yStage===1 || (yStage===2 && i===3) || (yStage===3 && i===3));
+      return slotHTML(visible?c:null, (c?"known ":"")+(fresh&&i===3?"flip":""));
+    }).join(""); };
+  drawQ(false);
+  ["yAsk","yBar","yYN","yNext"].forEach(id=>$(id).classList.add("hidden"));
+  $("yFeedback").textContent=""; $("yFeedback").className="feedback";
+  let k=0;
+  const step=()=>{
+    q.shift(); q.push(ySc.plays[k]); drawQ(true); sfx.card(); k++;
+    yReveal=setTimeout(k<ySc.plays.length?step:yAsk, yStage===1?1500:1300);
+  };
+  yReveal=setTimeout(step,600);
+}
+function yAsk(){
+  // en etapas 2 y 3 la última carta también se oculta: todo de memoria
+  if(yStage>1) $("yQueue").querySelectorAll(".slot").forEach(s=>{ s.innerHTML="?"; });
+  const t=ySc.target;
+  $("yQ").innerHTML=`${t[3]?yImg(t):""}<span>${L(`¿Tiene ${t[0]} en la mano?`,`Is ${t[0]} in their hand?`)}</span>`;
+  $("yAsk").classList.remove("hidden"); $("yBar").classList.remove("hidden"); $("yYN").classList.remove("hidden");
+  $("yYN").querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
+  requestAnimationFrame(()=>{ const r=$("yYN").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("yYN").scrollIntoView({block:"end",behavior:"smooth"}); });
+  yLocked=false; yT0=performance.now();
+  clearInterval(yTimer); yTimer=setInterval(yTick,50); yTick();
+}
+function yTick(){
+  const left=Math.max(0,1-(performance.now()-yT0)/(Y_TIME*1000));
+  const on=Math.ceil(left*10);
+  [...$("yBar").children].forEach((s,i)=>s.classList.toggle("off",i>=on));
+  warnTick(left*Y_TIME);
+  if(left<=0) yAnswer(null);
+}
+function yAnswer(v){
+  if(yLocked) return; yLocked=true; clearInterval(yTimer);
+  const t=Math.min(Y_TIME,(performance.now()-yT0)/1000);
+  const truth=ySc.inHand, ok=v!==null && (v===1)===truth;
+  yRes.push({ok,t}); ok?yStreak++:yStreak=0; ok?sfx.ok():sfx.err();
+  $("yYN").querySelectorAll(".nbtn").forEach(b=>{ b.disabled=true; const bv=+b.dataset.v===1;
+    if(bv===truth) b.classList.add("right"); else if(v!==null && +b.dataset.v===v) b.classList.add("wrong"); });
+  // revelar la mano y la fila reales, con la carta preguntada resaltada
+  const tk=cardKey(ySc.target);
+  $("yHand").innerHTML=ySc.hand.map(c=>slotHTML(c,"known flip"+(cardKey(c)===tk?" target":""))).join("");
+  $("yQueue").innerHTML=ySc.queue.map(c=>slotHTML(c,"known flip"+(cardKey(c)===tk?" target":""))).join("");
+  $("yCard").classList.add(ok?"ok":"bad");
+  const fb=$("yFeedback"); fb.classList.add(ok?"ok":"bad");
+  const name=ySc.target[0];
+  let why;
+  if(truth) why = ySc.ago===null ? L(`Sí: todavía no ha jugado ${name}.`,`Yes: they haven’t played ${name} yet.`)
+                                 : L(`Sí: jugó ${name} hace ${ySc.ago} cartas, así que ya volvió a su mano.`,`Yes: they played ${name} ${ySc.ago} cards ago, so it’s back in their hand.`);
+  else why = ySc.ago===0 ? L(`No: acaba de jugar ${name}. Vuelve a su mano tras 4 jugadas.`,`No: they just played ${name}. It returns after 4 plays.`)
+                         : L(`No: jugó ${name} hace ${ySc.ago} ${ySc.ago===1?"carta":"cartas"}. Vuelve a su mano tras ${4-ySc.ago} ${4-ySc.ago===1?"jugada":"jugadas"} más.`,`No: they played ${name} ${ySc.ago} ${ySc.ago===1?"card":"cards"} ago. It returns after ${4-ySc.ago} more ${4-ySc.ago===1?"play":"plays"}.`);
+  fb.textContent=(v===null?L("Se acabó el tiempo. ","Time’s up. "):"")+why;
+  $("yNext").classList.remove("hidden"); $("yNext").focus({preventScroll:true});
+}
+$("yYN").querySelectorAll(".nbtn").forEach(b=>b.addEventListener("click",()=>yAnswer(+b.dataset.v)));
+$("yNext").addEventListener("click",()=>{ yIdx++; yNextRound(); });
+document.addEventListener("keydown",e=>{
+  if($("cycle").classList.contains("hidden")) return;
+  if(e.key==="Enter" && !$("yNext").classList.contains("hidden")){ yIdx++; yNextRound(); return; }
+  const k=e.key.toLowerCase(); if(k==="s"||k==="y") yAnswer(1); if(k==="n") yAnswer(0);
+});
+function yFinish(){
+  clearInterval(yTimer); clearTimeout(yReveal);
+  show("cycleResults");
+  const n=yRes.length; if(!n){ refreshSetup(); show("setup"); return; }
+  const ex=yRes.filter(r=>r.ok).length;
+  const pts=yRes.reduce((s,r)=>s+(r.ok?0.7+0.3*(1-r.t/Y_TIME):0),0), nota=20*pts/n;
+  $("yScore").textContent=`${troph(nota)} 🏆`;
+  $("ySub").textContent=`${Y_NAME[yStage]} · ${ex} ${L("de","of")} ${n} ${L("exactas","exact")}`;
+  const h=loadY();
+  recordBanner($("yRecBanner"), h.attempts.filter(a=>a.level===yStage).map(a=>troph(a.nota)), troph(nota));
+  h.attempts.push({date:new Date().toISOString(),level:yStage,n,nota,ex});
+  h.attempts=h.attempts.slice(-100); saveY(h);
+  progressChart($("cycleChart"), h.attempts.map(a=>({...a,nota:troph(a.nota)})), a=>a.level, Y_GROUPS, yStage, 1000);
+}
+$("yQuit").addEventListener("click",()=>{ clearInterval(yTimer); clearTimeout(yReveal); yLocked=true; if(yRes.length) yFinish(); else { refreshSetup(); show("setup"); } });
+$("yAgain").addEventListener("click",()=>{ sfx.swords(); startCycle(); });
+$("yBack").addEventListener("click",()=>{ refreshSetup(); show("setup"); });
+
 // ================= MODO CONTEO =================
 const CKEY="elixirCountV1";
 const LEVELS={
@@ -997,7 +1241,7 @@ function cPlay(){
   $("cPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
   $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count")));
   $("cCard").className="card";
-  const feed=$("feed"); feed.innerHTML=""; feed.classList.toggle("solo",cCur.solo);
+  const feed=$("feed"); feed.innerHTML=""; feed.classList.toggle("solo",cCur.solo); feed.classList.remove("compact");
   feed.classList.toggle("noname",!$("showNames").checked);
   ["cAsk","cBar","nums","cNext","breakdown"].forEach(id=>$(id).classList.add("hidden"));
   $("cFeedback").textContent=""; $("cFeedback").className="feedback";
@@ -1017,8 +1261,10 @@ function cPlay(){
 }
 
 function cAsk(){
-  if(cCur.solo) $("feed").innerHTML="";
+  if(cCur.solo) $("feed").innerHTML=""; else $("feed").classList.add("compact");
   $("cAsk").classList.remove("hidden"); $("cBar").classList.remove("hidden"); $("nums").classList.remove("hidden");
+  // que los botones queden a la vista sin tener que bajar
+  requestAnimationFrame(()=>{ const r=$("nums").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("nums").scrollIntoView({block:"end",behavior:"smooth"}); });
   document.querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
   cLocked=false; cT0=performance.now();
   clearInterval(cTimer); cTimer=setInterval(cTick,50); cTick();
