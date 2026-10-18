@@ -369,7 +369,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="pv cyc" id="pvCycle"></span>
           <span class="mtxt">
             <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
-            <span class="mdesc" data-en="Find out which cards your opponent has in hand.">Descubre qué cartas tiene tu rival en la mano.</span>
+            <span class="mdesc" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</span>
           </span>
         </span>
       </label>
@@ -414,7 +414,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     </div>
 
     <div id="cycleOpts" class="hidden">
-      <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;Every card returns after 4 plays&lt;/b&gt;The card your opponent just played goes to the back of the line. Their last 4 cards are never in their hand."><b class="challenge">Cada carta vuelve tras 4 jugadas</b>La carta que el rival acaba de jugar va al final de la fila. Sus últimas 4 cartas nunca están en su mano.</p>
+      <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;Every card returns after 4 plays&lt;/b&gt;When your opponent plays a card, they need to play 4 others to have it available again."><b class="challenge">Cada carta vuelve tras 4 jugadas</b>Cuando el rival juega una carta, necesita jugar otras 4 para tenerla disponible de nuevo.</p>
       <fieldset>
         <legend data-en="Stage">Etapa</legend>
         <div class="seg stages">
@@ -550,10 +550,10 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <button class="link" id="yQuit" data-en="Finish">Terminar</button>
     </div>
     <div class="card cyc-card" id="yCard">
-      <div class="hand-lbl" data-en="Their hand · &lt;b&gt;what do they have?&lt;/b&gt;">Su mano · <b>¿qué tiene?</b></div>
+      <div class="hand-lbl" data-en="Opponent’s &lt;b&gt;available cards&lt;/b&gt;">Cartas <b>disponibles</b> del rival</div>
       <div class="cyc-row4 hand-big" id="yHand"></div>
       <div class="clues">
-        <div class="cyc-label" id="yCluesLbl" data-en="Their last 4 plays · not in their hand">Sus últimas 4 jugadas · no están en su mano</div>
+        <div class="cyc-label" id="yCluesLbl" data-en="Opponent’s last plays">Últimas jugadas del rival</div>
         <div class="cyc-row4 clue-row" id="yRecent"></div>
       </div>
       <div id="yAsk" class="hidden">
@@ -587,10 +587,10 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
         <div class="hh-cards" id="hhCards"></div>
       </div>
       <ol class="help-steps">
-        <li data-en="&lt;b&gt;1&lt;/b&gt;&lt;span&gt;Your opponent always has &lt;em&gt;4 cards in hand&lt;/em&gt;, ready to play.&lt;/span&gt;"><b>1</b><span>El rival siempre tiene <em>4 cartas en su mano</em>, listas para jugar.</span></li>
+        <li data-en="&lt;b&gt;1&lt;/b&gt;&lt;span&gt;Your opponent always has &lt;em&gt;4 cards available&lt;/em&gt; in hand, ready to play.&lt;/span&gt;"><b>1</b><span>El rival siempre tiene <em>4 cartas disponibles</em> en su mano, listas para jugar.</span></li>
         <li data-en="&lt;b&gt;2&lt;/b&gt;&lt;span&gt;Every time they drop a card in the arena, they must &lt;em&gt;cycle 4 other cards&lt;/em&gt; to have it again.&lt;/span&gt;"><b>2</b><span>Cada vez que suelta una carta en la arena, necesita <em>ciclar otras 4 cartas</em> para volver a tenerla.</span></li>
       </ol>
-      <p class="help-key" data-en="That’s why &lt;b&gt;their last 4 cards are never in their hand&lt;/b&gt;.">Por eso, <b>sus últimas 4 cartas nunca están en su mano</b>.</p>
+      <p class="help-key" data-en="That’s why &lt;b&gt;their last 4 plays are never available&lt;/b&gt;.">Por eso, <b>sus últimas 4 jugadas nunca están disponibles</b>.</p>
       <button class="btn" id="yHelpOk" type="button" data-en="Got it">Entendido</button>
     </div>
   </div>
@@ -894,14 +894,14 @@ const DESC=L({
   diff:{facil:`El rival suelta 3 o 4 cartas seguidas, sin reloj. Si aciertas, la siguiente ronda trae una carta más.`,
         intermedio:`Ahora el reloj también cuenta: <b>⏱ 3 segundos = +1 gota de elixir ${IX}</b>. Si aciertas, también suben las cartas.`,
         medio:`Como en el juego: <b>⏱ 2,8 segundos = +1 gota ${IX}</b>, y las 3 últimas rondas son en doble elixir. Solo verás la última carta que jugó.`},
-  cyc:{1:"Sus últimas jugadas quedan a la vista, con cuándo vuelve cada una a su mano.",2:"Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",3:"Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
+  cyc:{1:"Sus últimas jugadas quedan a la vista, con cuándo vuelve a estar disponible cada una.",2:"Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",3:"Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
   rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
 },{
   time:{8:"⏱ 8 s per card. Learn the costs with no pressure.",5:"⏱ 5 s per card. The time you get to decide in a real match.",3:"⏱ 3 s per card. Pro reflexes: you see the card and already know its cost."},
   diff:{facil:`Your opponent drops 3 or 4 cards in a row, no clock. Get it right and the next round adds one more card.`,
         intermedio:`Now the clock counts too: <b>⏱ 3 seconds = +1 elixir drop ${IX}</b>. Get it right and the cards go up too.`,
         medio:`Just like the game: <b>⏱ 2.8 seconds = +1 drop ${IX}</b>, and the last 3 rounds are double elixir. You only see their latest card.`},
-  cyc:{1:"Their last plays stay in sight, with when each one returns to their hand.",2:"Each play shows for a moment and flips over: you have to remember them.",3:"Just like the game: faster and no help. Only your memory."},
+  cyc:{1:"Their last plays stay in sight, with when each one is available again.",2:"Each play shows for a moment and flips over: you have to remember them.",3:"Just like the game: faster and no help. Only your memory."},
   rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
 });
 const LEVEL_NAME=L({"Fácil":"Primeros pasos","Intermedio":"Con reloj","Medio":"Partida real","Difícil":"Doble elixir"},{"Fácil":"First steps","Intermedio":"On the clock","Medio":"Real match","Difícil":"Double elixir"});
@@ -1166,7 +1166,7 @@ function yNextRound(){
 }
 function yAsk(){
   const t=ySc.target, b=baseCard(t);
-  $("yQ").innerHTML=`${b[3]?`<img src="${b[3]}" alt="">`:""}<span>${L(`¿Tiene ${baseName(t[0])} en la mano?`,`Is ${baseName(t[0])} in their hand?`)}</span>`;
+  $("yQ").innerHTML=`${b[3]?`<img src="${b[3]}" alt="">`:""}<span>${L(`¿Tiene ${baseName(t[0])} disponible?`,`Is ${baseName(t[0])} available?`)}</span>`;
   $("yAsk").classList.remove("hidden"); $("yBar").classList.remove("hidden"); $("yYN").classList.remove("hidden");
   $("yYN").querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
   requestAnimationFrame(()=>{ const r=$("yYN").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("yYN").scrollIntoView({block:"end",behavior:"smooth"}); });
@@ -1195,11 +1195,11 @@ function yAnswer(v){
   const fb=$("yFeedback"); fb.classList.add(ok?"ok":"bad");
   const name=baseName(ySc.target[0]);
   let why;
-  if(truth) why = ySc.ago===null ? L(`Sí: todavía no ha jugado ${name}.`,`Yes: they haven’t played ${name} yet.`)
-                                 : L(`Sí: jugó ${name} hace ${ySc.ago} cartas, así que ya volvió a su mano.`,`Yes: they played ${name} ${ySc.ago} cards ago, so it’s back in their hand.`);
+  if(truth) why = ySc.ago===null ? L(`Sí: todavía no ha jugado ${name}, así que está disponible.`,`Yes: they haven’t played ${name} yet, so it’s available.`)
+                                 : L(`Sí: jugó ${name} hace ${ySc.ago} cartas, así que ya vuelve a estar disponible.`,`Yes: they played ${name} ${ySc.ago} cards ago, so it’s available again.`);
   else { const back=4-ySc.ago;
-    why = ySc.ago===0 ? L(`No: acaba de jugar ${name}. Vuelve a su mano en 4 jugadas.`,`No: they just played ${name}. It returns in 4 plays.`)
-                      : L(`No: jugó ${name} hace ${ySc.ago} ${ySc.ago===1?"carta":"cartas"}. Vuelve a su mano ${backIn(back)}.`,`No: they played ${name} ${ySc.ago} ${ySc.ago===1?"card":"cards"} ago. It returns ${backIn(back)}.`); }
+    why = ySc.ago===0 ? L(`No: acaba de jugar ${name}. Vuelve a estar disponible en 4 jugadas.`,`No: they just played ${name}. It’s available again in 4 plays.`)
+                      : L(`No: jugó ${name} hace ${ySc.ago} ${ySc.ago===1?"carta":"cartas"}. Vuelve a estar disponible ${backIn(back)}.`,`No: they played ${name} ${ySc.ago} ${ySc.ago===1?"card":"cards"} ago. It’s available again ${backIn(back)}.`); }
   fb.textContent=(v===null?L("Se acabó el tiempo. ","Time’s up. "):"")+why;
   $("yNext").classList.remove("hidden"); $("yNext").focus({preventScroll:true});
 }
