@@ -329,6 +329,13 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .help-steps li{display:flex;gap:.6rem;align-items:flex-start;line-height:1.35}
 .help-steps b{flex:none;display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff}
 .help-steps em{font-style:normal;font-weight:800;color:var(--elixir-2)}
+
+.help-hand{display:flex;align-items:flex-end;gap:.5rem;margin:.2rem 0 1rem}
+.hh-next{flex:0 0 42px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.2rem;font-size:.6rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.hh-next>div{width:100%}
+.hh-cards{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;padding-top:12px}
+.help-key{margin:0 0 1rem;padding:.6rem .75rem;border-radius:.7rem;background:var(--track);text-align:center;line-height:1.35}
+.help-key b{color:var(--elixir-2)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}.edrop{animation:none;opacity:1}}
 </style>
 </head>
@@ -574,12 +581,16 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
   </section>
   <div class="overlay hidden" id="yHelp" role="dialog" aria-modal="true" aria-labelledby="yHelpT">
     <div class="card help-card">
-      <h2 id="yHelpT" data-en="How to read their cycle">Cómo leer su ciclo</h2>
+      <h2 id="yHelpT" data-en="How to read your opponent’s cycle">Cómo leer el ciclo de tu rival</h2>
+      <div class="help-hand" aria-hidden="true">
+        <div class="hh-next"><div id="hhNext"></div><span data-en="Next">Siguiente</span></div>
+        <div class="hh-cards" id="hhCards"></div>
+      </div>
       <ol class="help-steps">
-        <li data-en="&lt;b&gt;1&lt;/b&gt;&lt;span&gt;The opponent plays &lt;em&gt;any&lt;/em&gt; card from their hand.&lt;/span&gt;"><b>1</b><span>El rival juega <em>cualquier</em> carta de su mano.</span></li>
-        <li data-en="&lt;b&gt;2&lt;/b&gt;&lt;span&gt;That card goes to their &lt;em&gt;last plays&lt;/em&gt;, and their next card fills its spot.&lt;/span&gt;"><b>2</b><span>Esa carta pasa a sus <em>últimas jugadas</em> y su carta siguiente ocupa el hueco.</span></li>
-        <li data-en="&lt;b&gt;3&lt;/b&gt;&lt;span&gt;It returns to their hand after &lt;em&gt;4 plays&lt;/em&gt;: their last 4 cards are never in their hand.&lt;/span&gt;"><b>3</b><span>Vuelve a su mano tras <em>4 jugadas</em>: sus últimas 4 cartas nunca están en su mano.</span></li>
+        <li data-en="&lt;b&gt;1&lt;/b&gt;&lt;span&gt;Your opponent always has &lt;em&gt;4 cards in hand&lt;/em&gt;, ready to play.&lt;/span&gt;"><b>1</b><span>El rival siempre tiene <em>4 cartas en su mano</em>, listas para jugar.</span></li>
+        <li data-en="&lt;b&gt;2&lt;/b&gt;&lt;span&gt;Every time they drop a card in the arena, they must &lt;em&gt;cycle 4 other cards&lt;/em&gt; to have it again.&lt;/span&gt;"><b>2</b><span>Cada vez que suelta una carta en la arena, necesita <em>ciclar otras 4 cartas</em> para volver a tenerla.</span></li>
       </ol>
+      <p class="help-key" data-en="That’s why &lt;b&gt;their last 4 cards are never in their hand&lt;/b&gt;.">Por eso, <b>sus últimas 4 cartas nunca están en su mano</b>.</p>
       <button class="btn" id="yHelpOk" type="button" data-en="Got it">Entendido</button>
     </div>
   </div>
@@ -1088,7 +1099,15 @@ function genCycle(){
   return {deck,plays,hand:[...hand],queue:[...queue],target,inHand,ago};
 }
 const YHELP="elixirCycleHelpV1";
-function yHelp(open){ $("yHelp").classList.toggle("hidden",!open); if(open) $("yHelpOk").focus(); }
+function yHelp(open){
+  if(open && CARDS.length){
+    // una mano de ejemplo, como en el juego: 4 cartas, una elevada, y la siguiente más pequeña
+    const ex=pickUnique(5);
+    $("hhNext").innerHTML=cardEl(ex[4]);
+    $("hhCards").innerHTML=ex.slice(0,4).map((c,i)=>cardEl(c,i===2?"lift":"")).join("");
+  }
+  $("yHelp").classList.toggle("hidden",!open); if(open) $("yHelpOk").focus();
+}
 $("yHelpBtn").addEventListener("click",()=>yHelp(true));
 $("yHelpOk").addEventListener("click",()=>{ yHelp(false); try{localStorage.setItem(YHELP,"1");}catch(e){} if(yPending){ yPending=false; startCycle(); } });
 let yPending=false;
