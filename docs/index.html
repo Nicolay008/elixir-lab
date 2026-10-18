@@ -336,6 +336,35 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .hh-cards{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;padding-top:12px}
 .help-key{margin:0 0 1rem;padding:.6rem .75rem;border-radius:.7rem;background:var(--track);text-align:center;line-height:1.35}
 .help-key b{color:var(--elixir-2)}
+
+/* caza la carta */
+.seg.stages.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.seg.stages.five>label>span{padding:.55rem .2rem}
+.hunt-top{display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem}
+.hunt-target{flex:0 0 28%}
+.hunt-target .cardf{box-shadow:0 0 0 3px var(--gold);border-radius:.6rem;filter:drop-shadow(0 0 12px rgba(242,183,5,.4))}
+.hunt-info{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;min-width:0}
+.hunt-info .cyc-label{margin:0}
+.hunt-name{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.35rem;line-height:1.1}
+.pips{display:flex;gap:.3rem;margin-top:.2rem}
+.pips i{width:1.6rem;height:.55rem;border-radius:.3rem;background:var(--track);border:1px solid var(--line);transition:background .2s}
+.pips i.on{background:linear-gradient(90deg,var(--elixir-2),var(--elixir));border-color:transparent}
+.pips-lbl{font-size:.75rem;font-weight:800;color:var(--muted)}
+.hunt-tip{min-height:1.3em;text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);margin:.2rem 0 .5rem}
+.hunt-tip.warn{color:var(--bad)}
+.hunt-line{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
+.hp{position:relative;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.15rem;font:inherit;color:inherit}
+.hp .tag{font-size:.6rem;font-weight:800;padding:.05rem .4rem;border-radius:999px;background:var(--track);color:var(--muted)}
+.hp.rival .tag{background:rgba(181,47,199,.18);color:var(--elixir-2)}
+.hp.me .cardf{opacity:.55;filter:grayscale(.5)}
+.hp.me .tag{background:rgba(63,169,245,.18);color:#3FA9F5}
+.hp.tgt .cardf{box-shadow:0 0 0 2.5px var(--gold);border-radius:.55rem}
+.hp.counted .cardf{box-shadow:0 0 0 2.5px var(--elixir-2);border-radius:.55rem}
+.hp .num{position:absolute;top:-.35rem;right:-.2rem;width:1.3rem;height:1.3rem;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;background:linear-gradient(180deg,var(--elixir-2),var(--elixir))}
+.hp.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.cnt{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
+.cnt .nbtn{font-size:1.5rem;padding:.8rem 0}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}.edrop{animation:none;opacity:1}}
 </style>
 </head>
@@ -417,10 +446,12 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;Every card returns after 4 plays&lt;/b&gt;When your opponent plays a card, they need to play 4 others to have it available again."><b class="challenge">Cada carta vuelve tras 4 jugadas</b>Cuando el rival juega una carta, necesita jugar otras 4 para tenerla disponible de nuevo.</p>
       <fieldset>
         <legend data-en="Stage">Etapa</legend>
-        <div class="seg stages">
-          <label><input type="radio" name="cyc" value="1" checked><span data-en="&lt;b&gt;1&lt;/b&gt; In sight"><b>1</b> A la vista</span></label>
-          <label><input type="radio" name="cyc" value="2"><span data-en="&lt;b&gt;2&lt;/b&gt; From memory"><b>2</b> De memoria</span></label>
-          <label><input type="radio" name="cyc" value="3"><span data-en="&lt;b&gt;3&lt;/b&gt; Real match"><b>3</b> Partida real</span></label>
+        <div class="seg stages five">
+          <label><input type="radio" name="cyc" value="1" checked><span aria-label="1"><b>1</b></span></label>
+          <label><input type="radio" name="cyc" value="2"><span aria-label="2"><b>2</b></span></label>
+          <label><input type="radio" name="cyc" value="3"><span aria-label="3"><b>3</b></span></label>
+          <label><input type="radio" name="cyc" value="4"><span aria-label="4"><b>4</b></span></label>
+          <label><input type="radio" name="cyc" value="5"><span aria-label="5"><b>5</b></span></label>
         </div>
         <p class="desc" id="d-cyc"></p>
         <button class="link" id="yHelpBtn" type="button" data-en="How do you play?">¿Cómo se juega?</button>
@@ -550,11 +581,26 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <button class="link" id="yQuit" data-en="Finish">Terminar</button>
     </div>
     <div class="card cyc-card" id="yCard">
+      <div id="yHunt" class="hidden">
+        <div class="hunt-top">
+          <div class="hunt-target" id="hTarget"></div>
+          <div class="hunt-info">
+            <span class="cyc-label" data-en="Target card">Carta objetivo</span>
+            <span class="hunt-name" id="hName"></span>
+            <div class="pips" id="hPips" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <span class="pips-lbl" id="hPipsLbl"></span>
+          </div>
+        </div>
+        <div class="hunt-tip" id="hTip"></div>
+        <div class="hunt-line" id="hLine"></div>
+      </div>
+      <div id="yBoard">
       <div class="hand-lbl" data-en="Opponent’s &lt;b&gt;available cards&lt;/b&gt;">Cartas <b>disponibles</b> del rival</div>
       <div class="cyc-row4 hand-big" id="yHand"></div>
       <div class="clues">
         <div class="cyc-label" id="yCluesLbl" data-en="Opponent’s last plays">Últimas jugadas del rival</div>
         <div class="cyc-row4 clue-row" id="yRecent"></div>
+      </div>
       </div>
       <div id="yAsk" class="hidden">
         <div class="cyc-q" id="yQ"></div>
@@ -562,6 +608,9 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       </div>
     </div>
     <div class="bar hidden" id="yBar" aria-hidden="true"></div>
+    <div class="cnt hidden" id="yCnt">
+      <button class="nbtn" data-v="0">0</button><button class="nbtn" data-v="1">1</button><button class="nbtn" data-v="2">2</button><button class="nbtn" data-v="3">3</button><button class="nbtn" data-v="4">4</button>
+    </div>
     <div class="yn hidden" id="yYN">
       <button class="nbtn" data-v="1" data-en="Yes">Sí</button>
       <button class="nbtn" data-v="0" data-en="No">No</button>
@@ -894,14 +943,14 @@ const DESC=L({
   diff:{facil:`El rival suelta 3 o 4 cartas seguidas, sin reloj. Si aciertas, la siguiente ronda trae una carta más.`,
         intermedio:`Ahora el reloj también cuenta: <b>⏱ 3 segundos = +1 gota de elixir ${IX}</b>. Si aciertas, también suben las cartas.`,
         medio:`Como en el juego: <b>⏱ 2,8 segundos = +1 gota ${IX}</b>, y las 3 últimas rondas son en doble elixir. Solo verás la última carta que jugó.`},
-  cyc:{1:"Sus últimas jugadas quedan a la vista, con cuándo vuelve a estar disponible cada una.",2:"Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",3:"Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
+  cyc:{1:"<b>Caza la carta.</b> Sigue una carta objetivo: toca cada carta que juegue el rival después de ella. Tus cartas no cuentan. Sin reloj.",2:"<b>¿Cuántas faltan?</b> Igual, pero sin contador: cuenta de cabeza cuántas cartas le faltan para recuperarla.",3:"<b>A la vista.</b> ¿Tiene esa carta disponible? Sus últimas jugadas quedan a la vista, con cuándo vuelve cada una.",4:"<b>De memoria.</b> Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",5:"<b>Partida real.</b> Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
   rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
 },{
   time:{8:"⏱ 8 s per card. Learn the costs with no pressure.",5:"⏱ 5 s per card. The time you get to decide in a real match.",3:"⏱ 3 s per card. Pro reflexes: you see the card and already know its cost."},
   diff:{facil:`Your opponent drops 3 or 4 cards in a row, no clock. Get it right and the next round adds one more card.`,
         intermedio:`Now the clock counts too: <b>⏱ 3 seconds = +1 elixir drop ${IX}</b>. Get it right and the cards go up too.`,
         medio:`Just like the game: <b>⏱ 2.8 seconds = +1 drop ${IX}</b>, and the last 3 rounds are double elixir. You only see their latest card.`},
-  cyc:{1:"Their last plays stay in sight, with when each one is available again.",2:"Each play shows for a moment and flips over: you have to remember them.",3:"Just like the game: faster and no help. Only your memory."},
+  cyc:{1:"<b>Hunt the card.</b> Follow one target card: tap every card your opponent plays after it. Your cards don’t count. No timer.",2:"<b>How many left?</b> Same, but no counter: count in your head how many cards they need to get it back.",3:"<b>In sight.</b> Is that card available? Their last plays stay in sight, with when each one returns.",4:"<b>From memory.</b> Each play shows for a moment and flips over: you have to remember them.",5:"<b>Real match.</b> Just like the game: faster and no help. Only your memory."},
   rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
 });
 const LEVEL_NAME=L({"Fácil":"Primeros pasos","Intermedio":"Con reloj","Medio":"Partida real","Difícil":"Doble elixir"},{"Fácil":"First steps","Intermedio":"On the clock","Medio":"Real match","Difícil":"Double elixir"});
@@ -1070,12 +1119,19 @@ function renderBadges(){ drawBadges(BADGES,"badges","badgeInfo"); drawBadges(CBA
 // ================= MODO CICLO =================
 // regla: 8 cartas, 4 en la mano; el rival puede jugar cualquiera de su mano, esa carta va al final
 // de su ciclo y el hueco lo ocupa su carta siguiente. Así, sus últimas 4 jugadas nunca están en su mano.
-const YKEY="elixirCycleV1", Y_ROUNDS=10, Y_TIME=10;
-function loadY(){try{return JSON.parse(localStorage.getItem(YKEY))||{attempts:[]};}catch(e){return {attempts:[]};}}
+const YKEY="elixirCycleV2", Y_ROUNDS=10, Y_TIME=10;
+function loadY(){
+  try{
+    const h=JSON.parse(localStorage.getItem(YKEY)); if(h) return h;
+    const old=JSON.parse(localStorage.getItem("elixirCycleV1"));
+    if(old&&old.attempts){ const m={attempts:old.attempts.map(a=>({...a,level:a.level+2}))}; saveY(m); return m; }
+  }catch(e){}
+  return {attempts:[]};
+}
 function saveY(h){try{localStorage.setItem(YKEY,JSON.stringify(h));}catch(e){}}
-const Y_NAME=L({1:"A la vista",2:"De memoria",3:"Partida real"},{1:"In sight",2:"From memory",3:"Real match"});
-const Y_GROUPS=[{id:1,label:Y_NAME[1],color:"var(--ok)"},{id:2,label:Y_NAME[2],color:"#3FA9F5"},{id:3,label:Y_NAME[3],color:"var(--elixir)"}];
-let yRid=0,yStage=1,yIdx=0,yRes=[],yStreak=0,ySc=null,yTimer=null,yT0=0,yLocked=true,yReveal=null;
+const Y_NAME=L({1:"Caza la carta",2:"¿Cuántas faltan?",3:"A la vista",4:"De memoria",5:"Partida real"},{1:"Hunt the card",2:"How many left?",3:"In sight",4:"From memory",5:"Real match"});
+const Y_GROUPS=[{id:1,label:Y_NAME[1],color:"#7FD8A0"},{id:2,label:Y_NAME[2],color:"var(--ok)"},{id:3,label:Y_NAME[3],color:"#3FA9F5"},{id:4,label:Y_NAME[4],color:"var(--gold)"},{id:5,label:Y_NAME[5],color:"var(--elixir)"}];
+let yM=1,yRid=0,yStage=1,yIdx=0,yRes=[],yStreak=0,ySc=null,yTimer=null,yT0=0,yLocked=true,yReveal=null;
 for(let i=0;i<10;i++) $("yBar").appendChild(document.createElement("i"));
 const yFace=c=>c[3]?`<img src="${c[3]}" alt="${baseName(c[0])}">`:`<span class="nm">${baseName(c[0])}</span>`;
 const cardEl=(c,cls="")=>c?`<div class="cardf face ${cls}">${yFace(c)}</div>`:`<div class="cardf back ${cls}">?</div>`;
@@ -1135,6 +1191,9 @@ function yRenderRecent(list,o={}){
 function yNextRound(){
   if(yIdx>=Y_ROUNDS) return yFinish();
   yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
+  if(yStage<=2) return yHuntRound();
+  yM=yStage-2;
+  $("yHunt").classList.add("hidden"); $("yBoard").classList.remove("hidden");
   ySc=genCycle(); const rid=++yRid;
   $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
   $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
@@ -1142,7 +1201,7 @@ function yNextRound(){
   $("yCard").className="card cyc-card";
   $("yHand").innerHTML=[0,1,2,3].map(()=>cardEl(null)).join("");
   const recent=[]; yRenderRecent(recent);
-  ["yAsk","yBar","yYN","yNext"].forEach(id=>$(id).classList.add("hidden"));
+  ["yAsk","yBar","yYN","yCnt","yNext"].forEach(id=>$(id).classList.add("hidden"));
   $("yFeedback").textContent=""; $("yFeedback").className="feedback";
   let k=0;
   const step=()=>{
@@ -1154,13 +1213,13 @@ function yNextRound(){
       // …baja a sus últimas jugadas y su hueco lo ocupa la siguiente (oculta)
       $("yHand").children[p.slot].outerHTML=cardEl(null,"flip");
       recent.push(p.c); if(recent.length>4) recent.shift();
-      yRenderRecent(recent,{faces:yStage===1,caps:yStage===1,fresh:true});
+      yRenderRecent(recent,{faces:yM===1,caps:yM===1,fresh:true});
       k++;
-      const wait=yStage===1?1150:(yStage===2?950:650);
+      const wait=yM===1?1150:(yM===2?950:650);
       // en memoria, la carta se ve un momento y se da la vuelta
-      if(yStage>1) setTimeout(()=>{ if(rid===yRid && $("yAsk").classList.contains("hidden")) yRenderRecent(recent); }, wait-120);
+      if(yM>1) setTimeout(()=>{ if(rid===yRid && $("yAsk").classList.contains("hidden")) yRenderRecent(recent); }, wait-120);
       yReveal=setTimeout(k<ySc.plays.length?step:yAsk, wait);
-    },yStage===3?320:450);
+    },yM===3?320:450);
   };
   yReveal=setTimeout(step,600);
 }
@@ -1205,11 +1264,110 @@ function yAnswer(v){
 }
 $("yYN").querySelectorAll(".nbtn").forEach(b=>b.addEventListener("click",()=>yAnswer(+b.dataset.v)));
 $("yNext").addEventListener("click",()=>{ yIdx++; yNextRound(); });
+$("yCnt").querySelectorAll(".nbtn").forEach(b=>b.addEventListener("click",()=>yHuntAnswer(+b.dataset.v)));
 document.addEventListener("keydown",e=>{
   if($("cycle").classList.contains("hidden")) return;
   if(e.key==="Enter" && !$("yNext").classList.contains("hidden")){ yIdx++; yNextRound(); return; }
-  const k=e.key.toLowerCase(); if(k==="s"||k==="y") yAnswer(1); if(k==="n") yAnswer(0);
+  const k=e.key.toLowerCase();
+  if(yStage<=2){ if(/^[0-4]$/.test(k)) yHuntAnswer(+k); return; }
+  if(k==="s"||k==="y") yAnswer(1); if(k==="n") yAnswer(0);
 });
+
+// ---------- Caza la carta (etapas 1 y 2) ----------
+// Se simula el ciclo real del rival y se elige una carta objetivo dentro de la secuencia;
+// así las cartas posteriores siempre son distintas, como en el juego.
+let yH=null, hCount=new Set();
+function genHunt(){
+  const deck=pickUnique(8), order=shuffle(deck), hand=order.slice(0,4), queue=order.slice(4), plays=[];
+  for(let i=0;i<10;i++){ const slot=Math.floor(Math.random()*4), c=hand[slot]; plays.push(c); queue.push(c); hand[slot]=queue.shift(); }
+  const after=rnd(0,4), before=rnd(1,2), ti=before+rnd(0,2);
+  const rival=plays.slice(ti-before, ti+after+1), tIdx=before;
+  // tus cartas: distracciones que no avanzan su ciclo
+  const used=new Set(deck.map(c=>baseName(c[0])));
+  const mine=shuffle(CARDS.filter(c=>!used.has(baseName(c[0])) && c[0]===baseName(c[0]))).slice(0,rnd(1,3));
+  const seq=rival.map((c,i)=>({c,who:"rival",tgt:i===tIdx,after:i>tIdx}));
+  mine.forEach(c=>{ const pos=rnd(1,seq.length); seq.splice(pos,0,{c,who:"me",tgt:false,after:false}); });
+  // una carta tuya jugada después del objetivo cuenta como "posterior" a efectos del error típico
+  let seenT=false; seq.forEach(x=>{ if(x.tgt) seenT=true; else if(x.who==="me") x.after=seenT; });
+  return {target:rival[tIdx], seq, k:after, left:4-after, mineAfter:seq.filter(x=>x.who==="me"&&x.after).length};
+}
+function hPips(n){ [...$("hPips").children].forEach((p,i)=>p.classList.toggle("on",i<n)); }
+function hTip(t,warn=false){ const el=$("hTip"); el.textContent=t; el.classList.toggle("warn",warn); }
+function yHuntRound(){
+  yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
+  yH=genHunt(); hCount=new Set(); const rid=++yRid;
+  $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
+  $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
+  const ex=yRes.filter(r=>r.ok).length; $("yPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
+  $("yCard").className="card cyc-card";
+  $("yBoard").classList.add("hidden"); $("yHunt").classList.remove("hidden");
+  const t=yH.target;
+  $("hTarget").innerHTML=cardEl(t); $("hName").textContent=baseName(t[0]);
+  const help=yStage===1;
+  $("hPips").classList.toggle("hidden",!help); $("hPipsLbl").classList.toggle("hidden",!help);
+  hPips(0); $("hPipsLbl").textContent=L("0 de 4 cartas","0 of 4 cards");
+  hTip(help?L("Toca cada carta que juegue el rival después del objetivo.","Tap every card your opponent plays after the target."):L("Cuenta de cabeza las cartas del rival después del objetivo.","Count in your head your opponent’s cards after the target."));
+  $("hLine").innerHTML="";
+  ["yAsk","yBar","yYN","yCnt","yNext"].forEach(id=>$(id).classList.add("hidden"));
+  $("yFeedback").textContent=""; $("yFeedback").className="feedback";
+  let k=0;
+  const step=()=>{
+    if(rid!==yRid) return;
+    const x=yH.seq[k], i=k;
+    const tag = x.who==="me" ? L("Tú","You") : (x.tgt?L("🎯 Objetivo","🎯 Target"):L("Rival","Opp."));
+    const el=document.createElement("button");
+    el.type="button"; el.className=`hp ${x.who}${x.tgt?" tgt":""}`; el.dataset.i=i;
+    el.innerHTML=cardEl(x.c,"fall")+`<span class="tag">${tag}</span>`;
+    el.addEventListener("click",()=>hTap(el,x,i));
+    $("hLine").appendChild(el); sfx.card();
+    k++;
+    yReveal=setTimeout(k<yH.seq.length?step:yHuntAsk, yStage===1?1000:800);
+  };
+  yReveal=setTimeout(step,500);
+}
+function hTap(el,x,i){
+  if(yStage!==1 || !$("yNext").classList.contains("hidden")) return;
+  if(x.who==="me"){ hTip(L("Tus cartas no cuentan: solo avanzan su ciclo las cartas del rival.","Your cards don’t count: only your opponent’s cards move their cycle."),true); el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); sfx.err(); return; }
+  if(!x.after){ hTip(x.tgt?L("Esa es la carta objetivo: empieza a contar con la siguiente del rival.","That’s the target: start counting with your opponent’s next card."):L("Esa la jugó antes del objetivo: no cuenta.","They played that one before the target: it doesn’t count."),true); el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); return; }
+  if(hCount.has(i)) hCount.delete(i); else { if(hCount.size>=4) return; hCount.add(i); }
+  el.classList.toggle("counted",hCount.has(i));
+  hPips(hCount.size); $("hPipsLbl").textContent=L(`${hCount.size} de 4 cartas`,`${hCount.size} of 4 cards`);
+  hTip(L("Bien, sigue contando.","Good, keep counting."));
+}
+function yHuntAsk(){
+  const name=baseName(yH.target[0]);
+  $("yQ").innerHTML=`<span>${L(`¿Cuántas cartas más necesita jugar para recuperar ${name}?`,`How many more cards must they play to get ${name} back?`)}</span>`;
+  $("yAsk").classList.remove("hidden"); $("yCnt").classList.remove("hidden");
+  $("yCnt").querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
+  requestAnimationFrame(()=>{ const r=$("yCnt").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("yCnt").scrollIntoView({block:"end",behavior:"smooth"}); });
+  yLocked=false; yT0=performance.now();
+}
+function yHuntAnswer(v){
+  if(yLocked) return; yLocked=true;
+  const t=Math.min(Y_TIME,(performance.now()-yT0)/1000);
+  const ok=v===yH.left;
+  yRes.push({ok,t}); ok?yStreak++:yStreak=0; ok?sfx.ok():sfx.err();
+  $("yCnt").querySelectorAll(".nbtn").forEach(b=>{ b.disabled=true; const bv=+b.dataset.v;
+    if(bv===yH.left) b.classList.add("right"); else if(bv===v) b.classList.add("wrong"); });
+  // mostrar el conteo correcto: 1, 2, 3, 4 sobre las cartas del rival posteriores al objetivo
+  let n=0;
+  [...$("hLine").children].forEach((el,i)=>{ const x=yH.seq[i];
+    el.classList.toggle("counted", x.who==="rival"&&x.after);
+    if(x.who==="rival"&&x.after){ n++; el.insertAdjacentHTML("beforeend",`<span class="num">${n}</span>`); } });
+  $("hPips").classList.remove("hidden"); $("hPipsLbl").classList.remove("hidden");
+  hPips(yH.k); $("hPipsLbl").textContent=L(`${yH.k} de 4 cartas`,`${yH.k} of 4 cards`); hTip("");
+  $("yCard").classList.add(ok?"ok":"bad");
+  const fb=$("yFeedback"); fb.classList.add(ok?"ok":"bad");
+  const name=baseName(yH.target[0]), k=yH.k, left=yH.left;
+  let msg;
+  if(ok) msg = left===0 ? L(`¡Bien! Jugó 4 cartas después de ${name}: ya vuelve a estar disponible. Ojo: eso no significa que tenga elixir para jugarla ya.`,`Nice! They played 4 cards after ${name}: it’s available again. Careful: that doesn’t mean they have the elixir to play it right now.`)
+                         : L(`¡Bien! Jugó ${k} ${k===1?"carta":"cartas"} después de ${name}: le ${left===1?"falta 1":`faltan ${left}`}.`,`Nice! They played ${k} ${k===1?"card":"cards"} after ${name}: ${left} to go.`);
+  else if(yH.mineAfter && 4-k-yH.mineAfter>=0 && v===4-k-yH.mineAfter) msg=L(`Contaste también tus cartas. Solo cuentan las del rival: jugó ${k} después de ${name}, así que le ${left===1?"falta 1":`faltan ${left}`}.`,`You counted your own cards too. Only your opponent’s count: they played ${k} after ${name}, so ${left} to go.`);
+  else if(3-k>=0 && v===3-k) msg=L(`Para recuperar una carta hacen falta 4 jugadas, no 3. Jugó ${k} después de ${name}: le ${left===1?"falta 1":`faltan ${left}`}.`,`Getting a card back takes 4 plays, not 3. They played ${k} after ${name}: ${left} to go.`);
+  else msg=L(`Jugó ${k} ${k===1?"carta":"cartas"} después de ${name}: le ${left===0?"faltan 0, ya está disponible":left===1?"falta 1":`faltan ${left}`}.`,`They played ${k} ${k===1?"card":"cards"} after ${name}: ${left===0?"0 to go, it’s available":`${left} to go`}.`);
+  fb.textContent=msg;
+  $("yNext").classList.remove("hidden"); $("yNext").focus({preventScroll:true});
+}
 function yFinish(){
   clearInterval(yTimer); clearTimeout(yReveal);
   show("cycleResults");
