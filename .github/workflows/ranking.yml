@@ -1,12 +1,12 @@
-name: Ranking Perú
+name: Ingesta (partidas y ranking)
 
 on:
   schedule:
     - cron: "0 */4 * * *"   # cada 4 horas (hora UTC)
-  workflow_dispatch:         # botón para lanzarlo a mano
+  workflow_dispatch:
 
 jobs:
-  ranking:
+  ingesta:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -14,8 +14,14 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-      - run: pip install requests "psycopg[binary]"
-      - run: python src/ingest_ranking.py
+      - run: pip install requests "psycopg[binary]" python-dotenv
+      - name: Partidas
+        run: python src/ingest.py
+        env:
+          CR_TOKEN: ${{ secrets.CR_TOKEN }}
+          DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
+      - name: Ranking Perú y global
+        run: python src/ingest_ranking.py
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}

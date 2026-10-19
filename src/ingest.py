@@ -69,27 +69,14 @@ def save(conn, b):
 
 PERU = 57000184
 
-def save_ranking(conn):
-    url = f"https://proxy.royaleapi.dev/v1/locations/{PERU}/pathoflegend/players"
-    r = requests.get(url, headers={"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}, timeout=30)
-    r.raise_for_status()
-    data = r.json()
-    conn.execute(
-        "INSERT INTO raw_ranking_snapshots (location_id, payload) VALUES (%s, %s)",
-        (PERU, Jsonb(data)),  
-    )
-    return len(data.get("items", []))    
-
-
 def main():
     battles = fetch_battlelog(PLAYER_TAG)
     new = 0
-    with psycopg.connect("dbname=deck_ai") as conn:
+    with psycopg.connect(os.getenv("DATABASE_URL", "dbname=deck_ai")) as conn:
         for b in battles:
             if save(conn, b):
-                new += 1
-        ranking = save_ranking(conn)    
-    print(f"Recibidas: {len(battles)} | Nuevas guardadas: {new} | Ranking Perú: {ranking} jugadores")
+                new += 1  
+    print(f"Recibidas: {len(battles)} | Nuevas guardadas: {new}")
 
 
 if __name__ == "__main__":
