@@ -1,0 +1,21 @@
+name: Ranking Perú
+
+on:
+  schedule:
+    - cron: "0 */4 * * *"   # cada 4 horas (hora UTC)
+  workflow_dispatch:         # botón para lanzarlo a mano
+
+jobs:
+  ranking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests "psycopg[binary]"
+      - run: python src/ingest_ranking.py
+        env:
+          CR_TOKEN: ${{ secrets.CR_TOKEN }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
