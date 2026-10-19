@@ -1,4 +1,4 @@
-"""Guarda una foto del ranking de Senda de Leyendas de Perú en Supabase.
+"""Guarda una foto del ranking de Senda de Leyendas (Perú y global) en Supabase.
 
 Lo ejecuta GitHub Actions cada 4 horas. Necesita dos variables de entorno:
   CR_TOKEN         token de la API de Clash Royale (vía proxy de RoyaleAPI)
@@ -15,20 +15,29 @@ try:  # en local se leen del .env; en GitHub vienen de los secrets
 except ImportError:
     pass
 
-PERU = 57000184
-URL = f"https://proxy.royaleapi.dev/v1/locations/{PERU}/pathoflegend/players"
+BASE = "https://proxy.royaleapi.dev/v1/locations"
+# location_id en la tabla: el id de la API para países; 0 para el ranking global
+RANKINGS = [
+    (57000184, "Perú", f"{BASE}/57000184/pathoflegend/players"),
+    (0, "Global", f"{BASE}/global/pathoflegend/players"),
+]
 
 
 def main():
-    r = requests.get(URL, headers={"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}, timeout=30)
-    r.raise_for_status()
-    data = r.json()
+    headers = {"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}
+    fotos = []
+    for loc_id, nombre, url in RANKINGS:
+        r = requests.get(url, headers=headers, timeout=30)
+        r.raise_for_status()
+        fotos.append((loc_id, nombre, r.json()))
+
     with psycopg.connect(os.environ["SUPABASE_DB_URL"]) as conn:
-        conn.execute(
-            "INSERT INTO raw_ranking_snapshots (location_id, payload) VALUES (%s, %s)",
-            (PERU, Jsonb(data)),
-        )
-    print(f"Foto del ranking guardada en Supabase: {len(data.get('items', []))} jugadores")
+        for loc_id, nombre, data in fotos:
+            conn.execute(
+                "INSERT INTO raw_ranking_snapshots (location_id, payload) VALUES (%s, %s)",
+                (loc_id, Jsonb(data)),
+            )
+            print(f"Foto del ranking {nombre} guardada: {len(data.get('items', []))} jugadores")
 
 
 if __name__ == "__main__":
