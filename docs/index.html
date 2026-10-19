@@ -279,6 +279,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .decide .mtxt{display:flex;flex-direction:column}
 .decide .mtitle{color:var(--muted)}
 .next-skill{margin-bottom:.6rem}
+.hunt-ctx{font-size:.84rem;line-height:1.3;color:var(--muted);margin:.15rem 0 .35rem;text-align:left}
 .pv.cyc img{height:44px}
 .pv.cyc .qs{display:grid;place-items:center;width:30px;height:38px;border-radius:.4rem;background:var(--glass);border:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--muted)}
 .cyc-card{padding:1rem .8rem}
@@ -620,6 +621,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <div class="hunt-info">
             <span class="cyc-label" data-en="Target card">Carta objetivo</span>
             <span class="hunt-name" id="hName"></span>
+            <span class="hunt-ctx" id="hCtx"></span>
             <div class="pips" id="hPips" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
             <span class="pips-lbl" id="hPipsLbl"></span>
           </div>
@@ -979,14 +981,14 @@ const DESC=L({
         intermedio:`Ahora el reloj también cuenta: <b>⏱ 3 segundos = +1 gota de elixir ${IX}</b>. Si aciertas, también suben las cartas.`,
         medio:`Como en el juego: <b>⏱ 2,8 segundos = +1 gota ${IX}</b>, y las 3 últimas rondas son en doble elixir. Solo verás la última carta que jugó.`},
   cyc:{1:"<b>Caza la carta.</b> Sigue una carta objetivo: toca cada carta que juegue el rival después de ella. Tus cartas no cuentan. Sin reloj.",2:"<b>¿Cuántas faltan?</b> Igual, pero sin contador: cuenta de cabeza cuántas cartas le faltan para recuperarla.",3:"<b>A la vista.</b> ¿Tiene esa carta disponible? Sus últimas jugadas quedan a la vista, con cuándo vuelve cada una.",4:"<b>De memoria.</b> Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",5:"<b>Partida real.</b> Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
-  rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
+  rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos; en la etapa 1, todo el tiempo que necesites.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
 },{
   time:{8:"⏱ 8 s per card. Learn the costs with no pressure.",5:"⏱ 5 s per card. The time you get to decide in a real match.",3:"⏱ 3 s per card. Pro reflexes: you see the card and already know its cost."},
   diff:{facil:`Your opponent drops 3 or 4 cards in a row, no clock. Get it right and the next round adds one more card.`,
         intermedio:`Now the clock counts too: <b>⏱ 3 seconds = +1 elixir drop ${IX}</b>. Get it right and the cards go up too.`,
         medio:`Just like the game: <b>⏱ 2.8 seconds = +1 drop ${IX}</b>, and the last 3 rounds are double elixir. You only see their latest card.`},
   cyc:{1:"<b>Hunt the card.</b> Follow one target card: tap every card your opponent plays after it. Your cards don’t count. No timer.",2:"<b>How many left?</b> Same, but no counter: count in your head how many cards they need to get it back.",3:"<b>In sight.</b> Is that card available? Their last plays stay in sight, with when each one returns.",4:"<b>From memory.</b> Each play shows for a moment and flips over: you have to remember them.",5:"<b>Real match.</b> Just like the game: faster and no help. Only your memory."},
-  rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
+  rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds; in stage 1, all the time you need.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
 });
 const LEVEL_NAME=L({"Fácil":"Primeros pasos","Intermedio":"Con reloj","Medio":"Partida real","Difícil":"Doble elixir"},{"Fácil":"First steps","Intermedio":"On the clock","Medio":"Real match","Difícil":"Double elixir"});
 function updateDescs(){
@@ -1377,18 +1379,38 @@ function genHunt(){
   let seenT=false; seq.forEach(x=>{ if(x.tgt) seenT=true; else if(x.who==="me") x.after=seenT; });
   return {target:rival[tIdx], seq, k:after, left:4-after, mineAfter:seq.filter(x=>x.who==="me"&&x.after).length};
 }
+// el papel de la carta objetivo: lo que el rival no podrá hacer hasta recuperarla
+const WINCON=new Set(["Hog Rider","Royal Giant","Giant","Golem","Balloon","Miner","Graveyard","Goblin Barrel","X-Bow","Mortar","Lava Hound","Ram Rider","Battle Ram","Royal Hogs","Wall Breakers","Elixir Golem","Goblin Drill","Three Musketeers","Electro Giant","Goblin Giant","Skeleton Barrel","Giant Skeleton","Rune Giant","Suspicious Bush","Goblinstein","Goblin Machine","Mighty Miner"]);
+function cardRole(c){
+  const en=(c[4]||"").replace(/ \((Evo|Hero)\)$/,""), id=c[6]||0;
+  if(WINCON.has(en)) return "threat";
+  if(String(id).startsWith("27")) return "building";
+  if(String(id).startsWith("28")) return "spell";
+  return "troop";
+}
+function huntContext(c){
+  const n=baseName(c[0]);
+  return {
+    threat:  L(`Te atacó con ${n}. ¿Cuándo puede volver a atacarte?`,`They attacked you with ${n}. When can they attack again?`),
+    building:L(`Defendió tu ataque con ${n}. Mientras no la recupere, tienes una ventana.`,`They defended your push with ${n}. Until they get it back, you have a window.`),
+    spell:   L(`Gastó ${n} en tus tropas. Mientras no la recupere, tus tropas están a salvo de ella.`,`They spent ${n} on your troops. Until they get it back, your troops are safe from it.`),
+    troop:   L(`Frenó tu ataque con ${n}. ¿Cuándo vuelve a tenerla para defender?`,`They stopped your push with ${n}. When will they have it again to defend?`)
+  }[cardRole(c)];
+}
 function hPips(n){ [...$("hPips").children].forEach((p,i)=>p.classList.toggle("on",i<n)); }
 function hTip(t,warn=false){ const el=$("hTip"); el.textContent=t; el.classList.toggle("warn",warn); }
 function yHuntRound(){
   yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
-  yH=genHunt(); hCount=new Set(); const rid=++yRid;
+  yH=genHunt();
+  for(let i=0;i<30 && cardRole(yH.target)==="troop" && Math.random()<.7;i++) yH=genHunt();
+  hCount=new Set(); const rid=++yRid;
   $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
   $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
   const ex=yRes.filter(r=>r.ok).length; $("yPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
   $("yCard").className="card cyc-card";
   $("yBoard").classList.add("hidden"); $("yHunt").classList.remove("hidden");
   const t=yH.target;
-  $("hTarget").innerHTML=cardEl(t); $("hName").textContent=baseName(t[0]);
+  $("hTarget").innerHTML=cardEl(t); $("hName").textContent=baseName(t[0]); $("hCtx").textContent=huntContext(t);
   const help=yStage===1;
   $("hPips").classList.toggle("hidden",!help); $("hPipsLbl").classList.toggle("hidden",!help);
   hPips(0); $("hPipsLbl").textContent=L("0 de 4 cartas","0 of 4 cards");
@@ -1588,7 +1610,7 @@ function cPlay(){
   $("cStreak").textContent=`${L("Racha","Streak")} ${cStreak}`;
   const ex=cRes.filter(r=>r.ok).length;
   $("cPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
-  $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count")));
+  $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):(cUntimed()?L("Primeros pasos · sin prisa, tómate tu tiempo","First steps · no rush, take your time"):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count"))));
   $("cCard").className="card";
   const feed=$("feed"); feed.innerHTML=""; feed.classList.toggle("solo",cCur.solo); feed.classList.remove("compact");
   feed.classList.toggle("noname",!$("showNames").checked);
@@ -1609,14 +1631,16 @@ function cPlay(){
   push();
 }
 
+// Primeros pasos con ayuda: se aprende a calcular sin prisa; el tiempo solo se mide
+const cUntimed=()=>cLevel===LEVELS.facil && ANSWER_TIME>10;
 function cAsk(){
   if(cCur.solo) $("feed").innerHTML=""; else $("feed").classList.add("compact");
-  $("cAsk").classList.remove("hidden"); $("cBar").classList.remove("hidden"); $("nums").classList.remove("hidden");
+  $("cAsk").classList.remove("hidden"); $("cBar").classList.toggle("hidden",cUntimed()); $("nums").classList.remove("hidden");
   // que los botones queden a la vista sin tener que bajar
   requestAnimationFrame(()=>{ const r=$("nums").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("nums").scrollIntoView({block:"end",behavior:"smooth"}); });
   document.querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
   cLocked=false; cT0=performance.now();
-  clearInterval(cTimer); cTimer=setInterval(cTick,50); cTick();
+  clearInterval(cTimer); if(!cUntimed()){ cTimer=setInterval(cTick,50); cTick(); }
 }
 function cTick(){
   const left=Math.max(0,1-(performance.now()-cT0)/(ANSWER_TIME*1000));
@@ -1634,7 +1658,7 @@ document.addEventListener("keydown",e=>{
 function cAnswer(v){
   if(cLocked) return; cLocked=true; clearInterval(cTimer);
   $("cReplay").classList.add("hidden");
-  const t=Math.min(ANSWER_TIME,(performance.now()-cT0)/1000);
+  const tReal=(performance.now()-cT0)/1000, t=Math.min(ANSWER_TIME,tReal);
   const a=cScn.answer, ok=v===a, dev=v===null?a:Math.abs(v-a);
   cRes.push({ok,dev,t,near:v!==null&&Math.abs(v-a)===1});
   ok?cStreak++:cStreak=0; ok?sfx.ok():sfx.err();
@@ -1647,6 +1671,7 @@ function cAnswer(v){
   $("cCard").classList.add(ok?"ok":"bad");
   const fb=$("cFeedback"); fb.classList.add(ok?"ok":"bad");
   fb.textContent = ok?L(`Exacto: ${a}${cPlays>prevPlays?` · ¡Sube a ${cPlays} cartas!`:""}`,`Exact: ${a}${cPlays>prevPlays?` · Up to ${cPlays} cards!`:""}`):(v===null?L(`Se acabó el tiempo: tenía ${a}`,`Time’s up: they had ${a}`):L(`Tenía ${a}, dijiste ${v}`,`They had ${a}, you said ${v}`));
+  if(cUntimed()) fb.textContent+=L(` · Respondiste en ${f1(tReal)} s`,` · You answered in ${f1(tReal)} s`);
   // desglose paso a paso
   const bd=$("breakdown"); bd.innerHTML="";
   const row=(l,r,cls="")=>{const li=document.createElement("li");li.innerHTML=`<span class="${cls}">${l}</span><span>${r}</span>`;bd.appendChild(li);};
@@ -1706,9 +1731,9 @@ fetch("cards.json").then(r=>{if(!r.ok) throw new Error(r.status); return r.json(
     data.filter(c=>Number.isInteger(c.coste)).forEach(c=>{
       // [nombre visible, coste, rareza, imagen, clave estable (inglés), nombre en español]
       const nm=L(c.nombre,c.nombre_en||c.nombre), en=c.nombre_en||c.nombre;
-      CARDS.push([nm,c.coste,c.rareza,c.icono,en,c.nombre]);
-      if(c.icono_evo)   CARDS.push([`${nm} (Evo)`,c.coste,c.rareza,c.icono_evo,`${en} (Evo)`,`${c.nombre} (Evo)`]);
-      if(c.icono_heroe) CARDS.push([`${nm} ${L("(Héroe)","(Hero)")}`,c.coste,c.rareza,c.icono_heroe,`${en} (Hero)`,`${c.nombre} (Héroe)`]);
+      CARDS.push([nm,c.coste,c.rareza,c.icono,en,c.nombre,c.id]);
+      if(c.icono_evo)   CARDS.push([`${nm} (Evo)`,c.coste,c.rareza,c.icono_evo,`${en} (Evo)`,`${c.nombre} (Evo)`,c.id]);
+      if(c.icono_heroe) CARDS.push([`${nm} ${L("(Héroe)","(Hero)")}`,c.coste,c.rareza,c.icono_heroe,`${en} (Hero)`,`${c.nombre} (Héroe)`,c.id]);
     });
     CARDS.forEach(c=>{const i=new Image(); i.src=c[3]||"";}); // precarga
     migrateStats();
