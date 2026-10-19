@@ -266,6 +266,19 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .mode.wide .pv{width:42%;flex:none;margin:0}
 .mode.wide .mtxt{display:flex;flex-direction:column}
 .pv.cyc{gap:.2rem}
+/* rango por habilidad: cada modo progresa por su cuenta */
+.rank{display:flex;align-items:center;gap:.3rem;margin-top:auto;padding-top:.5rem;font-size:.74rem;font-weight:800;color:var(--muted)}
+.rank i{width:16px;height:5px;border-radius:3px;background:var(--line)}
+.rank i.on{background:var(--gold)}
+.rank b{margin-left:.15rem;color:var(--ink);font-weight:800;white-space:nowrap}
+.rank.new b{color:var(--muted);font-weight:600}
+.mode.wide .rank{margin-top:.4rem}
+/* Decide: donde confluyen las tres habilidades */
+.decide{display:flex;align-items:center;gap:.75rem;margin:-.4rem 0 1.25rem;padding:.55rem .75rem;border:2px dashed var(--line);border-radius:1rem;opacity:.85}
+.decide .conv{width:96px;flex:none}
+.decide .mtxt{display:flex;flex-direction:column}
+.decide .mtitle{color:var(--muted)}
+.next-skill{margin-bottom:.6rem}
 .pv.cyc img{height:44px}
 .pv.cyc .qs{display:grid;place-items:center;width:30px;height:38px;border-radius:.4rem;background:var(--glass);border:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--muted)}
 .cyc-card{padding:1rem .8rem}
@@ -382,6 +395,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="pv" id="pvCost"></span>
           <span class="mtitle" data-en="Card Mastery">Maestría de cartas</span>
           <span class="mdesc" data-en="Learn how much elixir &lt;i class=&quot;ix&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; every card costs until you master them all.">Aprende cuánto elixir <i class="ix" aria-hidden="true"></i> cuesta cada carta hasta dominarlas todas.</span>
+          <span class="rank" id="rkCost" aria-live="polite"></span>
         </span>
       </label>
       <label class="mode">
@@ -390,6 +404,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="pv" id="pvCount"></span>
           <span class="mtitle" data-en="Track your opponent">Controla a tu rival</span>
           <span class="mdesc" data-en="Learn to keep count of your opponent’s elixir.">Aprende a llevar la cuenta del elixir de tu rival.</span>
+          <span class="rank" id="rkCount" aria-live="polite"></span>
         </span>
       </label>
       <label class="mode wide">
@@ -399,9 +414,25 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="mtxt">
             <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
             <span class="mdesc" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</span>
+            <span class="rank" id="rkCycle" aria-live="polite"></span>
           </span>
         </span>
       </label>
+    </div>
+
+    <div class="decide" aria-disabled="true">
+      <svg class="conv" viewBox="0 0 120 64" aria-hidden="true">
+        <path d="M14 12 C52 12 60 32 92 32 M14 32 L92 32 M14 52 C52 52 60 32 92 32" fill="none" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--line)"/>
+        <circle cx="12" cy="12" r="7" style="fill:var(--gold)"/>
+        <circle cx="12" cy="32" r="7" style="fill:var(--elixir)"/>
+        <circle cx="12" cy="52" r="7" style="fill:#3FA9F5"/>
+        <circle cx="100" cy="32" r="13" style="fill:var(--track);stroke:var(--line)" stroke-width="2"/>
+        <path d="M95 31 v-3 a5 5 0 0 1 10 0 v3 M93 31 h14 v9 h-14 z" fill="none" stroke-width="2" stroke-linejoin="round" style="stroke:var(--muted)"/>
+      </svg>
+      <span class="mtxt">
+        <span class="mtitle" data-en="Decide">Decide</span>
+        <span class="mdesc" data-en="All three at once: attack or wait? · Coming soon">Las tres a la vez: ¿atacas o esperas? · Próximamente</span>
+      </span>
     </div>
 
     <div id="costOpts">
@@ -502,6 +533,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <p style="color:var(--ink);font-weight:800;margin-bottom:.5rem" data-en="Misses this round">Fallos de esta ronda</p>
       <ul class="misses" id="misses"></ul>
     </div>
+    <button class="btn ghost next-skill hidden" id="nsCost"></button>
     <button class="btn" id="again" data-en="Play again">Jugar otra vez</button>
     <button class="btn ghost" id="retryMisses" data-en="Retry only the misses">Repetir solo las falladas</button>
     <button class="btn ghost" id="back" data-en="Change settings">Cambiar ajustes</button>
@@ -559,6 +591,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     </div>
     <div class="banner hidden" id="cRecBanner"></div>
     <div class="chart" id="countChart"></div>
+    <button class="btn ghost next-skill hidden" id="nsCount"></button>
     <button class="btn" id="cAgain" data-en="Play again">Jugar otra vez</button>
     <button class="btn ghost" id="cBack" data-en="Change settings">Cambiar ajustes</button>
     <div class="hist">
@@ -625,6 +658,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     <div class="grade-sub" id="ySub"></div>
     <div class="banner hidden" id="yRecBanner"></div>
     <div class="chart" id="cycleChart"></div>
+    <button class="btn ghost next-skill hidden" id="nsCycle"></button>
     <button class="btn" id="yAgain" data-en="Play again">Jugar otra vez</button>
     <button class="btn ghost" id="yBack" data-en="Change settings">Cambiar ajustes</button>
   </section>
@@ -754,7 +788,7 @@ function hardCards(h){
 }
 
 function refreshSetup(){
-  updateDescs(); if(CARDS.length){ renderPreviews(); renderBadges(); }
+  updateDescs(); renderRanks(); if(CARDS.length){ renderPreviews(); renderBadges(); }
   const mode=document.querySelector('input[name="mode"]:checked').value;
   const isCount=mode==="count", isCycle=mode==="cycle";
   renderResume(mode!=="cost");
@@ -915,6 +949,7 @@ function finish(){
   if(msgs.length){ setTimeout(sfx.fanfare,200); const el=$("recBanner"); el.className="banner rec"; el.textContent=msgs.join(" · "); }
   renderHistory(h);
   progressChart($("costChart"), h.attempts.map(a=>({...a,nota:attHits(a)})), a=>a.t, COST_GROUPS, timeLimit, Math.max(20,...h.attempts.map(attHits)));
+  renderNextSkill("cost","nsCost");
 }
 
 function renderHistory(h){
@@ -1115,6 +1150,57 @@ function drawBadges(list,boxId,infoId){
 }
 function renderBadges(){ drawBadges(BADGES,"badges","badgeInfo"); drawBadges(CBADGES,"cBadges","cBadgeInfo"); }
 
+
+
+// ================= HABILIDADES =================
+// cada modo es una habilidad con su propio rango; ninguna está "por encima" de otra
+const RANKS=L(["Aprendiz","Experto","Maestro","Campeón"],["Apprentice","Expert","Master","Champion"]);
+const SKILL_NAME=L({cost:"Maestría de cartas",count:"Controla a tu rival",cycle:"Lee su ciclo"},{cost:"Card Mastery",count:"Track your opponent",cycle:"Read their cycle"});
+const DOM=700; // trofeos para dar una etapa por dominada
+function skillOf(mode){
+  if(mode==="cost"){
+    const m=loadM(), played=load().attempts.length>0;
+    const tier=m[3]&&m[3].done?3:(m[5]&&m[5].done?2:(m[8]&&m[8].done?1:0));
+    return {played,tier,max:3};
+  }
+  if(mode==="count"){
+    const a=loadC().attempts, best=(f)=>Math.max(0,...a.filter(f).map(x=>troph(x.nota)));
+    const ord={facil:1,intermedio:2,medio:3,dificil:3};
+    let tier=0;
+    for(const lv of ["facil","intermedio","medio"]) if(best(x=>x.level===lv)>=DOM) tier=ord[lv];
+    if(tier===3 && best(x=>(x.level==="medio"||x.level==="dificil")&&x.rt<=10)>=DOM) tier=4;
+    return {played:a.length>0,tier,max:4};
+  }
+  const a=loadY().attempts, best=(lv)=>Math.max(0,...a.filter(x=>x.level===lv).map(x=>troph(x.nota)));
+  const map={2:1,3:2,4:3,5:4}; let tier=0;
+  for(const lv of [2,3,4,5]) if(best(lv)>=DOM) tier=map[lv];
+  return {played:a.length>0,tier,max:4};
+}
+const skillPct=s=>s.tier/s.max;
+function renderRanks(){
+  [["cost","rkCost"],["count","rkCount"],["cycle","rkCycle"]].forEach(([m,id])=>{
+    const s=skillOf(m), r=Math.round(skillPct(s)*3), el=$(id); if(!el) return;
+    el.classList.toggle("new",!s.played);
+    el.innerHTML=[0,1,2].map(i=>`<i class="${s.played&&i<r?"on":""}"></i>`).join("")+`<b>${s.played?RANKS[r]:L("Sin jugar","Not played")}</b>`;
+  });
+}
+function renderNextSkill(cur,id){
+  const el=$(id); el.classList.add("hidden");
+  const me=skillOf(cur);
+  const others=["cost","count","cycle"].filter(m=>m!==cur).map(m=>({m,s:skillOf(m)}));
+  const fresh=others.find(o=>!o.s.played);
+  let pick=null, txt="";
+  if(fresh){ pick=fresh.m; txt=L(`Otra habilidad de partida: ${SKILL_NAME[pick]} →`,`Another match skill: ${SKILL_NAME[pick]} →`); }
+  else{ const low=others.sort((a,b)=>skillPct(a.s)-skillPct(b.s))[0];
+    if(skillPct(low.s)<skillPct(me)){ pick=low.m; txt=L(`${SKILL_NAME[pick]} va por detrás: pruébalo →`,`${SKILL_NAME[pick]} is lagging behind: try it →`); } }
+  if(!pick) return;
+  el.textContent=txt; el.dataset.mode=pick; el.classList.remove("hidden");
+}
+["nsCost","nsCount","nsCycle"].forEach(id=>$(id).addEventListener("click",e=>{
+  const m=e.currentTarget.dataset.mode;
+  document.querySelector(`input[name="mode"][value="${m}"]`).checked=true;
+  refreshSetup(); show("setup"); window.scrollTo({top:0,behavior:"smooth"});
+}));
 
 // ================= MODO CICLO =================
 // regla: 8 cartas, 4 en la mano; el rival puede jugar cualquiera de su mano, esa carta va al final
@@ -1381,6 +1467,7 @@ function yFinish(){
   h.attempts.push({date:new Date().toISOString(),level:yStage,n,nota,ex});
   h.attempts=h.attempts.slice(-100); saveY(h);
   progressChart($("cycleChart"), h.attempts.map(a=>({...a,nota:troph(a.nota)})), a=>a.level, Y_GROUPS, yStage, 1000);
+  renderNextSkill("cycle","nsCycle");
 }
 $("yQuit").addEventListener("click",()=>{ clearInterval(yTimer); clearTimeout(yReveal); yLocked=true; if(yRes.length) yFinish(); else { refreshSetup(); show("setup"); } });
 $("yAgain").addEventListener("click",()=>{ sfx.swords(); startCycle(); });
@@ -1602,6 +1689,7 @@ function cFinish(){
   const cNew=CBADGES.filter((b,i)=>b.on()&&!cBefore[i]);
   if(cNew.length){ setTimeout(sfx.fanfare,200); const el=$("cRecBanner"); el.className="banner rec"; el.textContent=`${L("¡Nueva insignia!","New badge!")} ${cNew.map(b=>b.i+" "+bTitle(b)).join(" · ")}`; }
   progressChart($("countChart"), h.attempts.map(a=>({...a,nota:troph(a.nota)})), a=>a.level, COUNT_GROUPS, cLevel.label, 1000);
+  renderNextSkill("count","nsCount");
   $("cAttemptBody").innerHTML=h.attempts.slice(-8).reverse().map(a=>{
     const d=new Date(a.date);
     const day=d.toLocaleDateString(LOCALE,{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"});
