@@ -2,7 +2,7 @@ name: Ingesta (partidas y ranking)
 
 on:
   schedule:
-    - cron: "0 */4 * * *"   # cada 4 horas (hora UTC)
+    - cron: "23 * * * *"   # cada hora, en el minuto 23 (evita la congestión de las horas en punto)
   workflow_dispatch:
 
 jobs:
@@ -25,3 +25,5 @@ jobs:
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+          # al lanzarlo a mano, la foto se guarda siempre
+          FORZAR_FOTO: ${{ github.event_name == 'workflow_dispatch' }}
