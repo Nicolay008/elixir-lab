@@ -1,7 +1,9 @@
-"""Guarda una vez al día el mazo actual del top de Perú y del top global en Supabase.
+"""Guarda una vez al día el mazo real del top de Perú y del top global en Supabase.
 
-Toma los tags de la última foto del ranking (raw_ranking_snapshots), pide el perfil
-de cada jugador y guarda solo su mazo actual (currentDeck), su nombre y su puesto.
+Toma los tags de la última foto del ranking (raw_ranking_snapshots), pide el historial
+de cada jugador y guarda el mazo de su última partida de ranked (Senda de Leyendas).
+No se usa el mazo del perfil (currentDeck): los jugadores top suelen dejar seleccionado
+otro mazo para no mostrar el que juegan.
 
 Variables de entorno:
   CR_TOKEN         token de la API de Clash Royale (vía proxy de RoyaleAPI)
@@ -10,6 +12,7 @@ Variables de entorno:
 """
 import os
 import time
+from datetime import datetime, timezone
 import requests
 import psycopg
 from psycopg.types.json import Jsonb
@@ -50,15 +53,20 @@ def main():
             ).fetchall()
             guardados = 0
             for puesto, tag, nom, rating in jugadores:
-                r = requests.get(f"{API}/players/{tag.replace('#', '%23')}", headers=headers, timeout=30)
+                r = requests.get(f"{API}/players/{tag.replace('#', '%23')}/battlelog", headers=headers, timeout=30)
                 if r.status_code != 200:
                     print(f"  {tag}: HTTP {r.status_code}, se omite")
                     continue
-                deck = r.json().get("currentDeck", [])
+                # la primera partida de ranked del historial es la más reciente
+                ranked = next((b for b in r.json() if b.get("type") == "pathOfLegend"), None)
+                if ranked is None:
+                    continue   # sin ranked reciente: mejor no guardar un mazo dudoso
+                deck = ranked["team"][0]["cards"]
+                jugada = datetime.strptime(ranked["battleTime"], "%Y%m%dT%H%M%S.%fZ").replace(tzinfo=timezone.utc)
                 conn.execute(
-                    """INSERT INTO top_decks (location_id, puesto, tag, nombre, rating, deck)
-                       VALUES (%s, %s, %s, %s, %s, %s)""",
-                    (loc_id, puesto, tag, nom, rating, Jsonb(deck)),
+                    """INSERT INTO top_decks (location_id, puesto, tag, nombre, rating, deck, fuente, partida_at)
+                       VALUES (%s, %s, %s, %s, %s, %s, 'ranked', %s)""",
+                    (loc_id, puesto, tag, nom, rating, Jsonb(deck), jugada),
                 )
                 guardados += 1
                 time.sleep(0.1)   # sin prisas con la API
