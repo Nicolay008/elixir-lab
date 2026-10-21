@@ -130,16 +130,6 @@
   "icono_heroe": null
  },
  {
-  "id": 28000011,
-  "nombre": "El Tronco",
-  "nombre_en": "The Log",
-  "coste": 2,
-  "rareza": "Legendaria",
-  "icono": "https://api-assets.clashroyale.com/cards/300/_iDwuDLexHPFZ_x4_a0eP-rxCS6vwWgTs6DLauwwoaY.png",
-  "icono_evo": null,
-  "icono_heroe": null
- },
- {
   "id": 28000002,
   "nombre": "Furia",
   "nombre_en": "Rage",
@@ -187,6 +177,16 @@
   "rareza": "Épica",
   "icono": "https://api-assets.clashroyale.com/cards/300/_xPphEfC8eEwFNrfU3cMQG9-f5JaLQ31ARCA7l3XtW4.png",
   "icono_evo": "https://api-assets.clashroyale.com/cardevolutions/300/_xPphEfC8eEwFNrfU3cMQG9-f5JaLQ31ARCA7l3XtW4.png",
+  "icono_heroe": null
+ },
+ {
+  "id": 28000011,
+  "nombre": "Tronco",
+  "nombre_en": "The Log",
+  "coste": 2,
+  "rareza": "Legendaria",
+  "icono": "https://api-assets.clashroyale.com/cards/300/_iDwuDLexHPFZ_x4_a0eP-rxCS6vwWgTs6DLauwwoaY.png",
+  "icono_evo": null,
   "icono_heroe": null
  },
  {
@@ -611,11 +611,21 @@
  },
  {
   "id": 26000101,
-  "nombre": "Gigante Rúnico",
+  "nombre": "Gigante Rúnica",
   "nombre_en": "Rune Giant",
   "coste": 4,
   "rareza": "Épica",
   "icono": "https://api-assets.clashroyale.com/cards/300/UogMnGHQXT-TOVXRxslKdAKXUPhqUvrD_hV9x8lbzdE.png",
+  "icono_evo": null,
+  "icono_heroe": null
+ },
+ {
+  "id": 26000065,
+  "nombre": "Gran Minero",
+  "nombre_en": "Mighty Miner",
+  "coste": 4,
+  "rareza": "Campeón",
+  "icono": "https://api-assets.clashroyale.com/cards/300/Cd9R56yraxTvJiD8xJ2qT2OdsHyh94FqOAarXpbyelo.png",
   "icono_evo": null,
   "icono_heroe": null
  },
@@ -668,16 +678,6 @@
   "icono": "https://api-assets.clashroyale.com/cards/300/RsFaHgB3w6vXsTjXdPr3x8l_GbV9TbOUCvIx07prbrQ.png",
   "icono_evo": null,
   "icono_heroe": "https://api-assets.clashroyale.com/cardheroes/300/RsFaHgB3w6vXsTjXdPr3x8l_GbV9TbOUCvIx07prbrQ.png"
- },
- {
-  "id": 26000065,
-  "nombre": "Minero Poderoso",
-  "nombre_en": "Mighty Miner",
-  "coste": 4,
-  "rareza": "Campeón",
-  "icono": "https://api-assets.clashroyale.com/cards/300/Cd9R56yraxTvJiD8xJ2qT2OdsHyh94FqOAarXpbyelo.png",
-  "icono_evo": null,
-  "icono_heroe": null
  },
  {
   "id": 26000018,
@@ -820,16 +820,6 @@
   "icono_heroe": null
  },
  {
-  "id": 26000034,
-  "nombre": "Bolos",
-  "nombre_en": "Bowler",
-  "coste": 5,
-  "rareza": "Épica",
-  "icono": "https://api-assets.clashroyale.com/cards/300/SU4qFXmbQXWjvASxVI6z9IJuTYolx4A0MKK90sTIE88.png",
-  "icono_evo": null,
-  "icono_heroe": "https://api-assets.clashroyale.com/cardheroes/300/SU4qFXmbQXWjvASxVI6z9IJuTYolx4A0MKK90sTIE88.png"
- },
- {
   "id": 26000007,
   "nombre": "Bruja",
   "nombre_en": "Witch",
@@ -918,6 +908,16 @@
   "icono": "https://api-assets.clashroyale.com/cards/300/Wyjq5l0IXHTkX9Rmpap6HaH08MvjbxFp1xBO9a47YSI.png",
   "icono_evo": "https://api-assets.clashroyale.com/cardevolutions/300/Wyjq5l0IXHTkX9Rmpap6HaH08MvjbxFp1xBO9a47YSI.png",
   "icono_heroe": null
+ },
+ {
+  "id": 26000034,
+  "nombre": "Lanza rocas",
+  "nombre_en": "Bowler",
+  "coste": 5,
+  "rareza": "Épica",
+  "icono": "https://api-assets.clashroyale.com/cards/300/SU4qFXmbQXWjvASxVI6z9IJuTYolx4A0MKK90sTIE88.png",
+  "icono_evo": null,
+  "icono_heroe": "https://api-assets.clashroyale.com/cardheroes/300/SU4qFXmbQXWjvASxVI6z9IJuTYolx4A0MKK90sTIE88.png"
  },
  {
   "id": 26000017,
@@ -1121,7 +1121,7 @@
  },
  {
   "id": 26000024,
-  "nombre": "Gigante Real",
+  "nombre": "Gigante Noble",
   "nombre_en": "Royal Giant",
   "coste": 6,
   "rareza": "Común",
