@@ -72,9 +72,9 @@ export function modelo(data) {
   return { ps, winrate, elixir, mediaElixir, limite, franjas, estado: estado(ps), horas: porHora(validas) };
 }
 
-// Mensaje principal: cómo vienes y cuánto hace que jugaste
+// Mensaje principal: un titular corto y un consejo
 export function estado(ps, ahora = new Date()) {
-  if (ps.length < 6) return { tono: "neutro", texto: "Aún hay pocas partidas para leer tu racha." };
+  if (ps.length < 6) return { tono: "neutro", titulo: "Pocas partidas", texto: "Aún hay pocas partidas para leer tu racha." };
   const ult = ps.slice(-VENTANA);
   const wrUlt = (100 * ult.filter((p) => p.victoria).length) / ult.length;
   const wrTotal = (100 * ps.filter((p) => p.victoria).length) / ps.length;
@@ -83,17 +83,18 @@ export function estado(ps, ahora = new Date()) {
   for (let k = ps.length - 1; k >= 0 && !ps[k].victoria; k--) derrotasFinal++;
   const enSesion = min < SESION_MIN, descansado = min > 120;
   const ganadas = ult.filter((p) => p.victoria).length;
+  const marcador = `${ganadas} de ${ult.length}`;
 
   if (derrotasFinal >= 3 || wrUlt <= wrTotal - 10) {
-    if (enSesion) return { tono: "alerta", texto: "Racha difícil. Buen momento para una pausa." };
-    if (descansado) return { tono: "aviso", texto: "Ya descansaste: buen momento para remontar." };
-    return { tono: "aviso", texto: "Vienes de una racha difícil. Juega cuando estés descansado." };
+    if (enSesion) return { tono: "alerta", titulo: `Racha difícil · ${marcador}`, texto: "Buen momento para una pausa." };
+    if (descansado) return { tono: "aviso", titulo: `Racha difícil · ${marcador}`, texto: "Ya descansaste: buen momento para remontar." };
+    return { tono: "aviso", titulo: `Racha difícil · ${marcador}`, texto: "Juega cuando estés descansado." };
   }
   if (wrUlt >= wrTotal + 10 || ganadas >= 7) {
-    if (enSesion) return { tono: "bien", texto: `Estás en racha: ${ganadas} de tus últimas ${ult.length} ganadas. Aprovéchala, pero para si llegan 3 derrotas.` };
-    return { tono: "bien", texto: `Vienes en buena racha: ${ganadas} de tus últimas ${ult.length} partidas ganadas.` };
+    if (enSesion) return { tono: "bien", titulo: `En racha · ${marcador}`, texto: "Aprovéchala, pero para si llegan 3 derrotas." };
+    return { tono: "bien", titulo: `Buena racha · ${marcador}`, texto: "Vienes en buena forma." };
   }
-  return { tono: "neutro", texto: "Vas en tu nivel habitual." };
+  return { tono: "neutro", titulo: `Estable · ${marcador}`, texto: "Vas en tu nivel habitual." };
 }
 
 // Winrate y elixir por hora local

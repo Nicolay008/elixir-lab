@@ -29,7 +29,8 @@ function pintar(data) {
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
   $("detalleJugador").textContent = [j.clan, j.liga ? `Liga ${j.liga}` : null, j.mejor_liga ? `mejor liga ${j.mejor_liga}` : null].filter(Boolean).join(", ");
-  $("estado").textContent = m.estado.texto;
+  $("estadoTitulo").textContent = m.estado.titulo;
+  $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
   $("resumenPartidas").textContent = data.resumen.partidas;
   $("resumenWinrate").textContent = data.resumen.winrate === null ? "–" : `${data.resumen.winrate} %`;

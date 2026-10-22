@@ -74,12 +74,17 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 /* ===== Jugador y estado ===== */
 .jugador{margin:1.75rem 0 .25rem}
 .jugador p{margin:0}
-.estado{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.3rem;line-height:1.25;
-  margin:.75rem 0 1rem;padding:1rem 1.1rem;border-radius:1.25rem;border:2px solid var(--line);background:var(--glass);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:var(--ink)}
-.estado[data-tono="bien"]{border-color:var(--ok);color:var(--ok)}
-.estado[data-tono="aviso"]{border-color:var(--gold);color:var(--gold)}
-.estado[data-tono="alerta"]{border-color:var(--bad);color:var(--bad)}
+.estado{margin:.75rem 0 1rem;padding:.75rem 1rem;border-radius:1.25rem;border:2px solid var(--line);background:var(--glass);
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.estado p{margin:0}
+.estado-titulo{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.2rem;line-height:1.2;color:var(--ink)}
+.estado-texto{font-size:.9rem;color:var(--muted);margin-top:.15rem!important}
+.estado[data-tono="bien"]{border-color:var(--ok)}
+.estado[data-tono="bien"] .estado-titulo{color:var(--ok)}
+.estado[data-tono="aviso"]{border-color:var(--gold)}
+.estado[data-tono="aviso"] .estado-titulo{color:var(--gold)}
+.estado[data-tono="alerta"]{border-color:var(--bad)}
+.estado[data-tono="alerta"] .estado-titulo{color:var(--bad)}
 
 .resumen{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 1rem}
 .resumen div{background:var(--surface);border:2px solid var(--line);border-radius:1rem;padding:.55rem .7rem}
