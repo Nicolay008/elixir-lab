@@ -1,17 +1,19 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js";
-import { modelo } from "./stats.js";
-import { tendencia, coronas, franjasVisibles } from "./charts.js";
-import { reloj } from "./clock.js";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js";
-import * as seguidos from "./seguidos.js";
+import { consultar, seguir } from "./api.js?v=4";
+import { modelo } from "./stats.js?v=4";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=4";
+import { reloj } from "./clock.js?v=4";
+import { partidas } from "./partidas.js?v=4";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=4";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=4";
+import * as seguidos from "./seguidos.js?v=4";
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
 
 const leyendas = {
-  racha: () => `<span><span class="punto lleno"></span>Victoria</span><span><span class="punto hueco"></span>Derrota</span><span><span class="raya"></span>50 %: ni subes ni bajas</span>`,
-  elixir: () => `<span><span class="punto lleno"></span>Victoria</span><span><span class="punto hueco"></span>Derrota</span><span><span class="raya"></span>Tu límite: algo más de lo que sueles perder</span>`,
+  racha: () => `<span><span class="punto lleno"></span>${t("Victoria", "Win")}</span><span><span class="punto hueco"></span>${t("Derrota", "Loss")}</span><span><span class="raya"></span>${t("50 %: ni subes ni bajas", "50 %: you neither climb nor drop")}</span>`,
+  elixir: () => `<span><span class="punto lleno"></span>${t("Victoria", "Win")}</span><span><span class="punto hueco"></span>${t("Derrota", "Loss")}</span><span><span class="raya"></span>${t("Tu límite: algo más de lo que sueles perder", "Your limit: a bit more than you usually leak")}</span>`,
 };
 
 // ---------- atajos y botón seguir ----------
@@ -24,7 +26,7 @@ function pintarAtajos() {
 function pintarBotonSeguir() {
   const sigo = ultimo && seguidos.sigo(ultimo.jugador.tag);
   $("botonSeguir").setAttribute("aria-pressed", !!sigo);
-  $("botonSeguir").textContent = sigo ? "Siguiendo" : "Seguir";
+  $("botonSeguir").textContent = sigo ? t("Siguiendo", "Following") : t("Seguir", "Follow");
 }
 function cerrarPanel() {
   $("panelSeguir").hidden = true; $("panelError").hidden = true; $("panelLista").innerHTML = "";
@@ -49,8 +51,8 @@ function pedirSeguir() {
 
   // lista llena: elegir a quién dejar de seguir, en lugar de quitar uno en silencio
   if (seguidos.llena()) {
-    $("panelTexto").textContent = `Ya sigues a ${MAX_SEGUIDOS} jugadores. Deja de seguir a uno para añadir a ${j.nombre}.`;
-    $("panelLista").innerHTML = seguidos.lista().map((s) => `<button type="button" data-tag="${s.tag}"><span>${s.nombre}</span><span>Dejar de seguir</span></button>`).join("");
+    $("panelTexto").textContent = t(`Ya sigues a ${MAX_SEGUIDOS} jugadores. Deja de seguir a uno para añadir a ${j.nombre}.`, `You already follow ${MAX_SEGUIDOS} players. Unfollow one to add ${j.nombre}.`);
+    $("panelLista").innerHTML = seguidos.lista().map((s) => `<button type="button" data-tag="${s.tag}"><span>${s.nombre}</span><span>${t("Dejar de seguir", "Unfollow")}</span></button>`).join("");
     $("panelLista").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { seguidos.quitar(b.dataset.tag); pintarAtajos(); pedirSeguir(); }));
     return;
   }
@@ -58,12 +60,12 @@ function pedirSeguir() {
   if (ultimo.seguido) { $("panelSeguir").hidden = true; confirmarSeguir({ renovar: true }); return; }
 
   // tag nuevo: aviso y filtro anti-bots
-  $("panelTexto").textContent = `A partir de ahora guardaremos las partidas de ${j.nombre} para darte estadísticas fiables. Su historial será visible para quien consulte su tag.`;
-  if (!window.turnstile) { errorPanel("No se pudo cargar la verificación anti-bots. Recarga la página."); return; }
+  $("panelTexto").textContent = t(`A partir de ahora guardaremos las partidas de ${j.nombre} para darte estadísticas fiables. Su historial será visible para quien consulte su tag.`, `From now on we’ll save ${j.nombre}’s matches to give you reliable stats. Their history will be visible to anyone who looks up their tag.`);
+  if (!window.turnstile) { errorPanel(t("No se pudo cargar la verificación anti-bots. Recarga la página.", "The anti-bot check couldn’t load. Reload the page.")); return; }
   captchaId = window.turnstile.render("#captcha", {
-    sitekey: TURNSTILE_SITE_KEY, language: "es",
+    sitekey: TURNSTILE_SITE_KEY, language: LANG,
     callback: (token) => confirmarSeguir({ token }),
-    "error-callback": () => errorPanel("La verificación falló. Vuelve a intentarlo."),
+    "error-callback": () => errorPanel(t("La verificación falló. Vuelve a intentarlo.", "The check failed. Try again.")),
   });
 }
 
@@ -74,7 +76,7 @@ function pintarTendencia() {
   $("leyendaTendencia").innerHTML = leyendas[vista]();
   $("explicaElixir").hidden = vista !== "elixir";
   if (m.limite !== null)
-    $("detalleLimite").textContent = `Tu media en estas partidas es ${m.mediaElixir.toFixed(1)}. El límite es tu media más 1 punto: ${m.limite.toFixed(1)}.`;
+    $("detalleLimite").textContent = t(`Tu media en estas partidas es ${m.mediaElixir.toFixed(1)}. El límite es tu media más 1 punto: ${m.limite.toFixed(1)}.`, `Your average in these matches is ${m.mediaElixir.toFixed(1)}. Your limit is your average plus 1: ${m.limite.toFixed(1)}.`);
   graficaTendencia = tendencia($("graficaTendencia"), m, vista, graficaTendencia);
   $("franjas").innerHTML = franjasVisibles(m).map((f) => `<li class="chip ${f.tipo}">${f.texto}</li>`).join("");
 }
@@ -84,25 +86,28 @@ function pintar(data) {
   m = modelo(data);
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
-  $("detalleJugador").textContent = [j.clan, j.liga ? `Liga ${j.liga}` : null, j.mejor_liga ? `mejor liga ${j.mejor_liga}` : null].filter(Boolean).join(", ");
+  $("detalleJugador").textContent = [j.clan, j.liga ? `${t("Liga", "League")} ${j.liga}` : null, j.mejor_liga ? `${t("mejor liga", "best league")} ${j.mejor_liga}` : null].filter(Boolean).join(", ");
   $("estadoTitulo").textContent = m.estado.titulo;
   $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
   $("resumenPartidas").textContent = data.resumen.partidas;
   $("resumenWinrate").textContent = data.resumen.winrate === null ? "–" : `${data.resumen.winrate} %`;
   $("resumenElixir").textContent = data.resumen.elixir_desperdiciado ?? "–";
-  $("notaApi").textContent = data.nota ?? "";
+  $("notaApi").textContent = data.seguido
+    ? t(`Historial guardado: ${data.resumen.partidas} partidas.`, `Saved history: ${data.resumen.partidas} matches.`)
+    : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");
   $("resultado").hidden = false;
   pintarBotonSeguir(); pintarAtajos();
   pintarTendencia();
   graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
   reloj({ svg: $("reloj"), botonAM: $("botonAM"), botonPM: $("botonPM"), detalle: $("detalleHora") }, m.horas);
+  partidas($("listaPartidas"), $("verMas"), m.ps);
 }
 
 async function buscar(tag, { silencioso = false } = {}) {
   const limpio = String(tag).trim();
   if (!limpio) return;
-  if (!silencioso) { $("error").hidden = true; $("buscar").disabled = true; $("buscar").textContent = "Consultando…"; cerrarPanel(); }
+  if (!silencioso) { $("error").hidden = true; $("buscar").disabled = true; $("buscar").textContent = t("Consultando…", "Looking up…"); cerrarPanel(); }
   try {
     const data = await consultar(limpio);
     pintar(data);
@@ -111,7 +116,7 @@ async function buscar(tag, { silencioso = false } = {}) {
   } catch (err) {
     if (!silencioso) { $("error").textContent = err.message; $("error").hidden = false; }
   } finally {
-    $("buscar").disabled = false; $("buscar").textContent = "Consultar";
+    $("buscar").disabled = false; $("buscar").textContent = t("Consultar", "Look up");
   }
 }
 
@@ -121,6 +126,9 @@ $("vistaElixir").addEventListener("click", () => { vista = "elixir"; pintarTende
 $("botonSeguir").addEventListener("click", pedirSeguir);
 $("panelCerrar").addEventListener("click", cerrarPanel);
 
+aplicar();
+$("idioma").textContent = LANG === "en" ? "ES" : "EN";
+$("idioma").addEventListener("click", alternar);
 pintarAtajos();
 seguidos.renovarTodos();
 

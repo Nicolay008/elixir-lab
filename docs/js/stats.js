@@ -1,3 +1,4 @@
+import { t } from "./i18n.js?v=4";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -20,8 +21,8 @@ export const hora = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 // Partidas en orden cronológico, con lo que necesitan las gráficas
 export function preparar(data) {
   const ps = [...data.partidas].reverse().map((p) => {
-    const [yo, rival] = p.coronas.split("-").map(Number);
-    return { ...p, t: fecha(p.hora), yo, rival, dif: yo - rival };
+    const [mias, suyas] = p.coronas.split("-").map(Number);
+    return { ...p, t: fecha(p.hora), dif: mias - suyas };
   });
   // marcar sesiones: más de SESION_MIN minutos sin jugar empieza una nueva
   let s = 0;
@@ -74,7 +75,7 @@ export function modelo(data) {
 
 // Mensaje principal: un titular corto y un consejo
 export function estado(ps, ahora = new Date()) {
-  if (ps.length < 6) return { tono: "neutro", titulo: "Pocas partidas", texto: "Aún hay pocas partidas para leer tu racha." };
+  if (ps.length < 6) return { tono: "neutro", titulo: t("Pocas partidas", "Few matches"), texto: t("Aún hay pocas partidas para leer tu racha.", "Not enough matches yet to read your streak.") };
   const ult = ps.slice(-VENTANA);
   const wrUlt = (100 * ult.filter((p) => p.victoria).length) / ult.length;
   const wrTotal = (100 * ps.filter((p) => p.victoria).length) / ps.length;
@@ -83,18 +84,18 @@ export function estado(ps, ahora = new Date()) {
   for (let k = ps.length - 1; k >= 0 && !ps[k].victoria; k--) derrotasFinal++;
   const enSesion = min < SESION_MIN, descansado = min > 120;
   const ganadas = ult.filter((p) => p.victoria).length;
-  const marcador = `${ganadas} de ${ult.length}`;
+  const marcador = t(`${ganadas} de ${ult.length}`, `${ganadas} of ${ult.length}`);
 
   if (derrotasFinal >= 3 || wrUlt <= wrTotal - 10) {
-    if (enSesion) return { tono: "alerta", titulo: `Racha difícil · ${marcador}`, texto: "Buen momento para una pausa." };
-    if (descansado) return { tono: "aviso", titulo: `Racha difícil · ${marcador}`, texto: "Ya descansaste: buen momento para remontar." };
-    return { tono: "aviso", titulo: `Racha difícil · ${marcador}`, texto: "Juega cuando estés descansado." };
+    if (enSesion) return { tono: "alerta", titulo: t(`Racha difícil · ${marcador}`, `Rough streak · ${marcador}`), texto: t("Buen momento para una pausa.", "Good time for a break.") };
+    if (descansado) return { tono: "aviso", titulo: t(`Racha difícil · ${marcador}`, `Rough streak · ${marcador}`), texto: t("Ya descansaste: buen momento para remontar.", "You’re rested: a good time to bounce back.") };
+    return { tono: "aviso", titulo: t(`Racha difícil · ${marcador}`, `Rough streak · ${marcador}`), texto: t("Juega cuando estés descansado.", "Play when you’re rested.") };
   }
   if (wrUlt >= wrTotal + 10 || ganadas >= 7) {
-    if (enSesion) return { tono: "bien", titulo: `En racha · ${marcador}`, texto: "Aprovéchala, pero para si llegan 3 derrotas." };
-    return { tono: "bien", titulo: `Buena racha · ${marcador}`, texto: "Vienes en buena forma." };
+    if (enSesion) return { tono: "bien", titulo: t(`En racha · ${marcador}`, `On a roll · ${marcador}`), texto: t("Aprovéchala, pero para si llegan 3 derrotas.", "Make the most of it, but stop after 3 losses.") };
+    return { tono: "bien", titulo: t(`Buena racha · ${marcador}`, `Good streak · ${marcador}`), texto: t("Vienes en buena forma.", "You’re in good form.") };
   }
-  return { tono: "neutro", titulo: `Estable · ${marcador}`, texto: "Vas en tu nivel habitual." };
+  return { tono: "neutro", titulo: t(`Estable · ${marcador}`, `Steady · ${marcador}`), texto: t("Vas en tu nivel habitual.", "You’re at your usual level.") };
 }
 
 // Winrate y elixir por hora local

@@ -1,3 +1,4 @@
+import { t } from "./i18n.js?v=4";
 // Cronómetro AM / PM: cada sector es una hora; largo = partidas, color = winrate.
 const NS = "http://www.w3.org/2000/svg";
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -6,8 +7,8 @@ const fmt = (h) => `${h % 12 === 0 ? 12 : h % 12} ${h < 12 ? "am" : "pm"}`;
 
 function colorWinrate(wr) {
   const medio = hex(css("--neutro")), malo = hex(css("--ref")), bueno = hex(css("--dato"));
-  const t = Math.min(1, Math.abs(wr - 50) / 40), fin = wr >= 50 ? bueno : malo;
-  return `rgb(${medio.map((m, i) => Math.round(m + (fin[i] - m) * t)).join(",")})`;
+  const k = Math.min(1, Math.abs(wr - 50) / 40), fin = wr >= 50 ? bueno : malo;
+  return `rgb(${medio.map((m, i) => Math.round(m + (fin[i] - m) * k)).join(",")})`;
 }
 
 export function reloj({ svg, botonAM, botonPM, detalle }, horas) {
@@ -34,9 +35,9 @@ export function reloj({ svg, botonAM, botonPM, detalle }, horas) {
     const [hx, hy] = pt(((h % 12) * Math.PI) / 6, rmax - 6);
     aguja.setAttribute("x2", hx); aguja.setAttribute("y2", hy);
     c1.textContent = `${x.wr} %`; c2.textContent = fmt(h);
-    const nota = x.n < 5 ? " · pocos datos" : h === mejor ? " · tu mejor hora" : "";
-    detalle.innerHTML = `<strong>De ${fmt(h)} a ${fmt(h + 1)}</strong><span class="nota">${nota}</span><br>` +
-      `${x.v} victorias de ${x.n} partidas (${x.wr} %)` + (x.elixir !== null ? ` · elixir perdido medio ${x.elixir.toFixed(1)}` : "");
+    const nota = x.n < 5 ? ` · ${t("pocos datos", "little data")}` : h === mejor ? ` · ${t("tu mejor hora", "your best hour")}` : "";
+    detalle.innerHTML = `<strong>${t("De", "From")} ${fmt(h)} ${t("a", "to")} ${fmt(h + 1)}</strong><span class="nota">${nota}</span><br>` +
+      t(`${x.v} victorias de ${x.n} partidas (${x.wr} %)`, `${x.v} wins out of ${x.n} matches (${x.wr} %)`) + (x.elixir !== null ? ` · ${t("elixir perdido medio", "average elixir leaked")} ${x.elixir.toFixed(1)}` : "");
   }
 
   function dibujar() {
@@ -66,8 +67,8 @@ export function reloj({ svg, botonAM, botonPM, detalle }, horas) {
         sectores[h] = p;
       }
       const [lx, ly] = pt((i * Math.PI) / 6, R - 22);
-      const t = el("text", { x: lx, y: ly + 4, "text-anchor": "middle", "font-size": 11, "font-weight": 600, fill: tinta });
-      t.textContent = i === 0 ? 12 : i;
+      const num = el("text", { x: lx, y: ly + 4, "text-anchor": "middle", "font-size": 11, "font-weight": 600, fill: tinta });
+      num.textContent = i === 0 ? 12 : i;
     }
     aguja = el("line", { x1: cx, y1: cy, x2: cx, y2: cy - rmax, stroke: tinta, "stroke-width": 2.5, "stroke-linecap": "round" });
     el("circle", { cx, cy, r: r0 - 6, fill: cara, stroke: bisel, "stroke-width": 1 });
@@ -76,7 +77,7 @@ export function reloj({ svg, botonAM, botonPM, detalle }, horas) {
     const mitad = Object.keys(porHora).map(Number).filter((h) => (h >= 12) === pm);
     const inicial = mejor !== null && (mejor >= 12) === pm ? mejor : mitad.sort((a, b) => porHora[b].n - porHora[a].n)[0];
     if (inicial !== undefined) elegir(inicial);
-    else { c1.textContent = "–"; c2.textContent = pm ? "pm" : "am"; detalle.textContent = `No jugaste en estas horas (${pm ? "pm" : "am"}).`; }
+    else { c1.textContent = "–"; c2.textContent = pm ? "pm" : "am"; detalle.textContent = t(`No jugaste en estas horas (${pm ? "pm" : "am"}).`, `No matches in these hours (${pm ? "pm" : "am"}).`); }
   }
 
   botonAM.onclick = () => { pm = false; dibujar(); };

@@ -1,5 +1,6 @@
 // Gráficas de Racha, Elixir y Coronas (Chart.js, cargado como script global).
-import { dia, hora } from "./stats.js";
+import { dia, hora } from "./stats.js?v=4";
+import { t } from "./i18n.js?v=4";
 
 const MOSTRAR = 20; // partidas visibles
 
@@ -61,11 +62,11 @@ function base(c, ymin, ymax, fmt) {
 
 // franjas visibles con su texto, para mostrarlas como chips bajo la gráfica
 export function franjasVisibles(m) {
-  const v = ventana(m), nombre = { tilt: "Posible tilt", buena: "Buena racha", mala: "Mala racha" };
+  const v = ventana(m), nombre = { tilt: t("Posible tilt", "Possible tilt"), buena: t("Buena racha", "Good streak"), mala: t("Mala racha", "Bad streak") };
   return v.franjas.map((f) => {
     const a = v.ps[f.desde], b = v.ps[f.hasta], n = f.hasta - f.desde + 1;
-    const cuando = dia(a.t) === dia(b.t) ? `${dia(a.t)}, ${hora(a.t)} a ${hora(b.t)}` : `${dia(a.t)} a ${dia(b.t)}`;
-    return { tipo: f.tipo, texto: `${nombre[f.tipo]} · ${cuando} · ${n} ${f.tipo === "buena" ? "victorias" : "derrotas"} seguidas` };
+    const cuando = dia(a.t) === dia(b.t) ? `${dia(a.t)}, ${hora(a.t)} ${t("a","to")} ${hora(b.t)}` : `${dia(a.t)} ${t("a","to")} ${dia(b.t)}`;
+    return { tipo: f.tipo, texto: `${nombre[f.tipo]} · ${cuando} · ${n} ${f.tipo === "buena" ? t("victorias seguidas", "wins in a row") : t("derrotas seguidas", "losses in a row")}` };
   });
 }
 
@@ -79,14 +80,14 @@ export function tendencia(canvas, m, vista, previo) {
   const opt = base(c, 0, R ? 112 : Math.max(8.5, ...puntos.filter((x) => x !== null)) + 0.5,
     (val) => (R ? (val <= 100 && val % 25 === 0 ? `${val} %` : "") : val % 2 === 0 ? val : ""));
   opt.plugins.tooltip = {
-    filter: (t) => t.datasetIndex === 1,
+    filter: (tt) => tt.datasetIndex === 1,
     callbacks: {
-      title: (t) => { const p = v.ps[t[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
-      label: (t) => {
-        const p = v.ps[t.dataIndex];
-        const base = `${p.victoria ? "Victoria" : "Derrota"} ${p.coronas}`;
-        if (p.desconexion) return `${base} · posible desconexión`;
-        return R ? `${base} · tendencia ${Math.round(linea[t.dataIndex])} %` : `${base} · ${p.elixir_desperdiciado?.toFixed(2) ?? "–"} de elixir perdido`;
+      title: (tt) => { const p = v.ps[tt[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
+      label: (tt) => {
+        const p = v.ps[tt.dataIndex];
+        const base = `${p.victoria ? t("Victoria", "Win") : t("Derrota", "Loss")} ${p.coronas}`;
+        if (p.desconexion) return `${base} · ${t("posible desconexión", "possible disconnection")}`;
+        return R ? `${base} · ${t("tendencia", "trend")} ${Math.round(linea[tt.dataIndex])} %` : `${base} · ${p.elixir_desperdiciado?.toFixed(2) ?? "–"} ${t("de elixir perdido", "elixir leaked")}`;
       },
     },
   };
@@ -114,10 +115,10 @@ export function coronas(canvas, m, previo) {
   const c = colores(), v = ventana(m);
   const opt = base(c, -3.4, 3.4, (val) => (Number.isInteger(val) ? (val > 0 ? `+${val}` : val) : ""));
   opt.plugins.tooltip = {
-    filter: (t) => t.datasetIndex === 0,
+    filter: (tt) => tt.datasetIndex === 0,
     callbacks: {
-      title: (t) => { const p = v.ps[t[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
-      label: (t) => v.ps[t.dataIndex].coronas,
+      title: (tt) => { const p = v.ps[tt[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
+      label: (tt) => v.ps[tt.dataIndex].coronas,
     },
   };
   return new Chart(canvas, {
