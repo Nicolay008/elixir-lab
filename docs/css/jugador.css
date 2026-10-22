@@ -183,3 +183,5 @@ footer a{color:inherit}
 .partida-pie{display:flex;justify-content:flex-end;margin-top:.2rem}
 @media (prefers-reduced-motion: reduce){.pestanas button.brillo{animation:none}}
 .ghost-btn{display:block;width:100%;margin:.6rem 0 1rem;background:transparent;color:var(--elixir);border:2px solid var(--elixir)}
+.modo{gap:.15rem;align-items:center}
+.laurel-num{font-size:.75rem;font-weight:800}

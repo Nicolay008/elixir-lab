@@ -19,14 +19,20 @@ const MODOS = {
   trail: ["trofeo", "Escalera", "Ladder"], ladder: ["trofeo", "Escalera", "Ladder"],
   riverRacePvP: ["escudos", "Guerra de clanes", "Clan war"], riverRaceDuel: ["escudos", "Duelo de guerra", "War duel"],
   riverRaceDuelColosseum: ["escudos", "Duelo de guerra", "War duel"], boatBattle: ["escudos", "Batalla de barcos", "Boat battle"],
-  tournament: ["medalla", "Torneo", "Tournament"], challenge: ["medalla", "Desafío", "Challenge"],
-  grandChallenge: ["medalla", "Gran desafío", "Grand challenge"], classicChallenge: ["medalla", "Desafío clásico", "Classic challenge"],
+  tournament: ["laurel", "Torneo", "Tournament"], challenge: ["laurel", "Desafío", "Challenge"],
+  grandChallenge: ["laurel", "Gran desafío", "Grand challenge"], classicChallenge: ["laurel", "Desafío clásico", "Classic challenge"],
 };
 function modo(p) {
   const m = MODOS[p.modo];
-  const nombre = m ? t(m[1], m[2]) : (p.evento || p.modo);
-  const titulo = p.evento && m && m[0] === "medalla" ? `${nombre} · ${p.evento}` : nombre;
-  return `<span class="modo" title="${titulo}" aria-label="${titulo}">${ICONOS[m ? m[0] : "destello"]}</span>`;
+  let icono = m ? m[0] : "destello", nombre = m ? t(m[1], m[2]) : (p.evento || p.modo), numero = "";
+  // en un desafío, el número es la victoria que llevabas tras esta partida (como la corona de laureles del juego)
+  if (p.desafio_victorias_antes !== null && p.desafio_victorias_antes !== undefined) {
+    icono = "laurel";
+    const n = p.desafio_victorias_antes + (p.victoria ? 1 : 0);
+    numero = `<span class="laurel-num">${n}</span>`;
+    nombre = `${p.desafio || nombre} · ${t(`${n} ${n === 1 ? "victoria" : "victorias"}`, `${n} ${n === 1 ? "win" : "wins"}`)}`;
+  }
+  return `<span class="modo" title="${nombre}" aria-label="${nombre}">${ICONOS[icono]}${numero}</span>`;
 }
 
 function datosCarta(texto, cat) {

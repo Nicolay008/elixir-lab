@@ -14,6 +14,8 @@ export const ICONOS = {
   espadas: svg('<path d="M14.5 17.5 3 6V3h3l11.5 11.5"/><path d="m13 19 6-6"/><path d="m16 16 4 4"/><path d="M9.5 17.5 21 6V3h-3L6.5 14.5"/><path d="m11 19-6-6"/><path d="m8 16-4 4"/>'),
   trofeo: svg('<path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3"/><path d="M7 5H4v2a3 3 0 0 0 3 3"/>'),
   escudos: svg('<path d="M9 3 3 5.5v4.5c0 4 2.6 6.7 6 8 1.1-.4 2.1-1 3-1.8"/><path d="M15 6l6 2.5V13c0 4-2.6 6.7-6 8-3.4-1.3-6-4-6-8V8.5z"/>'),
+  // desafíos y torneos: corona de laureles, como en el juego
+  laurel: svg('<path d="M7.5 20C4.5 17.8 3 14.8 3 11.5S4.3 5.4 6.5 3.5"/><path d="M16.5 20c3-2.2 4.5-5.2 4.5-8.5s-1.3-6.1-3.5-8"/><path d="M4.2 8.2c1.6.1 2.8 1 3.3 2.4"/><path d="M3.4 12.6c1.6-.3 3 .3 3.8 1.6"/><path d="M4.8 16.6c1.5-.6 3-.3 4 .8"/><path d="M19.8 8.2c-1.6.1-2.8 1-3.3 2.4"/><path d="M20.6 12.6c-1.6-.3-3 .3-3.8 1.6"/><path d="M19.2 16.6c-1.5-.6-3-.3-4 .8"/>'),
   medalla: svg('<path d="m7 3 3 6"/><path d="m17 3-3 6"/><circle cx="12" cy="15" r="6"/><path d="m12 12.5.8 1.7 1.9.3-1.4 1.3.3 1.9-1.6-.9-1.6.9.3-1.9-1.4-1.3 1.9-.3z"/>'),
   destello: svg('<path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="m6 6 2.5 2.5"/><path d="m15.5 15.5 2.5 2.5"/><path d="m18 6-2.5 2.5"/><path d="m8.5 15.5-2.5 2.5"/>'),
 };
