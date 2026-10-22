@@ -71,6 +71,22 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 .error{color:var(--bad);font-weight:700;margin:.75rem 0 0}
 .oculto{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
+/* ===== Seguidos ===== */
+.atajos{display:flex;flex-wrap:wrap;gap:.4rem;margin:.75rem 0 0}
+.atajos button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:700;font-size:.85rem;
+  padding:.3rem .75rem;border-radius:999px;cursor:pointer}
+.atajos button[aria-current="true"]{border-color:var(--elixir);color:var(--elixir)}
+.jugador-fila{display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.seguir{flex:none;border:2px solid var(--elixir);background:transparent;color:var(--elixir);font:inherit;font-weight:800;
+  padding:.4rem .9rem;border-radius:999px;cursor:pointer}
+.seguir[aria-pressed="true"]{background:var(--elixir);color:#fff}
+.panel{background:var(--surface);border:2px solid var(--elixir);border-radius:1.25rem;padding:.9rem 1rem;margin:.75rem 0 1rem}
+.panel p{color:var(--ink);font-size:.9rem}
+.panel-lista{display:flex;flex-direction:column;gap:.35rem;margin:.25rem 0 .5rem}
+.panel-lista button{display:flex;justify-content:space-between;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);
+  font:inherit;font-weight:700;padding:.45rem .75rem;border-radius:.75rem;cursor:pointer}
+.enlace{border:0;background:none;color:var(--muted);font:inherit;font-weight:700;cursor:pointer;padding:.25rem 0;text-decoration:underline}
+
 /* ===== Jugador y estado ===== */
 .jugador{margin:1.75rem 0 .25rem}
 .jugador p{margin:0}
@@ -130,3 +146,4 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 footer{margin-top:2rem;font-size:.75rem;color:var(--muted);text-align:center}
 footer a{color:inherit}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
+.panel .error{color:var(--bad)}

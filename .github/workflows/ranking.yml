@@ -32,6 +32,11 @@ jobs:
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      - name: Jugadores seguidos
+        run: python src/ingest_players.py
+        env:
+          CR_TOKEN: ${{ secrets.CR_TOKEN }}
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       - name: Tamaño de la base
         run: python src/check_db_size.py
         env:

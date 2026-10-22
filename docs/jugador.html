@@ -21,12 +21,24 @@
       <button id="buscar" class="btn" type="submit">Consultar</button>
     </form>
     <p id="error" class="error" role="alert" hidden></p>
+    <nav id="atajos" class="atajos" aria-label="Jugadores que sigues" hidden></nav>
   </header>
 
   <section id="resultado" hidden>
     <div class="jugador">
-      <h2 id="nombre"></h2>
+      <div class="jugador-fila">
+        <h2 id="nombre"></h2>
+        <button id="botonSeguir" class="seguir" type="button" aria-pressed="false">Seguir</button>
+      </div>
       <p id="detalleJugador"></p>
+    </div>
+
+    <div id="panelSeguir" class="panel" hidden>
+      <p id="panelTexto"></p>
+      <div id="captcha"></div>
+      <div id="panelLista" class="panel-lista"></div>
+      <p id="panelError" class="error" role="alert" hidden></p>
+      <button id="panelCerrar" type="button" class="enlace">Cancelar</button>
     </div>
 
     <div id="estado" class="estado" data-tono="neutro"><p id="estadoTitulo" class="estado-titulo"></p><p id="estadoTexto" class="estado-texto"></p></div>
@@ -68,7 +80,7 @@
       <p class="leyenda">Largo del sector: cuántas partidas jugaste a esa hora. Borde punteado: menos de 5 partidas.</p>
     </article>
 
-    <p class="nota-api">Estos datos salen de tus últimas ~30 partidas, que es lo que guarda el juego.</p>
+    <p id="notaApi" class="nota-api"></p>
   </section>
 
   <footer>
@@ -77,6 +89,7 @@
   </footer>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script type="module" src="js/main.js"></script>
 </body>
 </html>
