@@ -1,198 +1,180 @@
-# Elixir Lab — Datos y entrenamiento para Clash Royale
+# Elixir Lab — Data and training for Clash Royale
 
-Pipeline ETL que descarga mis partidas y el ranking de Perú desde la API oficial
-de Clash Royale, los guarda en PostgreSQL para analizarlos, y un minijuego web
-para entrenar las habilidades que los datos muestran que fallan.
+🇪🇸 [Leer en español](README.es.md)
 
-🎮 **Pruébalo:** [Elixir Lab](https://nicolay008.github.io/elixir-lab/), un minijuego
-para dominar los costes de las cartas, llevar la cuenta del elixir del rival y
-leer su ciclo.
+A data pipeline that collects my Clash Royale matches, the Peruvian and global
+Path of Legends rankings and the decks top players actually use, stores them in
+PostgreSQL in the cloud and analyses them — plus a web mini-game to train the
+skills the data shows I need to improve.
 
-## Por qué
+🎮 **Try it:** [Elixir Lab](https://nicolay008.github.io/elixir-lab/), a mini-game to
+master card costs, track your opponent's elixir and read their cycle.
 
-La API solo conserva las últimas ~40 partidas de cada jugador. Este proyecto
-las acumula sin duplicados para construir un historial propio y responder
-preguntas que las herramientas globales no responden: cómo me va **a mí**,
-en **mi liga**, contra los mazos que **de verdad** me encuentro.
+## Why
+
+The official API only keeps a player's last ~30-40 matches. This project
+accumulates them without duplicates to build a full history and answer questions
+global tools don't: how **I** perform, in **my** league, against the decks I
+**actually** face — and what the top players are really playing.
 
 ## Stack
 
 - Python 3 (`requests`, `psycopg`, `python-dotenv`)
-- PostgreSQL 18
-- API oficial de Clash Royale vía proxy de RoyaleAPI
-- HTML, CSS y JavaScript sin dependencias para Elixir Lab, publicado con GitHub Pages
+- PostgreSQL — Supabase in the cloud (local PostgreSQL for development)
+- GitHub Actions for scheduled ingestion
+- Official Clash Royale API through the RoyaleAPI proxy
+- Plain HTML, CSS and JavaScript for Elixir Lab, published with GitHub Pages
 
-## Estructura
+## Structure
 
 ```
 elixir-lab/
-├── docs/                 # Elixir Lab (GitHub Pages)
-│   ├── index.html        # el minijuego
-│   ├── cards.json        # catálogo generado desde la API
-│   └── nombres_es.json   # nombres de las cartas en español
+├── .github/workflows/
+│   └── ranking.yml          # hourly ingestion: matches, rankings, top decks, DB size
+├── docs/                    # Elixir Lab (GitHub Pages)
+│   ├── index.html           # the mini-game
+│   ├── cards.json           # card catalogue generated from the API
+│   └── nombres_es.json      # Spanish card names
 ├── sql/
-│   ├── schema.sql        # tablas
-│   ├── views.sql         # vistas de análisis
-│   └── 04_ranking.sql    # fotos del ranking de Perú y sus vistas
+│   ├── schema.sql           # match tables
+│   ├── views.sql            # analysis views
+│   ├── 04_ranking.sql       # ranking snapshots and movement (Supabase)
+│   ├── 05_escalera.sql      # step tracking in Path of Legends
+│   └── 06_analisis.sql      # opponent archetypes, my decks, security (Supabase)
 └── src/
-    ├── ingest.py         # descarga partidas y la foto del ranking
-    └── export_cards.py   # genera docs/cards.json
+    ├── ingest.py            # my matches
+    ├── ingest_ranking.py    # Peru and global ranking snapshots
+    ├── ingest_top_decks.py  # real decks of the top players
+    ├── check_db_size.py     # storage monitoring
+    └── export_cards.py      # generates docs/cards.json
 ```
 
-## Modelo de datos
+## How it runs
 
-**Partidas**
+A GitHub Actions workflow runs **every hour** (at minute 23, avoiding the
+congested top of the hour) on GitHub's servers, so nothing depends on my PC:
 
-- `raw_battles`: JSON completo de cada partida, para reprocesar sin volver a la API.
-- `battles`: una fila por partida (modo, liga, fecha).
-- `battle_players`: los dos jugadores (coronas, vida de torres, elixir desperdiciado).
-- `battle_cards`: las 8 cartas de cada lado, con nivel y forma (normal, evolución o héroe).
-- `cards`: catálogo de cartas.
-- `battle_notes`: etiquetas para partidas atípicas (rival AFK, rendición...).
+1. **Matches:** downloads my latest matches and stores only the new ones.
+2. **Rankings:** a snapshot of the Path of Legends ranking for Peru (top 1000)
+   and the world (top 1000), at most every 3.5 hours. Manual runs always save one.
+3. **Top decks:** once a day, the deck of the last ranked match of the Peruvian
+   top 50 and the global top 100.
+4. **Database size:** reports usage and warns before the free-plan limit.
 
-**Ranking de Perú**
+It needs two repository secrets: `CR_TOKEN` (API token) and `SUPABASE_DB_URL`
+(Supabase connection string in **Session pooler** mode — GitHub Actions has no
+IPv6, which the direct connection uses).
 
-- `raw_ranking_snapshots`: cada foto del ranking de Senda de Leyendas de Perú, en JSON crudo.
-- `v_ranking`: una fila por jugador y foto (puesto, nombre, puntuación, clan).
-- `v_ranking_movimiento`: cuántos puestos subió o bajó cada jugador desde la foto anterior.
+## Data model
 
-## Instalación
+**My matches** (private)
 
-1. **Clave de la API.** Crea una cuenta en
-   [developer.clashroyale.com](https://developer.clashroyale.com) y genera una
-   clave autorizando la IP `45.79.218.79`, que es la del proxy de RoyaleAPI.
-   Así la clave funciona aunque tu IP cambie.
+- `raw_battles`: full JSON of each match, to reprocess without calling the API again.
+- `battles`, `battle_players`, `battle_cards`: one row per match, per player and per card,
+  with level and form (normal, evolution or hero).
+- `cards`, `battle_notes`: card catalogue and tags for unusual matches.
+- `pol_anchor` + `v_escalera`: my step in the league, match by match (each win +1, each loss −1).
 
-2. **Entorno de Python:**
+**Analysis**
 
-```bash
-   python3 -m venv .venv
-   source .venv/bin/activate
-   pip install -r requirements.txt
-```
+- `archetype_rules`: editable rules — anchor card, optional second card and an elixir
+  range — that classify each opponent deck (Beatdown, Bridge spam, Hog cycle, Bait…).
+- `watched_cards`: threats tracked apart from the archetype (e.g. Mega Knight).
+- `v_partidas_arquetipo`: each match with the opponent's archetype, threats, average elixir,
+  most expensive card and how many evolutions and heroes they had.
+- `deck_labels` + `v_mis_mazos`: my decks recognised by a stable signature and named by me,
+  to compare winrate and wasted elixir between decks and variants.
 
-3. **Variables de entorno.** Copia la plantilla y rellena tu token y tu tag:
+**Rankings and top** (public read)
 
-```bash
-   cp .env.example .env
-```
+- `raw_ranking_snapshots`: each ranking snapshot, raw.
+- `v_ranking_movimiento`: rank and rating change since the previous snapshot, and the reason
+  ("won matches", "got overtaken", "didn't play"…).
+- `top_decks` + `v_top_decks`: the decks top players use in ranked, with their signature.
 
-4. **Base de datos** (PostgreSQL):
+Private tables have row-level security enabled with no policies: only the direct
+connection (mine and GitHub Actions') can read them.
 
-```bash
-   createdb deck_ai
-   psql deck_ai -f sql/schema.sql
-   psql deck_ai -f sql/views.sql
-   psql deck_ai -f sql/04_ranking.sql
-```
+## Storage management
 
-## Uso
+Supabase's free plan has 500 MB, and design decisions keep the project inside it:
 
-```bash
-python src/ingest.py
-```
+- **Measure, don't guess:** every run reports the database size; above 350 MB it raises a
+  warning and above 400 MB the run fails, leaving time to clean up.
+- **Detail where it pays off:** ranking snapshots every 3.5 hours instead of hourly; my
+  matches, which are small, hourly.
+- **Summarise when a season ends** (planned): keep the final standings and a daily top 100,
+  archive the rest.
 
-Descarga tus últimas partidas, guarda solo las nuevas y añade una foto del
-ranking de Senda de Leyendas de Perú. Ejecútalo con regularidad: la API
-conserva unas 30-40 partidas por jugador.
-
-### Ingesta automática (Windows + WSL)
-
-Una tarea del Programador de tareas de Windows ejecuta la ingesta cada 4 horas
-mientras el PC está encendido. PostgreSQL arranca solo con WSL gracias a
-`sudo systemctl enable postgresql`. La acción de la tarea es:
-
-```
-wsl.exe -d Ubuntu -u <usuario> -- bash -lc "cd ~/Proyectos/deck-ai && date >> logs/ingest.log && .venv/bin/python src/ingest.py >> logs/ingest.log 2>&1"
-```
-
-El resultado de cada ejecución queda en `logs/ingest.log` (excluido de git).
-
-### Consultas útiles
-
-Tus partidas con el mazo rival:
-
-```sql
-SELECT * FROM v_partidas ORDER BY battle_time DESC;
-```
-
-Quién subió más puestos en el ranking de Perú desde la foto anterior:
-
-```sql
-SELECT puesto, nombre, rating, cambio
-FROM v_ranking_movimiento
-WHERE snapshot_at = (SELECT max(snapshot_at) FROM raw_ranking_snapshots)
-  AND cambio > 0
-ORDER BY cambio DESC
-LIMIT 10;
-```
+Current growth estimate: about 80 MB per month.
 
 ## Elixir Lab
 
-Mis datos mostraban que gran parte de mis derrotas venía de malas decisiones
-de elixir. Elixir Lab entrena esas habilidades con tres modos:
+My data showed many of my losses came from elixir and decision mistakes. Elixir Lab
+trains those skills:
 
-- **Maestría de cartas:** sale una carta y marcas su coste antes de que se
-  agote el tiempo. Tres torres como vidas, coronas por rachas y tres dificultades.
-- **Controla a tu rival:** el rival juega cartas y pasa el tiempo; calculas
-  cuánto elixir le queda. Tres etapas, desde sin reloj hasta una partida real
-  con doble elixir.
-- **Lee su ciclo:** el rival juega cartas de su mano y tienes que saber cuáles
-  tiene disponibles. Tres etapas, de todo a la vista a solo memoria.
+- **Card mastery:** a card appears and you pick its cost before time runs out.
+- **Track your opponent:** the opponent plays cards and time passes; you work out how much
+  elixir they have left.
+- **Read their cycle:** a step-by-step path, from following one target card to knowing which
+  cards your opponent has available.
 
-Cada modo guarda trofeos, récords, insignias y un gráfico de progreso. Funciona
-en español e inglés, y en móvil.
+Trophies, records, badges and progress charts, in Spanish and English, mobile-friendly.
+Costs come from the official API: run `python src/export_cards.py` to update them and add
+new card names to `docs/nombres_es.json`.
 
-Los costes salen de la API oficial: para actualizarlos, ejecuta
-`python src/export_cards.py` y añade a `docs/nombres_es.json` el nombre en
-español de las cartas nuevas que indique.
+## Findings from the data
 
-## Hallazgos de los datos
+- `elixirLeaked` is always 0 in boat battles, so they are excluded from elixir analysis.
+- `evolutionLevel` tells the card form apart: 0 normal, 1 evolution, 2 hero.
+- Levels use a different scale per rarity: a card is maxed when `level = maxLevel`.
+- Peru's trophy ranking comes back empty: at the top, Path of Legends is what counts, and it
+  returns up to 1000 players.
+- **The profile deck (`currentDeck`) is not reliable** for top players: many keep a different
+  deck selected so theirs isn't copied. The real deck comes from their last ranked match.
+- GitHub Actions scheduled runs are not guaranteed: runs at the top of the hour were skipped
+  several times, so the workflow runs hourly at an off-peak minute.
 
-- `elixirLeaked` vale siempre 0 en las batallas de barco: se excluyen del análisis de elixir.
-- `evolutionLevel` distingue la forma de la carta: 0 normal, 1 evolución, 2 héroe.
-- Los niveles usan una escala distinta por rareza: una carta está al máximo cuando `level = maxLevel`.
-- El ranking de trofeos de Perú llega vacío: en la liga alta cuenta la Senda de
-  Leyendas, que devuelve todo el ranking local (708 jugadores en la primera foto).
+## Roadmap
 
-## Hoja de ruta
+### Phase 1 — Own data
+- [x] Ingestion from the official API without duplicates
+- [x] PostgreSQL data model with raw JSON
+- [x] Automated ingestion in the cloud (GitHub Actions + Supabase)
+- [x] Peru and global Path of Legends ranking snapshots
+- [x] Real decks of the top players
+- [x] Storage monitoring
+- [ ] Import old history from CSV
 
-### Fase 1 — Datos propios (en curso)
-- [x] Ingesta desde la API oficial sin duplicados
-- [x] Modelo de datos en PostgreSQL con JSON crudo
-- [x] Vista de partidas con evoluciones y héroes del rival
-- [x] Etiquetado de partidas atípicas
-- [x] Automatizar la ingesta
-- [x] Fotos del ranking de Senda de Leyendas de Perú
-- [ ] Importar historial antiguo desde CSV
+### Phase 2 — Analysis
+- [x] Opponent archetype classifier
+- [x] Winrate by archetype, deck and variant
+- [x] Step tracking in Path of Legends
+- [ ] Personal dashboard with login
+- [ ] Top-player matches and archetype matchup matrix
+- [ ] Deck families (variants of the same deck)
+- [ ] Public page "Path of Legends · Peru"
+- [ ] Live score widget for streamers
 
-### Fase 2 — Análisis
-- [ ] Clasificador de arquetipos rivales (carta ancla + coste medio de elixir)
-- [ ] Winrate y elixir desperdiciado por arquetipo, modo y variante de mazo
-- [ ] Dashboard de progreso
-- [ ] Página pública "Senda de Leyendas · Perú": movimientos, récords y tiempo en el top
+### Phase 3 — Computer vision
+- [ ] Recognise cards played in recorded replays
+- [ ] Measure elixir trades play by play
 
-### Fase 3 — Visión por computadora
-- [ ] Reconocer cartas jugadas en repeticiones grabadas
-- [ ] Medir intercambios de elixir jugada a jugada
+### Phase 4 — Decision trainer
+- [x] Elixir Lab: costs, elixir tracking and cycle reading
+- [ ] Evolution cycles
+- [ ] Match situations with reference answers
 
-### Fase 4 — Entrenador de decisiones
-- [x] Elixir Lab: costes, conteo de elixir y lectura del ciclo
-- [ ] Ciclo de evolución: saber cuándo sale evolucionada una carta
-- [ ] Situaciones de partida con respuestas de referencia
-      (decisiones de jugadores top y reglas propias)
-- [ ] Puntuación por intercambio de elixir
+## Note
 
-## Nota
+This project analyses matches already played and trains skills outside the game.
+It does not automate or interact with Clash Royale.
 
-Este proyecto analiza partidas ya jugadas y entrena habilidades fuera del juego.
-No automatiza ni interactúa con Clash Royale.
+Elixir Lab is unofficial fan content and is not endorsed by Supercell. See
+[Supercell's Fan Content Policy](https://www.supercell.com/fan-content-policy).
 
-Elixir Lab es material no oficial y no está respaldado por Supercell. Consulta la
-[política de contenido de fans de Supercell](https://www.supercell.com/fan-content-policy).
+Developed by **Inka Lobby GG**.
 
-Desarrollado por **Inka Lobby GG**.
-
-## Licencia
+## License
 
 MIT
