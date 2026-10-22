@@ -1,0 +1,139 @@
+/* Página del jugador · Elixir Lab
+   Violeta elixir para tus datos, dorado para la referencia, franjas suaves para las rachas. */
+:root {
+  color-scheme: light;
+  --fondo: #f3eef9;
+  --superficie: #ffffff;
+  --superficie-2: #f7f3fb;
+  --texto: #24173a;
+  --texto-suave: #6e6582;
+  --borde: #e2d9ee;
+  --dato: #9b2fb5;
+  --ref: #c98a12;
+  --neutro: #e2dce9;
+  --vacio: #efe9f5;
+  --bisel: #3d2d57;
+  --rejilla: #ece6f3;
+  --separador: #cfc4dd;
+  --franja-tilt: rgba(214, 64, 64, 0.13);  --tinta-tilt: #c03333;
+  --franja-buena: rgba(26, 160, 90, 0.13); --tinta-buena: #13834a;
+  --franja-mala: rgba(110, 101, 130, 0.14); --tinta-mala: #6e6582;
+  --bien-fondo: #e3f5ea; --bien-texto: #13643a;
+  --aviso-fondo: #fbf1dc; --aviso-texto: #7a5208;
+  --alerta-fondo: #fbe5e5; --alerta-texto: #9b2424;
+  --neutro-fondo: #efe9f5; --neutro-texto: #4b4060;
+  --hex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='97'%3E%3Cpath d='M28 0l28 16v32L28 64 0 48V16zM28 64v33' fill='none' stroke='%239b2fb5' stroke-opacity='.06'/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --fondo: #160d26;
+    --superficie: #221535;
+    --superficie-2: #2a1b40;
+    --texto: #f1eaf9;
+    --texto-suave: #a99cbd;
+    --borde: #3a2a52;
+    --dato: #d46ae6;
+    --ref: #e3a52d;
+    --neutro: #4a3c5e;
+    --vacio: #2f2245;
+    --bisel: #6e5a8c;
+    --rejilla: #2f2245;
+    --separador: #4a3c5e;
+    --franja-tilt: rgba(230, 90, 90, 0.18);  --tinta-tilt: #ff8a8a;
+    --franja-buena: rgba(60, 200, 120, 0.16); --tinta-buena: #6fe0a0;
+    --franja-mala: rgba(169, 156, 189, 0.16); --tinta-mala: #c3b8d4;
+    --bien-fondo: #173a26; --bien-texto: #8ee6b0;
+    --aviso-fondo: #3d2f12; --aviso-texto: #f2c46a;
+    --alerta-fondo: #431d22; --alerta-texto: #ff9c9c;
+    --neutro-fondo: #2a1b40; --neutro-texto: #cfc4dd;
+  }
+}
+
+* { box-sizing: border-box; }
+html { background: var(--fondo) var(--hex); }
+body {
+  margin: 0; color: var(--texto);
+  font: 400 16px/1.5 Nunito, system-ui, sans-serif;
+  padding: env(safe-area-inset-top, 0) 0 env(safe-area-inset-bottom, 0);
+}
+main { max-width: 34rem; margin: 0 auto; padding: 1.25rem 1rem 2.5rem; }
+
+h1, h2, h3 { font-family: "Lilita One", system-ui, sans-serif; font-weight: 400; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: 2rem; line-height: 1.1; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.15rem; margin-bottom: 0.15rem; }
+
+.volver { color: var(--dato); font-weight: 700; text-decoration: none; font-size: 0.9rem; }
+.volver:hover { text-decoration: underline; }
+.intro { color: var(--texto-suave); margin: 0.35rem 0 1rem; }
+
+.buscador { display: flex; gap: 0.5rem; }
+.buscador input {
+  flex: 1; min-width: 0; font: 700 1.05rem Nunito, sans-serif; letter-spacing: 0.04em;
+  padding: 0.7rem 0.9rem; border-radius: 0.8rem; border: 1.5px solid var(--borde);
+  background: var(--superficie); color: var(--texto);
+}
+button {
+  font: 700 0.95rem Nunito, sans-serif; color: var(--texto); cursor: pointer;
+  border: 1.5px solid var(--borde); background: var(--superficie); border-radius: 0.8rem; padding: 0.6rem 1rem;
+}
+.buscador button { background: var(--dato); border-color: var(--dato); color: #fff; }
+button:disabled { opacity: 0.6; cursor: progress; }
+:focus-visible { outline: 3px solid var(--dato); outline-offset: 2px; }
+.error { color: var(--alerta-texto); background: var(--alerta-fondo); padding: 0.6rem 0.8rem; border-radius: 0.7rem; }
+.oculto { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+.jugador { margin: 1.75rem 0 0.5rem; }
+.jugador p { margin: 0; color: var(--texto-suave); }
+
+/* el mensaje de estado es lo primero que se lee */
+.estado {
+  font-family: "Lilita One", system-ui, sans-serif; font-size: 1.3rem; line-height: 1.25;
+  margin: 0.75rem 0 1rem; padding: 0.9rem 1rem; border-radius: 1rem;
+  background: var(--neutro-fondo); color: var(--neutro-texto);
+}
+.estado[data-tono="bien"] { background: var(--bien-fondo); color: var(--bien-texto); }
+.estado[data-tono="aviso"] { background: var(--aviso-fondo); color: var(--aviso-texto); }
+.estado[data-tono="alerta"] { background: var(--alerta-fondo); color: var(--alerta-texto); }
+
+.resumen { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; margin: 0 0 1rem; }
+.resumen div { background: var(--superficie); border: 1px solid var(--borde); border-radius: 0.8rem; padding: 0.55rem 0.7rem; }
+.resumen dt { font-size: 0.78rem; color: var(--texto-suave); }
+.resumen dd { margin: 0; font: 400 1.35rem "Lilita One", sans-serif; }
+
+.tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: 1.1rem; padding: 0.9rem 0.9rem 1rem; margin: 0 0 1rem; }
+.pulsador { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0 0 0.6rem; }
+.pulsador button[aria-pressed="true"] { border-color: var(--dato); color: var(--dato); background: var(--superficie-2); }
+.pulsador button.brillo { box-shadow: 0 0 0 3px color-mix(in srgb, var(--dato) 16%, transparent), 0 0 16px color-mix(in srgb, var(--dato) 30%, transparent); }
+
+.leyenda { font-size: 0.8rem; color: var(--texto-suave); margin: 0 0 0.4rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.7rem; }
+.punto { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 0.3rem; vertical-align: -1px; }
+.punto.lleno { background: var(--dato); }
+.punto.hueco { border: 2px solid var(--dato); }
+.raya { display: inline-block; width: 16px; border-top: 1.5px dashed var(--ref); margin-right: 0.3rem; vertical-align: middle; }
+.explica { font-size: 0.85rem; margin: 0 0 0.4rem; color: var(--texto); }
+.info { position: relative; color: var(--dato); cursor: help; font-weight: 700; }
+.info [role="tooltip"] {
+  visibility: hidden; opacity: 0; position: absolute; right: 0; top: 1.4rem; width: 15rem; z-index: 2;
+  background: var(--texto); color: var(--fondo); font-weight: 400; font-size: 0.8rem; padding: 0.5rem 0.6rem; border-radius: 0.5rem;
+}
+.info:hover [role="tooltip"], .info:focus [role="tooltip"] { visibility: visible; opacity: 1; }
+
+.lienzo { position: relative; height: 240px; }
+.franjas { list-style: none; padding: 0; margin: 0.6rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { font-size: 0.8rem; font-weight: 700; padding: 0.3rem 0.65rem; border-radius: 999px; }
+.chip.tilt { background: var(--franja-tilt); color: var(--tinta-tilt); }
+.chip.buena { background: var(--franja-buena); color: var(--tinta-buena); }
+.chip.mala { background: var(--franja-mala); color: var(--tinta-mala); }
+.lienzo.bajo { height: 200px; }
+#reloj { display: block; width: 100%; max-width: 300px; margin: 0 auto; }
+#reloj .sector { cursor: pointer; }
+.detalle { background: var(--superficie-2); border-radius: 0.7rem; padding: 0.55rem 0.75rem; font-size: 0.9rem; margin: 0.25rem 0 0.5rem; }
+.detalle .nota { color: var(--texto-suave); }
+.nota-api { font-size: 0.8rem; color: var(--texto-suave); text-align: center; }
+
+footer { margin-top: 2rem; font-size: 0.75rem; color: var(--texto-suave); text-align: center; }
+footer a { color: inherit; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

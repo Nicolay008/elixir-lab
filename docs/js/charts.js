@@ -1,0 +1,138 @@
+// Gráficas de Racha, Elixir y Coronas (Chart.js, cargado como script global).
+import { dia, hora } from "./stats.js";
+
+const MOSTRAR = 20; // partidas visibles
+
+const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const colores = () => ({
+  dato: css("--dato"), ref: css("--ref"), fondo: css("--superficie"), texto: css("--texto-suave"),
+  rejilla: css("--rejilla"), sep: css("--separador"),
+  tilt: css("--franja-tilt"), tiltTinta: css("--tinta-tilt"),
+  buena: css("--franja-buena"), buenaTinta: css("--tinta-buena"),
+  mala: css("--franja-mala"), malaTinta: css("--tinta-mala"),
+});
+
+// recorta a las últimas MOSTRAR partidas y ajusta los índices de las franjas
+function ventana(m) {
+  const ini = Math.max(0, m.ps.length - MOSTRAR);
+  const ps = m.ps.slice(ini);
+  const franjas = m.franjas
+    .filter((f) => f.hasta >= ini)
+    .map((f) => ({ ...f, desde: Math.max(0, f.desde - ini), hasta: f.hasta - ini }));
+  const etiquetas = ps.map((p, i) => (i === 0 || dia(p.t) !== dia(ps[i - 1].t) ? dia(p.t) : ""));
+  return { ini, ps, franjas, etiquetas };
+}
+
+// separadores de día y franjas de racha, dibujados detrás de los datos
+function decoracion(v, c) {
+  return {
+    id: "decoracion",
+    beforeDatasetsDraw(ch) {
+      const { ctx, chartArea: a, scales: { x } } = ch;
+      const w = v.ps.length > 1 ? x.getPixelForValue(1) - x.getPixelForValue(0) : 20;
+      ctx.save();
+      ctx.strokeStyle = c.sep; ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+      v.ps.forEach((p, i) => {
+        if (i > 0 && dia(p.t) !== dia(v.ps[i - 1].t)) {
+          const px = x.getPixelForValue(i) - w / 2;
+          ctx.beginPath(); ctx.moveTo(px, a.top); ctx.lineTo(px, a.bottom); ctx.stroke();
+        }
+      });
+      ctx.setLineDash([]);
+      for (const f of v.franjas) {
+        const x0 = x.getPixelForValue(f.desde) - w / 2, x1 = x.getPixelForValue(f.hasta) + w / 2;
+        ctx.fillStyle = c[f.tipo === "tilt" ? "tilt" : f.tipo]; ctx.fillRect(x0, a.top, x1 - x0, a.bottom - a.top);
+      }
+      ctx.restore();
+    },
+  };
+}
+
+function base(c, ymin, ymax, fmt) {
+  return {
+    responsive: true, maintainAspectRatio: false, animation: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { type: "category", ticks: { color: c.texto, font: { size: 11 }, autoSkip: false, maxRotation: 0 }, grid: { display: false } },
+      y: { min: ymin, max: ymax, ticks: { color: c.texto, font: { size: 11 }, callback: fmt }, grid: { color: c.rejilla } },
+    },
+  };
+}
+
+// franjas visibles con su texto, para mostrarlas como chips bajo la gráfica
+export function franjasVisibles(m) {
+  const v = ventana(m), nombre = { tilt: "Posible tilt", buena: "Buena racha", mala: "Mala racha" };
+  return v.franjas.map((f) => {
+    const a = v.ps[f.desde], b = v.ps[f.hasta], n = f.hasta - f.desde + 1;
+    const cuando = dia(a.t) === dia(b.t) ? `${dia(a.t)}, ${hora(a.t)} a ${hora(b.t)}` : `${dia(a.t)} a ${dia(b.t)}`;
+    return { tipo: f.tipo, texto: `${nombre[f.tipo]} · ${cuando} · ${n} ${f.tipo === "buena" ? "victorias" : "derrotas"} seguidas` };
+  });
+}
+
+// vista: "racha" o "elixir"
+export function tendencia(canvas, m, vista, previo) {
+  previo?.destroy();
+  const c = colores(), v = ventana(m), R = vista === "racha";
+  const linea = (R ? m.winrate : m.elixir).slice(v.ini);
+  const puntos = v.ps.map((p) => (R ? linea[v.ps.indexOf(p)] : p.desconexion ? null : p.elixir_desperdiciado));
+  const ref = R ? 50 : m.limite;
+  const opt = base(c, 0, R ? 112 : Math.max(8.5, ...puntos.filter((x) => x !== null)) + 0.5,
+    (val) => (R ? (val <= 100 && val % 25 === 0 ? `${val} %` : "") : val % 2 === 0 ? val : ""));
+  opt.plugins.tooltip = {
+    filter: (t) => t.datasetIndex === 1,
+    callbacks: {
+      title: (t) => { const p = v.ps[t[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
+      label: (t) => {
+        const p = v.ps[t.dataIndex];
+        const base = `${p.victoria ? "Victoria" : "Derrota"} ${p.coronas}`;
+        if (p.desconexion) return `${base} · posible desconexión`;
+        return R ? `${base} · tendencia ${Math.round(linea[t.dataIndex])} %` : `${base} · ${p.elixir_desperdiciado?.toFixed(2) ?? "–"} de elixir perdido`;
+      },
+    },
+  };
+  return new Chart(canvas, {
+    data: {
+      labels: v.etiquetas,
+      datasets: [
+        { type: "line", data: linea, borderColor: c.dato, borderWidth: 2, pointRadius: 0, tension: 0.3, spanGaps: true },
+        {
+          type: "scatter", data: puntos.map((y, i) => ({ x: i, y })),
+          pointBorderColor: c.dato, pointBorderWidth: 2,
+          pointBackgroundColor: v.ps.map((p) => (p.victoria ? c.dato : c.fondo)),
+          pointRadius: R ? 5 : v.ps.map((p) => (m.limite !== null && p.elixir_desperdiciado > m.limite ? 7 : 4)),
+        },
+        ...(ref !== null ? [{ type: "line", data: v.ps.map(() => ref), borderColor: c.ref, borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0 }] : []),
+      ],
+    },
+    options: opt,
+    plugins: [decoracion(v, c)],
+  });
+}
+
+export function coronas(canvas, m, previo) {
+  previo?.destroy();
+  const c = colores(), v = ventana(m);
+  const opt = base(c, -3.4, 3.4, (val) => (Number.isInteger(val) ? (val > 0 ? `+${val}` : val) : ""));
+  opt.plugins.tooltip = {
+    filter: (t) => t.datasetIndex === 0,
+    callbacks: {
+      title: (t) => { const p = v.ps[t[0].dataIndex]; return `${dia(p.t)} ${hora(p.t)}`; },
+      label: (t) => v.ps[t.dataIndex].coronas,
+    },
+  };
+  return new Chart(canvas, {
+    data: {
+      labels: v.etiquetas,
+      datasets: [
+        {
+          type: "line", data: v.ps.map((p) => p.dif), borderColor: c.dato, borderWidth: 2, tension: 0.25,
+          pointRadius: 5, pointBorderWidth: 2, pointBorderColor: c.dato,
+          pointBackgroundColor: v.ps.map((p) => (p.victoria ? c.dato : c.fondo)),
+        },
+        { type: "line", data: v.ps.map(() => 0), borderColor: c.ref, borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0 },
+      ],
+    },
+    options: opt,
+    plugins: [decoracion({ ...v, franjas: [] }, c)],
+  });
+}

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tu rendimiento · Elixir Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/jugador.css">
+</head>
+<body>
+<main>
+  <header class="cabecera">
+    <a class="volver" href="./">Elixir Lab</a>
+    <h1>Tu rendimiento</h1>
+    <p class="intro">Escribe tu tag del juego y mira cómo vienes en tus últimas partidas.</p>
+    <form id="formulario" class="buscador" autocomplete="off">
+      <label class="oculto" for="tag">Tag del jugador</label>
+      <input id="tag" name="tag" placeholder="#92CP0QJVG" spellcheck="false" autocapitalize="characters">
+      <button id="buscar" type="submit">Consultar</button>
+    </form>
+    <p id="error" class="error" role="alert" hidden></p>
+  </header>
+
+  <section id="resultado" hidden>
+    <div class="jugador">
+      <h2 id="nombre"></h2>
+      <p id="detalleJugador"></p>
+    </div>
+
+    <p id="estado" class="estado" data-tono="neutro"></p>
+
+    <dl class="resumen">
+      <div><dt>Partidas</dt><dd id="resumenPartidas"></dd></div>
+      <div><dt>Winrate</dt><dd id="resumenWinrate"></dd></div>
+      <div><dt>Elixir perdido</dt><dd id="resumenElixir"></dd></div>
+    </dl>
+
+    <article class="tarjeta">
+      <div class="pulsador" role="group" aria-label="Qué gráfica ver">
+        <button id="vistaRacha" type="button" aria-pressed="true">Racha</button>
+        <button id="vistaElixir" type="button" aria-pressed="false">Elixir</button>
+      </div>
+      <p id="explicaElixir" class="explica" hidden>
+        Elixir perdido: el que se desperdicia cuando tu barra llega a 10 y no juegas ninguna carta.
+        <span class="info" tabindex="0" aria-describedby="detalleLimite">ⓘ<span id="detalleLimite" role="tooltip"></span></span>
+      </p>
+      <p id="leyendaTendencia" class="leyenda"></p>
+      <div class="lienzo"><canvas id="graficaTendencia" role="img" aria-label="Tendencia de tus últimas partidas"></canvas></div>
+      <ul id="franjas" class="franjas" aria-label="Rachas destacadas"></ul>
+    </article>
+
+    <article class="tarjeta">
+      <h3>Tus coronas, partida a partida</h3>
+      <p class="leyenda">Arriba: ganaste · abajo: perdiste</p>
+      <div class="lienzo bajo"><canvas id="graficaCoronas" role="img" aria-label="Diferencia de coronas en tus últimas partidas"></canvas></div>
+    </article>
+
+    <article class="tarjeta">
+      <h3>¿A qué hora rindes mejor?</h3>
+      <div class="pulsador" role="group" aria-label="Mitad del día">
+        <button id="botonAM" type="button">AM</button>
+        <button id="botonPM" type="button">PM</button>
+      </div>
+      <svg id="reloj" viewBox="0 0 320 350" role="img" aria-label="Tu winrate por hora del día"></svg>
+      <p id="detalleHora" class="detalle"></p>
+      <p class="leyenda">Largo del sector: cuántas partidas jugaste a esa hora. Borde punteado: menos de 5 partidas.</p>
+    </article>
+
+    <p class="nota-api">Estos datos salen de tus últimas ~30 partidas, que es lo que guarda el juego.</p>
+  </section>
+
+  <footer>
+    Elixir Lab es contenido no oficial y no está respaldado por Supercell.
+    <a href="https://www.supercell.com/fan-content-policy">Política de contenido de fans</a>.
+  </footer>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
