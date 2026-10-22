@@ -158,6 +158,7 @@ footer{max-width:30rem;margin:0 auto;padding:0 1rem 1.5rem;font-size:.8rem;color
 .feed.solo li.play{flex-direction:column;justify-content:center}
 .feed.solo li .mini{width:8.5em;height:10.2em;margin:0 auto .35rem}
 .feed li.play b{font-size:.9rem}
+.feed:not(.compact):not(.solo) li.play .qdrop.sm{margin-left:auto;margin-right:.5rem}
 .feed.noname li.play img + b{display:none}
 
 .ctrl{display:flex;justify-content:space-between;align-items:center;margin:-.25rem 0 .5rem}
@@ -251,6 +252,14 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .feed.compact .edrops{margin-left:.3rem}
 .feed.compact .edrop{width:10px;height:12px;animation:none;opacity:1}
 .feed.compact .edrop.lost{opacity:.5}
+/* resumen ordenado: misma celda para cada carta, en el orden en que salieron */
+.feed.compact{display:grid;grid-template-columns:repeat(auto-fit,minmax(3.4rem,1fr));gap:.4rem;align-items:start}
+.feed.compact li.start{grid-column:1/-1}
+.feed.compact li.play{flex-direction:column;justify-content:flex-start;gap:.25rem;padding:.35rem .2rem;text-align:center}
+.feed.compact li.play b{display:none}
+.feed.compact .mini{width:2.6em;height:3.1em}
+.feed.compact .qdrop.sm{margin:0}
+.feed.compact li.time{grid-column:1/-1;text-align:center}
 
 /* selectores segmentados: un solo bloque con la opción elegida resaltada */
 .seg{gap:4px;padding:4px;border:1.5px solid var(--line);border-radius:1rem;background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
@@ -278,7 +287,36 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .decide .conv{width:96px;flex:none}
 .decide .mtxt{display:flex;flex-direction:column}
 .decide .mtitle{color:var(--muted)}
+/* Laboratorio personal: busca tu perfil (lleva a jugador.html?tag=) */
+.lab{margin:0 0 1rem;padding:.7rem .75rem .75rem;border:2px solid var(--elixir);border-radius:1rem;background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 18px var(--glow)}
+.lab .lhead{display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem}
+.lab .spark{width:46px;height:28px;flex:none}
+.lab .mtxt{display:flex;flex-direction:column;min-width:0}
+.lab .mdesc{font-size:.82rem}
+.lab .lsearch{display:flex;gap:.45rem}
+.lab .lfield{flex:1;min-width:0;display:flex;align-items:center;border:2px solid var(--line);border-radius:.7rem;background:var(--surface)}
+.lab .lfield:focus-within{border-color:var(--elixir-2)}
+.lab .lfield b{padding:0 .1rem 0 .65rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;color:var(--elixir)}
+.lab .lfield input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.6rem .5rem .6rem .15rem}
+.lab .lfield input::placeholder{color:var(--muted);font-weight:600;letter-spacing:0;text-transform:none}
+.lab button{flex:none;border:0;border-radius:.7rem;padding:0 1rem;font:inherit;font-weight:800;color:#fff;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));cursor:pointer}
+.lab button:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .next-skill{margin-bottom:.6rem}
+.feed li.start{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .6rem}
+.feed li.start .anc{font-weight:800}
+.ebar{display:inline-flex;gap:3px}
+.ebar i{width:13px;height:13px;border-radius:3px;background:var(--line);transition:background .12s}
+.ebar i.on{background:linear-gradient(var(--elixir-2),var(--elixir))}
+.feed li.start .ev{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;color:var(--elixir);min-width:1.3em}
+.feed.compact li.start{display:flex;padding:0 0 .2rem}
+.feed.compact .ebar i{width:9px;height:9px}
+.feed.compact li.start .ev{font-size:1rem}
+.anchor-tip{margin:.35rem 0 0;font-weight:700;color:var(--gold)}
+.hp.pre{opacity:.45;filter:saturate(.6);transition:opacity .3s}
+.hp.hit .cardf{animation:hit .45s ease}
+@keyframes hit{0%{transform:scale(1.25)}60%{transform:scale(.95)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.hp.hit .cardf{animation:none}}
 .hunt-ctx{font-size:.84rem;line-height:1.3;color:var(--muted);margin:.15rem 0 .35rem;text-align:left}
 .pv.cyc img{height:44px}
 .pv.cyc .qs{display:grid;place-items:center;width:30px;height:38px;border-radius:.4rem;background:var(--glass);border:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--muted)}
@@ -389,6 +427,23 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     <div class="top"><h1 class="brand"><svg class="logo" viewBox="-34 -56 68 100" aria-hidden="true"><defs><linearGradient id="lgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--elixir-2)"/><stop offset="1" style="stop-color:var(--elixir)"/></linearGradient></defs><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" fill="url(#lgG)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" fill="url(#lgG)"/></svg>Elixir Lab</h1><div class="topbtns"><button class="langbtn snd" id="sndBtn" aria-label="Sonido"></button><button class="langbtn" id="langBtn" aria-label="Language"></button></div></div>
     <p class="tagline" data-en="Sharpen your reactions and read your opponent.">Mejora tu reacción y lee a tu rival.</p>
 
+    <form class="lab" id="labForm" action="jugador.html" method="get" autocomplete="off">
+      <div class="lhead">
+        <svg class="spark" viewBox="0 0 52 32" aria-hidden="true">
+          <path d="M3 26 L13 18 L21 22 L31 10 L39 15 L47 6" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--elixir)"/>
+          <circle cx="47" cy="6" r="3.5" style="fill:var(--gold)"/>
+        </svg>
+        <span class="mtxt">
+          <span class="mtitle" data-en="Personal lab">Laboratorio personal</span>
+          <span class="mdesc" data-en="Your real matches: streak, wasted elixir, crowns and best time to play.">Tus partidas reales: racha, elixir perdido, coronas y mejor hora.</span>
+        </span>
+      </div>
+      <div class="lsearch">
+        <label class="lfield"><b aria-hidden="true">#</b><span class="sr" data-en="Player tag">Tag del jugador</span><input id="labTag" name="tag" placeholder="Tu tag del juego" data-ph-en="Your player tag" spellcheck="false" autocapitalize="characters" maxlength="12"></label>
+        <button type="submit" data-en="Search">Buscar</button>
+      </div>
+    </form>
+
     <div class="modes" role="radiogroup" aria-label="Modo">
       <label class="mode">
         <input type="radio" name="mode" value="cost" checked>
@@ -435,6 +490,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
         <span class="mdesc" data-en="All three at once: attack or wait? · Coming soon">Las tres a la vez: ¿atacas o esperas? · Próximamente</span>
       </span>
     </div>
+
 
     <div id="costOpts">
       <div class="badges" id="badges" aria-label="Insignias de Maestría"></div>
@@ -570,8 +626,9 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       <span class="phase" id="cPhase"></span>
       <ul class="feed" id="feed"></ul>
       <div id="cAsk" class="hidden">
-        <div class="display" style="font-size:1.5rem;margin:.75rem 0 .25rem" data-en="How much elixir do they have now?">¿Cuánto elixir tiene ahora?</div>
+        <div class="display" id="cQ" style="font-size:1.5rem;margin:.75rem 0 .25rem">¿Cuánto elixir tiene ahora?</div>
         <div class="feedback" id="cFeedback"></div>
+        <p class="anchor-tip hidden" id="cTip"></p>
         <ul class="breakdown hidden" id="breakdown"></ul>
       </div>
     </div>
@@ -710,6 +767,21 @@ const troph=n=>Math.round(n*50);   // nota 0-20 → trofeos 0-1000
 const tr=L; // alias para funciones donde "L" es otra variable
 document.documentElement.lang=LANG;
 if(LANG==="en") document.querySelectorAll("[data-en]").forEach(el=>{el.innerHTML=el.dataset.en;});
+
+// Laboratorio personal: recuerda el último tag consultado en jugador.html y manda ?tag= limpio
+(()=>{
+  const f=document.getElementById("labForm"), t=document.getElementById("labTag");
+  if(!f||!t) return;
+  if(LANG==="en") t.placeholder=t.dataset.phEn;
+  try{ const last=localStorage.getItem("elixirLabTag"); if(last) t.value=last.replace(/^#/,""); }catch(e){}
+  t.addEventListener("input",()=>{ t.value=t.value.replace(/[^0-9a-z]/gi,"").toUpperCase(); });
+  f.addEventListener("submit",e=>{
+    e.preventDefault();
+    const tag=t.value.replace(/[^0-9a-z]/gi,"").toUpperCase();
+    if(!tag){ t.focus(); return; }
+    location.href="jugador.html?tag="+encodeURIComponent(tag);
+  });
+})();
 $("langBtn").textContent=LANG==="en"?"ES":"EN";
 $("langBtn").addEventListener("click",()=>{try{localStorage.setItem(LANG_KEY,LANG==="en"?"es":"en");}catch(e){} location.reload();});
 
@@ -744,6 +816,7 @@ const sfx={
   err:   ()=>{ tone(190,.07,{type:"square",vol:.35}); tone(150,.1,{type:"square",vol:.35,delay:.1}); }, // error: dos pitidos graves
   tick:  ()=>{ tone(700,.05,{vol:.25}); },                                          // últimos segundos, suave
   card:  ()=>{ noise(.2,{freq:700,to:3200,q:1.2,vol:.45,shape:"swell"}); },        // carta que se desliza
+  target:()=>{ noise(.06,{freq:1600,q:.8,vol:.9}); tone(900,.16,{to:180,type:"sawtooth",vol:.3}); }, // carta objetivo: disparo
   swords:()=>{ noise(.09,{freq:4200,q:3}); noise(.12,{freq:5200,q:4,delay:.09}); tone(2400,.35,{type:"triangle",delay:.09,vol:.25}); }, // empezar
   fanfare:()=>{ [523,659,784,1047].forEach((f,i)=>tone(f,.18,{type:"triangle",delay:i*.09,vol:.7})); } // corona, récord, insignia
 };
@@ -1390,11 +1463,12 @@ function cardRole(c){
 }
 function huntContext(c){
   const n=baseName(c[0]);
+  if(/^Elixir Collector/.test(c[4]||"")) return L(`Puso un ${n}.`,`They placed an ${n}.`);
   return {
-    threat:  L(`Te atacó con ${n}. ¿Cuándo puede volver a atacarte?`,`They attacked you with ${n}. When can they attack again?`),
-    building:L(`Defendió tu ataque con ${n}. Mientras no la recupere, tienes una ventana.`,`They defended your push with ${n}. Until they get it back, you have a window.`),
-    spell:   L(`Gastó ${n} en tus tropas. Mientras no la recupere, tus tropas están a salvo de ella.`,`They spent ${n} on your troops. Until they get it back, your troops are safe from it.`),
-    troop:   L(`Frenó tu ataque con ${n}. ¿Cuándo vuelve a tenerla para defender?`,`They stopped your push with ${n}. When will they have it again to defend?`)
+    threat:  L(`Te atacó con ${n}.`,`They attacked you with ${n}.`),
+    building:L(`Usó ${n} para defender tu ataque.`,`They used ${n} to defend your push.`),
+    spell:   L(`Gastó ${n}.`,`They spent ${n}.`),
+    troop:   L(`Usó ${n} en su defensa.`,`They used ${n} in their defense.`)
   }[cardRole(c)];
 }
 function hPips(n){ [...$("hPips").children].forEach((p,i)=>p.classList.toggle("on",i<n)); }
@@ -1427,7 +1501,9 @@ function yHuntRound(){
     el.type="button"; el.className=`hp ${x.who}${x.tgt?" tgt":""}`; el.dataset.i=i;
     el.innerHTML=cardEl(x.c,"fall")+`<span class="tag">${tag}</span>`;
     el.addEventListener("click",()=>hTap(el,x,i));
-    $("hLine").appendChild(el); sfx.card();
+    $("hLine").appendChild(el);
+    if(x.tgt){ sfx.target(); [...$("hLine").children].forEach(c=>{ if(c!==el) c.classList.add("pre"); }); el.classList.add("hit"); }
+    else sfx.card();
     k++;
     yReveal=setTimeout(k<yH.seq.length?step:yHuntAsk, yStage===1?1000:800);
   };
@@ -1530,23 +1606,32 @@ function genScenario(L){
   const rate=L.easyTime?1/3:(L.double?1/1.4:1/2.8);
   // Entrenamiento (sin reloj): primero las cartas, luego un sobrante al azar,
   // para que cualquier respuesta sea igual de probable
+  // solo se parte de lo que en partida sí sabes: inicio (5) o quieto un rato (10)
   if(!L.time){
-    let rem=rnd(0,L.plays>=4?4:6);               // la respuesta se elige primero y se mantiene
-    for(let tries=0;tries<2000;tries++){
-      if(tries>0 && tries%500===0 && rem>0) rem--;
-      const picks=pickUnique(L.plays);
-      const sum=picks.reduce((t,c)=>t+c[1],0);
-      if(sum>10-rem) continue;
-      const start=sum+rem; let e=start;
+    const start=(L.plays<=3 && Math.random()<.3)?5:10, anchor=start===5?"open":"full";
+    // se juntan escenarios por respuesta y se elige una respuesta al azar,
+    // para que ninguna (el 0, por ejemplo) salga mucho más que las demás
+    // con 5 de elixir, 2 cartas: con 3 casi siempre se gastaría todo
+    const cap=start===5?3:(L.plays>=4?4:6), np=start===5?2:L.plays, buckets={};
+    for(let tries=0;tries<3000;tries++){
+      const picks=pickUnique(np);
+      const rem=start-picks.reduce((t,c)=>t+c[1],0);
+      if(rem<0||rem>cap||(buckets[rem]&&buckets[rem].length>=3)) continue;
+      (buckets[rem]=buckets[rem]||[]).push(picks);
+    }
+    const keys=Object.keys(buckets);
+    if(keys.length){
+      const rem=+keys[rnd(0,keys.length-1)], picks=buckets[rem][rnd(0,buckets[rem].length-1)];
+      let e=start;
       const steps=picks.map(card=>{e-=card[1];return {type:"play",card,after:e};});
-      return {start,steps,answer:rem,exact:rem};
+      return {start,steps,answer:rem,exact:rem,anchor};
     }
   }
   for(let tries=0;tries<500;tries++){
     const deck8=pickUnique(8);
     // inicio de partida: 5 de elixir y el rival espera antes de jugar (solo con elixir normal)
     const opening = L.time && !L.double && Math.random()<.4;
-    let e=opening?5:rnd(L.startMin,10); const start=e; const steps=[]; let ok=true; const recent=[];
+    let e=opening?5:10; const start=e; const steps=[]; let ok=true; const recent=[];
     for(let i=0;i<L.plays;i++){
       if(L.time && ((i>0 && Math.random()>.25) || (i===0 && (opening || Math.random()<.4)))){
         const secs=(i===0&&opening)?(L.easyTime?15:rnd(8,17)):(L.easyTime?[3,6,9][rnd(0,2)]:rnd(2,8)), gain=secs*rate, before=e;
@@ -1569,7 +1654,7 @@ function genScenario(L){
     // que el 0 no sea la respuesta casi siempre: solo se acepta en 1 de cada 6 casos
     if(answer===0 && Math.random()<.83) continue;
     if(e-answer>0.75 || e-answer>1e-9 && e-answer<0.15 && false) continue;
-    return {start,steps,answer,exact:e,opening};
+    return {start,steps,answer,exact:e,opening,anchor:opening?"open":"full"};
   }
 }
 
@@ -1597,7 +1682,7 @@ function cNextRound(){
   cLocked=true; clearInterval(cTimer); clearTimeout(cReveal);
   // Partida real: las 3 últimas rondas, en doble elixir
   const dbl = cLevel===LEVELS.medio && cIdx>=cRounds-3;
-  cCur={...cLevel, plays:cPlays, double:cLevel.double||dbl};
+  cCur={...cLevel, plays:cPlays, double:cLevel.double||dbl, step:cUntimed()?1000:cLevel.step};
   // si no hay escenario posible con tantas cartas, prueba con una menos
   cScn=null;
   for(let k=cPlays;k>=1&&!cScn;k--) cScn=genScenario({...cCur,plays:k});
@@ -1610,13 +1695,14 @@ function cPlay(){
   $("cStreak").textContent=`${L("Racha","Streak")} ${cStreak}`;
   const ex=cRes.filter(r=>r.ok).length;
   $("cPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
-  $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):(cUntimed()?L("Primeros pasos · sin prisa, tómate tu tiempo","First steps · no rush, take your time"):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count"))));
+  $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):(cUntimed()?L("Primeros pasos · sin prisa","First steps · no rush"):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count"))));
   $("cCard").className="card";
   const feed=$("feed"); feed.innerHTML=""; feed.classList.toggle("solo",cCur.solo); feed.classList.remove("compact");
   feed.classList.toggle("noname",!$("showNames").checked);
-  ["cAsk","cBar","nums","cNext","breakdown"].forEach(id=>$(id).classList.add("hidden"));
+  ["cAsk","cBar","nums","cNext","breakdown","cTip"].forEach(id=>$(id).classList.add("hidden"));
   $("cFeedback").textContent=""; $("cFeedback").className="feedback";
-  const lines=[{cls:"start",html:cScn.opening?L(`Empieza la partida: el rival tiene <b>5</b> de elixir`,`Match starts: your opponent has <b>5</b> elixir`):L(`El rival tiene <b>${cScn.start}</b> de elixir`,`Your opponent has <b>${cScn.start}</b> elixir`)}]
+  const open=cScn.anchor==="open";
+  const lines=[{cls:"start",html:`<span class="anc">${open?L("🏁 Empieza la partida","🏁 Match starts"):L("⏸ Lleva rato sin jugar","⏸ Hasn’t played for a while")}</span><span class="ebar" aria-hidden="true">${"<i></i>".repeat(10)}</span><b class="ev">${open?5:"?"}</b>`}]
     .concat(cScn.steps.map(st=>st.type==="time"
       ?{cls:"time",html:timeHtml(st),n:Math.round(st.gain-st.leak)}
       :{cls:"play",html:`${st.card[3]?`<img class="mini" src="${st.card[3]}" alt="">`:`<i class="chip ${RCLASS[st.card[2]]}"></i>`}<b>${st.card[0]}</b>${ANSWER_TIME>10?`<span class="qdrop sm" aria-label="cuesta ${st.card[1]}">${st.card[1]}</span>`:""}`}));
@@ -1624,6 +1710,7 @@ function cPlay(){
   const push=()=>{
     const li=document.createElement("li"); li.className=lines[k].cls; li.innerHTML=lines[k].html;
     feed.appendChild(li); k++; if(li.className==="play") sfx.card();
+    if(li.className==="start") fillBar(li, open?5:3, cScn.start);
     const nd=lines[k-1].n||0; for(let j=0;j<Math.min(nd,5);j++) setTimeout(sfx.drop,j*300);
     if(k<lines.length) cReveal=setTimeout(push,cCur.step);
     else cReveal=setTimeout(cAsk,cCur.step);
@@ -1633,8 +1720,20 @@ function cPlay(){
 
 // Primeros pasos con ayuda: se aprende a calcular sin prisa; el tiempo solo se mide
 const cUntimed=()=>cLevel===LEVELS.facil && ANSWER_TIME>10;
+// barra del rival: en 5 al inicio, o llenándose sola hasta 10 si se quedó quieto
+function fillBar(li,from,to){
+  const segs=[...li.querySelectorAll(".ebar i")], ev=li.querySelector(".ev");
+  segs.forEach((s,i)=>s.classList.toggle("on",i<from));
+  if(from>=to){ ev.textContent=to; return; }
+  let n=from; const iv=setInterval(()=>{ if(!li.isConnected){clearInterval(iv);return;}
+    segs[n].classList.add("on"); n++; if(n>=to){ clearInterval(iv); ev.textContent=to; sfx.drop(); } }, 90);
+}
+// Partida real: se pregunta lo que de verdad usas, un tope (cuánto tiene como mucho)
+const cUpper=()=>cLevel===LEVELS.medio||cLevel===LEVELS.dificil;
+const TIPKEY="elixirAnchorTipV1";
 function cAsk(){
   if(cCur.solo) $("feed").innerHTML=""; else $("feed").classList.add("compact");
+  $("cQ").textContent=cUpper()?L("¿Cuánto tiene como mucho?","At most, how much do they have?"):L("¿Cuánto elixir tiene ahora?","How much elixir do they have now?");
   $("cAsk").classList.remove("hidden"); $("cBar").classList.toggle("hidden",cUntimed()); $("nums").classList.remove("hidden");
   // que los botones queden a la vista sin tener que bajar
   requestAnimationFrame(()=>{ const r=$("nums").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("nums").scrollIntoView({block:"end",behavior:"smooth"}); });
@@ -1659,7 +1758,7 @@ function cAnswer(v){
   if(cLocked) return; cLocked=true; clearInterval(cTimer);
   $("cReplay").classList.add("hidden");
   const tReal=(performance.now()-cT0)/1000, t=Math.min(ANSWER_TIME,tReal);
-  const a=cScn.answer, ok=v===a, dev=v===null?a:Math.abs(v-a);
+  const a=cScn.answer, loose=cUpper()&&v===a+1, ok=v===a||loose, dev=v===null?a:Math.abs(v-a);
   cRes.push({ok,dev,t,near:v!==null&&Math.abs(v-a)===1});
   ok?cStreak++:cStreak=0; ok?sfx.ok():sfx.err();
   const prevPlays=cPlays;
@@ -1670,12 +1769,16 @@ function cAnswer(v){
   });
   $("cCard").classList.add(ok?"ok":"bad");
   const fb=$("cFeedback"); fb.classList.add(ok?"ok":"bad");
-  fb.textContent = ok?L(`Exacto: ${a}${cPlays>prevPlays?` · ¡Sube a ${cPlays} cartas!`:""}`,`Exact: ${a}${cPlays>prevPlays?` · Up to ${cPlays} cards!`:""}`):(v===null?L(`Se acabó el tiempo: tenía ${a}`,`Time’s up: they had ${a}`):L(`Tenía ${a}, dijiste ${v}`,`They had ${a}, you said ${v}`));
+  fb.textContent = loose?L(`Vale: como mucho ${v} (tenía ${a})`,`Fine: at most ${v} (they had ${a})`):ok?L(`Exacto: ${a}${cPlays>prevPlays?` · ¡Sube a ${cPlays} cartas!`:""}`,`Exact: ${a}${cPlays>prevPlays?` · Up to ${cPlays} cards!`:""}`):(v===null?L(`Se acabó el tiempo: tenía ${a}`,`Time’s up: they had ${a}`):L(`Tenía ${a}, dijiste ${v}`,`They had ${a}, you said ${v}`));
+  // la regla del punto de partida, en palabras, solo la primera vez
+  try{ const seen=JSON.parse(localStorage.getItem(TIPKEY))||{}, an=cScn.anchor;
+    if(an && !seen[an]){ $("cTip").textContent=an==="open"?L("Al empezar la partida, los dos tienen 5 de elixir.","At the start of a match, both players have 5 elixir."):L("Si el rival se queda quieto un rato, asume que está a 10.","If your opponent stays idle for a while, assume they’re at 10.");
+      $("cTip").classList.remove("hidden"); seen[an]=1; localStorage.setItem(TIPKEY,JSON.stringify(seen)); } }catch(e){}
   if(cUntimed()) fb.textContent+=L(` · Respondiste en ${f1(tReal)} s`,` · You answered in ${f1(tReal)} s`);
   // desglose paso a paso
   const bd=$("breakdown"); bd.innerHTML="";
   const row=(l,r,cls="")=>{const li=document.createElement("li");li.innerHTML=`<span class="${cls}">${l}</span><span>${r}</span>`;bd.appendChild(li);};
-  row(cScn.opening?L("Empieza la partida con","Match starts with"):L("Empieza con","Starts with"),cScn.start);
+  row(cScn.anchor==="open"?L("Empieza la partida con","Match starts with"):L("Quieto un rato: lleno a","Idle for a while: full at"),cScn.start);
   cScn.steps.forEach(st=>{
     if(st.type==="play") row(`− ${st.card[1]} ${st.card[0]}`,f1(st.after));
     else{
