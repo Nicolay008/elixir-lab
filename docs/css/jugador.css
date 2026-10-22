@@ -152,18 +152,34 @@ footer a{color:inherit}
 .arriba{display:flex;align-items:center;justify-content:space-between;gap:1rem}
 .idioma{border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;padding:.35rem .7rem;border-radius:999px;cursor:pointer}
 
+/* ===== Pestañas ===== */
+.pestanas{margin:0 0 1rem}
+.pestanas button.brillo:not([aria-pressed="true"]){color:var(--elixir);box-shadow:inset 0 0 0 1.5px var(--elixir),0 0 14px var(--glow);animation:pulso 1.6s ease-in-out 2}
+@keyframes pulso{50%{box-shadow:inset 0 0 0 1.5px var(--elixir),0 0 22px var(--glow)}}
+
+/* ===== Iconos ===== */
+.icono{display:inline-block;vertical-align:-3px;flex:none}
+
 /* ===== Últimas partidas ===== */
-.partidas{list-style:none;padding:0;margin:.25rem 0 .25rem;display:flex;flex-direction:column;gap:.5rem}
-.partida{border:2px solid var(--line);border-left-width:5px;border-radius:1rem;padding:.55rem .7rem;background:var(--surface)}
-.partida.gana{border-left-color:var(--elixir)}
-.partida.pierde{border-left-color:var(--line)}
-.partida-cabecera{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap}
-.marcador{font:400 1.15rem "Lilita One","Arial Rounded MT Bold",sans-serif}
-.partida.gana .marcador{color:var(--elixir)}
+.partidas{list-style:none;padding:0;margin:.25rem 0 .25rem;display:flex;flex-direction:column;gap:.55rem}
+.partida{border:2px solid var(--line);border-radius:1rem;padding:.55rem .65rem .5rem;background:var(--surface)}
+.partida.gana{border-color:color-mix(in srgb,var(--elixir) 45%,var(--line))}
+.partida-cabecera{display:flex;align-items:center;gap:.4rem;margin:0 0 .35rem}
+.resultado{display:inline-flex;color:var(--muted)}
+.partida.gana .resultado{color:var(--elixir)}
+.marcador{font:400 1.1rem "Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--ink)}
 .partida.pierde .marcador{color:var(--muted)}
 .rival{font-weight:800;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.cuando{font-size:.78rem;color:var(--muted)}
-.mazo{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:3px;margin:.4rem 0 .1rem}
+.modo{display:inline-flex;color:var(--muted)}
+.cuando{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.ronda{font-size:.72rem;font-weight:800;color:var(--muted);margin:.35rem 0 .15rem}
+.fila-mazo{display:grid;grid-template-columns:2.4rem 1fr 2.7rem;align-items:center;gap:.35rem;margin:.15rem 0}
+.quien{font-size:.72rem;font-weight:800;color:var(--muted)}
+.mazo{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px}
+.fila-mazo.yo .mazo{opacity:.92}
 .mazo img{width:100%;height:auto;display:block}
-.sin-imagen{display:grid;place-items:center;aspect-ratio:5/6;border-radius:.4rem;background:var(--track);font-size:.6rem;font-weight:800}
-.partida-pie{font-size:.75rem;color:var(--muted)}
+.sin-imagen{display:grid;place-items:center;aspect-ratio:5/6;border-radius:.4rem;background:var(--track);font-size:.55rem;font-weight:800}
+.coste,.perdido{display:inline-flex;align-items:center;gap:.2rem;font-size:.78rem;font-weight:700;color:var(--muted);white-space:nowrap}
+.partida-pie{display:flex;justify-content:flex-end;margin-top:.2rem}
+@media (prefers-reduced-motion: reduce){.pestanas button.brillo{animation:none}}
+.ghost-btn{display:block;width:100%;margin:.6rem 0 1rem;background:transparent;color:var(--elixir);border:2px solid var(--elixir)}

@@ -1,12 +1,13 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=4";
-import { modelo } from "./stats.js?v=4";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=4";
-import { reloj } from "./clock.js?v=4";
-import { partidas } from "./partidas.js?v=4";
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=4";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=4";
-import * as seguidos from "./seguidos.js?v=4";
+import { consultar, seguir } from "./api.js?v=5";
+import { modelo } from "./stats.js?v=5";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=5";
+import { reloj } from "./clock.js?v=5";
+import { partidas } from "./partidas.js?v=5";
+let vistaActual = "partidas", graficasListas = false;
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=5";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=5";
+import * as seguidos from "./seguidos.js?v=5";
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
@@ -98,10 +99,30 @@ function pintar(data) {
     : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");
   $("resultado").hidden = false;
   pintarBotonSeguir(); pintarAtajos();
+  partidas($("listaPartidas"), $("verMas"), m.ps);
+  graficasListas = false;
+  if (vistaActual === "estadisticas") pintarGraficas();
+}
+
+function pintarGraficas() {
+  if (graficasListas || !m) return;
   pintarTendencia();
   graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
   reloj({ svg: $("reloj"), botonAM: $("botonAM"), botonPM: $("botonPM"), detalle: $("detalleHora") }, m.horas);
-  partidas($("listaPartidas"), $("verMas"), m.ps);
+  graficasListas = true;
+}
+
+function verPestana(cual) {
+  vistaActual = cual;
+  const p = cual === "partidas";
+  $("tabPartidas").setAttribute("aria-pressed", p); $("tabPartidas").setAttribute("aria-selected", p);
+  $("tabEstadisticas").setAttribute("aria-pressed", !p); $("tabEstadisticas").setAttribute("aria-selected", !p);
+  $("vistaPartidas").hidden = !p; $("vistaEstadisticas").hidden = p;
+  if (!p) {
+    $("tabEstadisticas").classList.remove("brillo");
+    try { localStorage.setItem("elixirVioEstadisticas", "1"); } catch (e) {}
+    pintarGraficas();
+  }
 }
 
 async function buscar(tag, { silencioso = false } = {}) {
@@ -121,6 +142,9 @@ async function buscar(tag, { silencioso = false } = {}) {
 }
 
 $("formulario").addEventListener("submit", (e) => { e.preventDefault(); buscar($("tag").value); });
+$("tabPartidas").addEventListener("click", () => verPestana("partidas"));
+$("tabEstadisticas").addEventListener("click", () => verPestana("estadisticas"));
+try { if (!localStorage.getItem("elixirVioEstadisticas")) $("tabEstadisticas").classList.add("brillo"); } catch (e) {}
 $("vistaRacha").addEventListener("click", () => { vista = "racha"; pintarTendencia(); });
 $("vistaElixir").addEventListener("click", () => { vista = "elixir"; pintarTendencia(); });
 $("botonSeguir").addEventListener("click", pedirSeguir);
@@ -136,4 +160,4 @@ seguidos.renovarTodos();
 const inicial = new URLSearchParams(location.search).get("tag") || (() => { try { return localStorage.getItem("elixirLabTag"); } catch (e) { return null; } })();
 if (inicial) { $("tag").value = inicial.startsWith("#") ? inicial : `#${inicial}`; buscar(inicial); }
 
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => ultimo && pintar(ultimo));
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { graficasListas = false; ultimo && pintar(ultimo); });

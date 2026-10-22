@@ -1,6 +1,6 @@
 // Lista de jugadores seguidos, guardada en este navegador (sin cuenta).
-import { MAX_SEGUIDOS } from "./config.js?v=4";
-import { seguir } from "./api.js?v=4";
+import { MAX_SEGUIDOS } from "./config.js?v=5";
+import { seguir } from "./api.js?v=5";
 
 const CLAVE = "elixirLabSeguidos";
 const sinAlmohadilla = (t) => t.replace(/^#/, "").toUpperCase();

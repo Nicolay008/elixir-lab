@@ -33,6 +33,7 @@ def lado(p):
 
 def compactar(b):
     return {"battleTime": b["battleTime"], "type": b.get("type"),
+            "gameMode": (b.get("gameMode") or {}).get("name"),
             "team": [lado(b["team"][0])], "opponent": [lado(b["opponent"][0])]}
 
 
