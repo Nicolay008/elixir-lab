@@ -1,6 +1,6 @@
 // Lista de jugadores seguidos, guardada en este navegador (sin cuenta).
-import { MAX_SEGUIDOS } from "./config.js?v=5";
-import { seguir } from "./api.js?v=5";
+import { MAX_SEGUIDOS } from "./config.js?v=6";
+import { seguir } from "./api.js?v=6";
 
 const CLAVE = "elixirLabSeguidos";
 const sinAlmohadilla = (t) => t.replace(/^#/, "").toUpperCase();
@@ -30,4 +30,20 @@ export async function renovarTodos() {
     catch (e) { /* si ya no se sigue en el servidor, se volverá a registrar al pulsar Seguir */ }
   }
   guardar(l);
+}
+
+// Perfil fijado: el que más te interesa (normalmente el tuyo). Solo uno, y solo en este navegador.
+const CLAVE_FIJADO = "elixirLabFijado";
+export function fijado() { try { return localStorage.getItem(CLAVE_FIJADO); } catch (e) { return null; } }
+export const esFijado = (tag) => fijado() === sinAlmohadilla(tag);
+export function fijar(tag, nombre) {
+  try { localStorage.setItem(CLAVE_FIJADO, sinAlmohadilla(tag)); } catch (e) {}
+  if (!sigo(tag)) anadir(tag, nombre);
+}
+export function desfijar() { try { localStorage.removeItem(CLAVE_FIJADO); } catch (e) {} }
+
+// atajos: el fijado primero, luego el resto en su orden
+export function ordenados() {
+  const f = fijado(), l = lista();
+  return [...l.filter((s) => s.tag === f), ...l.filter((s) => s.tag !== f)];
 }

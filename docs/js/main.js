@@ -1,13 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=5";
-import { modelo } from "./stats.js?v=5";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=5";
-import { reloj } from "./clock.js?v=5";
-import { partidas } from "./partidas.js?v=5";
+import { consultar, seguir } from "./api.js?v=6";
+import { modelo } from "./stats.js?v=6";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=6";
+import { reloj } from "./clock.js?v=6";
+import { partidas } from "./partidas.js?v=6";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=5";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=5";
-import * as seguidos from "./seguidos.js?v=5";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=6";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=6";
+import * as seguidos from "./seguidos.js?v=6";
+import { ICONOS } from "./iconos.js?v=6";
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
@@ -19,13 +20,17 @@ const leyendas = {
 
 // ---------- atajos y botón seguir ----------
 function pintarAtajos() {
-  const l = seguidos.lista(), actual = ultimo?.jugador.tag.replace("#", "");
+  const l = seguidos.ordenados(), actual = ultimo?.jugador.tag.replace("#", ""), fij = seguidos.fijado();
   $("atajos").hidden = l.length === 0;
-  $("atajos").innerHTML = l.map((s) => `<button type="button" data-tag="${s.tag}"${s.tag === actual ? ' aria-current="true"' : ""}>${s.nombre}</button>`).join("");
+  $("atajos").innerHTML = l.map((s) => `<button type="button" data-tag="${s.tag}"${s.tag === actual ? ' aria-current="true"' : ""}${s.tag === fij ? ' class="fijado"' : ""}>${s.tag === fij ? ICONOS.chincheta : ""}${s.nombre}</button>`).join("");
   $("atajos").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { $("tag").value = `#${b.dataset.tag}`; buscar(b.dataset.tag); }));
 }
 function pintarBotonSeguir() {
   const sigo = ultimo && seguidos.sigo(ultimo.jugador.tag);
+  const fij = ultimo && seguidos.esFijado(ultimo.jugador.tag);
+  $("botonFijar").setAttribute("aria-pressed", !!fij);
+  $("botonFijar").innerHTML = `${ICONOS.chincheta}<span>${fij ? t("Fijado", "Pinned") : t("Fijar", "Pin")}</span>`;
+  $("botonFijar").title = fij ? t("Quitar como perfil principal", "Unpin as main profile") : t("Fijar como tu perfil principal", "Pin as your main profile");
   $("botonSeguir").setAttribute("aria-pressed", !!sigo);
   $("botonSeguir").textContent = sigo ? t("Siguiendo", "Following") : t("Seguir", "Follow");
 }
@@ -82,15 +87,22 @@ function pintarTendencia() {
   $("franjas").innerHTML = franjasVisibles(m).map((f) => `<li class="chip ${f.tipo}">${f.texto}</li>`).join("");
 }
 
+// el perfil fijado se trata como "tú"; los demás, por su nombre
+const esMio = () => ultimo && seguidos.esFijado(ultimo.jugador.tag);
+
 function pintar(data) {
   ultimo = data;
-  m = modelo(data);
+  m = modelo(data, !!esMio());
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
   $("detalleJugador").textContent = [j.clan, j.liga ? `${t("Liga", "League")} ${j.liga}` : null, j.mejor_liga ? `${t("mejor liga", "best league")} ${j.mejor_liga}` : null].filter(Boolean).join(", ");
   $("estadoTitulo").textContent = m.estado.titulo;
   $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
+  $("estado").style.setProperty("--lleno", `${m.estado.lleno}%`);
+  $("muestra").textContent = esMio()
+    ? t(`Basadas en tus últimas ${data.resumen.partidas} partidas.`, `Based on your last ${data.resumen.partidas} matches.`)
+    : t(`Basadas en sus últimas ${data.resumen.partidas} partidas.`, `Based on their last ${data.resumen.partidas} matches.`);
   $("resumenPartidas").textContent = data.resumen.partidas;
   $("resumenWinrate").textContent = data.resumen.winrate === null ? "–" : `${data.resumen.winrate} %`;
   $("resumenElixir").textContent = data.resumen.elixir_desperdiciado ?? "–";
@@ -99,7 +111,10 @@ function pintar(data) {
     : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");
   $("resultado").hidden = false;
   pintarBotonSeguir(); pintarAtajos();
-  partidas($("listaPartidas"), $("verMas"), m.ps);
+  const nombres = { yo: esMio() ? t("Tú", "You") : j.nombre, jugador: esMio() ? t("Tú", "You") : j.nombre };
+  partidas($("listaPartidas"), $("verMas"), m.ps, nombres, (tag) => {
+    $("tag").value = tag; window.scrollTo({ top: 0, behavior: "smooth" }); buscar(tag);
+  });
   graficasListas = false;
   if (vistaActual === "estadisticas") pintarGraficas();
 }
@@ -148,6 +163,12 @@ try { if (!localStorage.getItem("elixirVioEstadisticas")) $("tabEstadisticas").c
 $("vistaRacha").addEventListener("click", () => { vista = "racha"; pintarTendencia(); });
 $("vistaElixir").addEventListener("click", () => { vista = "elixir"; pintarTendencia(); });
 $("botonSeguir").addEventListener("click", pedirSeguir);
+$("botonFijar").addEventListener("click", () => {
+  if (!ultimo) return;
+  const j = ultimo.jugador;
+  if (seguidos.esFijado(j.tag)) seguidos.desfijar(); else seguidos.fijar(j.tag, j.nombre);
+  pintar(ultimo);   // redibuja con "tú" o con el nombre
+});
 $("panelCerrar").addEventListener("click", cerrarPanel);
 
 aplicar();
