@@ -1,7 +1,7 @@
 // Lista de partidas: cabecera, mazos y un desplegable con la comparación cara a cara.
-import { t, LANG } from "./i18n.js?v=7";
-import { dia, hora } from "./stats.js?v=7";
-import { ICONOS } from "./iconos.js?v=7";
+import { t, LANG } from "./i18n.js?v=8";
+import { dia, hora } from "./stats.js?v=8";
+import { ICONOS } from "./iconos.js?v=8";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -38,15 +38,20 @@ function modoHTML(p) {
   return `<span class="meta-item" title="${esc(nombre)}">${ICONOS[icono]}<span class="meta-texto">${esc(corto(nombre, 16))}${numero}</span></span>`;
 }
 
-// copas en escalera; liga (y cambio de medallas en la liga más alta) en ranked
+// copas en escalera; en ranked, medallas en las ligas que las usan (y puesto mundial) o la liga en las de escalones
 function copasHTML(d, p) {
   if (!d) return "";
-  const cambio = d.cambio_copas;
-  const signo = cambio > 0 ? "+" : "";
+  const cambio = d.cambio_copas, signo = cambio > 0 ? "+" : "";
+  const chip = (texto, titulo, sube) => `<span class="copas ${sube ? "sube" : "baja"}" title="${titulo}">${texto}</span>`;
   if (p.modo === "trail" && d.copas_inicio !== null && cambio !== null)
-    return `<span class="copas ${cambio >= 0 ? "sube" : "baja"}" title="${t("Copas", "Trophies")}">${d.copas_inicio + cambio} ${signo}${cambio}</span>`;
-  if (p.modo === "pathOfLegend" && p.liga)
-    return `<span class="copas ${p.victoria ? "sube" : "baja"}" title="${t("Liga", "League")}">${t("Liga", "League")} ${p.liga}</span>`;
+    return chip(`${d.copas_inicio + cambio} ${signo}${cambio}`, t("Copas", "Trophies"), cambio >= 0);
+  if (p.modo === "pathOfLegend") {
+    if (d.copas_inicio !== null && cambio !== null) {
+      const puesto = d.puesto_mundial ? chip(`#${d.puesto_mundial}`, t("Puesto mundial", "Global rank"), true) : "";
+      return chip(`${d.copas_inicio + cambio} ${signo}${cambio}`, t(`Medallas · liga ${p.liga ?? ""}`, `Medals · league ${p.liga ?? ""}`), cambio >= 0) + puesto;
+    }
+    if (p.liga) return chip(`${t("Liga", "League")} ${p.liga}`, t("Liga", "League"), p.victoria);
+  }
   return "";
 }
 

@@ -33,6 +33,7 @@ def lado(p):
         "tag": p.get("tag"), "name": p.get("name"), "crowns": p.get("crowns"),
         "elixirLeaked": p.get("elixirLeaked"),
         "startingTrophies": p.get("startingTrophies"), "trophyChange": p.get("trophyChange"),
+        "globalRank": p.get("globalRank"),
         "kingTowerHitPoints": p.get("kingTowerHitPoints"), "princessTowersHitPoints": p.get("princessTowersHitPoints"),
         "cards": [carta(c) for c in p.get("cards", [])],
         "rounds": [{"crowns": r.get("crowns"), "elixirLeaked": r.get("elixirLeaked"),
