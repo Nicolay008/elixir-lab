@@ -232,3 +232,4 @@ footer a{color:inherit}
 .fila-mazo{grid-template-columns:3.6rem 1fr 2.7rem}
 .quien{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .partida.abierta > .fila-mazo,.partida.abierta > .ronda{display:none}
+.marcador small{font-family:"Nunito",sans-serif;font-size:.7rem;font-weight:700;color:var(--muted);margin-left:.2rem}

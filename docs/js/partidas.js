@@ -1,7 +1,7 @@
 // Lista de partidas: cabecera, mazos y un desplegable con la comparación cara a cara.
-import { t, LANG } from "./i18n.js?v=6";
-import { dia, hora } from "./stats.js?v=6";
-import { ICONOS } from "./iconos.js?v=6";
+import { t, LANG } from "./i18n.js?v=7";
+import { dia, hora } from "./stats.js?v=7";
+import { ICONOS } from "./iconos.js?v=7";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -24,6 +24,7 @@ const MODOS = {
   riverRaceDuelColosseum: ["escudos", "Duelo de guerra", "War duel"], boatBattle: ["escudos", "Barcos", "Boat battle"],
   tournament: ["laurel", "Torneo", "Tournament"], challenge: ["laurel", "Desafío", "Challenge"],
   grandChallenge: ["laurel", "Gran desafío", "Grand challenge"], classicChallenge: ["laurel", "Desafío clásico", "Classic challenge"],
+  friendly: ["amistosa", "Amistosa", "Friendly"], clanMate: ["amistosa", "Amistosa de clan", "Clan friendly"],
 };
 function modoHTML(p) {
   const m = MODOS[p.modo];
@@ -123,6 +124,17 @@ function detalleHTML(p, cat, nombres) {
   </div>`;
 }
 
+// "¿Rival frecuente? 24 amistosas · 1 ranked": el modo cambia el significado
+function frecuenteHTML(p) {
+  const modos = Object.entries(p.veces_rival_modos ?? {}).sort((a, b) => b[1] - a[1]);
+  const partes = modos.map(([m, n]) => {
+    const info = MODOS[m]; const nombre = info ? t(info[1], info[2]) : m;
+    return `${n} ${info?.[0] === "amistosa" ? t(n === 1 ? "amistosa" : "amistosas", n === 1 ? "friendly" : "friendlies") : nombre.toLowerCase()}`;
+  });
+  const texto = partes.length ? partes.join(" · ") : `×${p.veces_rival}`;
+  return `<span class="meta-item frecuente" title="${t("Os habéis cruzado", "You’ve met")} ${p.veces_rival} ${t("veces", "times")}">${ICONOS.repetido}<span class="meta-texto">${t("¿Rival frecuente?", "Frequent opponent?")} ${esc(texto)}</span></span>`;
+}
+
 function partidaHTML(p, cat, nombres, i) {
   const r8 = (xs) => { const r = []; for (let k = 0; k < xs.length; k += 8) r.push(xs.slice(k, k + 8)); return r.length ? r : [[]]; };
   const mias = r8(p.mi_mazo ?? []), suyas = r8(p.mazo_rival ?? []);
@@ -132,15 +144,14 @@ function partidaHTML(p, cat, nombres, i) {
     (mias[k]?.length ? filaMazo(mias[k], cat, nombres.yo, "yo") : "") +
     (suyas[k]?.length ? filaMazo(suyas[k], cat, p.rival ?? t("Rival", "Opp."), "rival") : "")).join("");
   const resultado = p.victoria ? t("Victoria", "Win") : t("Derrota", "Loss");
-  const frecuente = p.veces_rival > 1
-    ? `<span class="meta-item frecuente" title="${t("Os habéis cruzado", "You’ve met")} ${p.veces_rival} ${t("veces", "times")}">${ICONOS.repetido}<span class="meta-texto">${t("¿Rival frecuente?", "Frequent opponent?")} ×${p.veces_rival}</span></span>` : "";
+  const frecuente = p.veces_rival > 1 ? frecuenteHTML(p) : "";
   const elixir = p.elixir_desperdiciado !== null
     ? `<span class="meta-item" title="${t("Elixir perdido", "Elixir leaked")}">${ICONOS.gota}<span class="meta-texto">${p.elixir_desperdiciado.toFixed(1)}</span></span>` : "";
   return `<li class="partida ${p.victoria ? "gana" : "pierde"}">
     <button type="button" class="partida-abrir" aria-expanded="false" aria-controls="det${i}">
       <span class="partida-cabecera">
         <span class="resultado" title="${resultado}">${p.victoria ? ICONOS.coronaLlena : ICONOS.coronaVacia}</span>
-        <span class="marcador">${p.coronas}</span>
+        <span class="marcador" title="${p.es_duelo ? `${t("Rondas", "Rounds")} ${p.coronas} · ${t("coronas", "crowns")} ${p.coronas_total}` : ""}">${p.coronas}${p.es_duelo ? `<small>${t(" rondas", " rounds")}</small>` : ""}</span>
         <span class="rival">${esc(p.rival ?? "")}</span>
         <span class="cuando">${dia(p.t)} ${hora(p.t)}</span>
         <span class="flecha">${ICONOS.flecha}</span>

@@ -23,5 +23,7 @@ export const ICONOS = {
   destello: svg("M12 7l1.6 3.4L17 12l-3.4 1.6L12 17l-1.6-3.4L7 12l3.4-1.6z", '<path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/><path d="M12 7l1.6 3.4L17 12l-3.4 1.6L12 17l-1.6-3.4L7 12l3.4-1.6z"/>'),
   chincheta: svg("M9 4h6l-1 6 3 3H7l3-3z", '<path d="M9 4h6l-1 6 3 3H7l3-3z"/><path d="M12 13v7"/>'),
   repetido: svg(null, '<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>'),
+  // amistosas: dos personas
+  amistosa: svg("M9 11a3 3 0 1 0 0-6a3 3 0 1 0 0 6z", '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5"/><path d="M18 14.5c1.8.8 3 2.9 3 5.5"/>'),
   flecha: svg(null, '<path d="m6 9 6 6 6-6"/>'),
 };

@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=6";
-import { modelo } from "./stats.js?v=6";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=6";
-import { reloj } from "./clock.js?v=6";
-import { partidas } from "./partidas.js?v=6";
+import { consultar, seguir } from "./api.js?v=7";
+import { modelo } from "./stats.js?v=7";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=7";
+import { reloj } from "./clock.js?v=7";
+import { partidas } from "./partidas.js?v=7";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=6";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=6";
-import * as seguidos from "./seguidos.js?v=6";
-import { ICONOS } from "./iconos.js?v=6";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=7";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=7";
+import * as seguidos from "./seguidos.js?v=7";
+import { ICONOS } from "./iconos.js?v=7";
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
