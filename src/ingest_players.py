@@ -23,19 +23,30 @@ except ImportError:
 API = "https://proxy.royaleapi.dev/v1"
 
 
+def carta(c):
+    return {"name": c["name"], "evolutionLevel": c.get("evolutionLevel", 0),
+            "level": c.get("level"), "maxLevel": c.get("maxLevel"), "used": c.get("used")}
+
+
 def lado(p):
     return {
         "tag": p.get("tag"), "name": p.get("name"), "crowns": p.get("crowns"),
         "elixirLeaked": p.get("elixirLeaked"),
-        "cards": [{"name": c["name"], "evolutionLevel": c.get("evolutionLevel", 0)} for c in p.get("cards", [])],
+        "startingTrophies": p.get("startingTrophies"), "trophyChange": p.get("trophyChange"),
+        "kingTowerHitPoints": p.get("kingTowerHitPoints"), "princessTowersHitPoints": p.get("princessTowersHitPoints"),
+        "cards": [carta(c) for c in p.get("cards", [])],
+        "rounds": [{"crowns": r.get("crowns"), "elixirLeaked": r.get("elixirLeaked"),
+                    "kingTowerHitPoints": r.get("kingTowerHitPoints"),
+                    "princessTowersHitPoints": r.get("princessTowersHitPoints"),
+                    "cards": [carta(c) for c in r.get("cards", [])]} for r in p["rounds"]] if p.get("rounds") else None,
     }
 
 
 def compactar(b):
+    """Mismo formato compacto que las funciones "seguir" y "consultar"."""
     return {"battleTime": b["battleTime"], "type": b.get("type"),
-            "gameMode": (b.get("gameMode") or {}).get("name"),
-            "challengeTitle": b.get("challengeTitle"),
-            "challengeWinCountBefore": b.get("challengeWinCountBefore"),
+            "gameMode": (b.get("gameMode") or {}).get("name"), "leagueNumber": b.get("leagueNumber"),
+            "challengeTitle": b.get("challengeTitle"), "challengeWinCountBefore": b.get("challengeWinCountBefore"),
             "team": [lado(b["team"][0])], "opponent": [lado(b["opponent"][0])]}
 
 
@@ -55,10 +66,14 @@ def main():
                 hora = datetime.strptime(b["battleTime"], "%Y%m%dT%H%M%S.%fZ").replace(tzinfo=timezone.utc)
                 cur = conn.execute(
                     """INSERT INTO raw_player_battles (tag, battle_key, battle_time, payload)
-                       VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING""",
+                       VALUES (%s, %s, %s, %s)
+                       ON CONFLICT (tag, battle_key) DO UPDATE SET payload = EXCLUDED.payload
+                       WHERE raw_player_battles.payload IS DISTINCT FROM EXCLUDED.payload
+                       RETURNING (xmax = 0) AS nueva""",
                     (tag, f"{b['battleTime']}|{b['opponent'][0]['tag']}", hora, Jsonb(compactar(b))),
                 )
-                nuevas += cur.rowcount
+                fila = cur.fetchone()
+                nuevas += 1 if fila and fila[0] else 0
             time.sleep(0.1)
     print(f"Jugadores seguidos: {len(tags)} · partidas nuevas guardadas: {nuevas}")
 
