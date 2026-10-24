@@ -2,8 +2,9 @@ import { iniciarBarra } from './barra.js?v=17';
 import { t } from './i18n.js?v=10';
 
 const PASO = 25;   // filas por vez
-// en el móvil el enlace abre el juego en la misma pestaña (copiar y pegar caduca); en PC se abre en otra pestaña, donde el juego muestra el QR
+// copiar: portapapeles. Copiar en el juego: en el móvil abre el juego en la misma pestaña (el enlace caduca); en PC, en otra pestaña, donde el juego muestra el QR
 const TACTIL = matchMedia('(pointer: coarse)').matches;
+const COPIAR_ICONO = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
 const ABRIR_ICONO = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>`;
 const OK_ICONO = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4 9-9"/></svg>`;
 const SB = 'https://jbhftetfnrdestjzrhgs.supabase.co';
@@ -107,7 +108,8 @@ function renderMazo(m) {
       <div class="mazo-meta">
         <span class="mazo-antiguedad">${antiguedad(m.partida_at)}</span>
         <span class="mazo-coste">💧 ${costeMedio(deck)}</span>
-        <a class="mazo-copiar mazo-abrir" href="${enlace}"${TACTIL ? '' : ' target="_blank" rel="noopener"'} aria-label="Abrir mazo en el juego">${ABRIR_ICONO}<span>Abrir en el juego</span></a>
+        <button type="button" class="mazo-copiar" data-enlace="${enlace}" title="Copiar mazo" aria-label="Copiar mazo">${COPIAR_ICONO}</button>
+        <a class="mazo-juego" href="${enlace}"${TACTIL ? '' : ' target="_blank" rel="noopener"'}>${ABRIR_ICONO}<span>Copiar en el juego</span></a>
       </div>
       <div class="cartas">
         ${deck.map(c => `<figure><img src="${imagenCarta(c)}" alt="${nombreES(c)}" loading="lazy"></figure>`).join('')}

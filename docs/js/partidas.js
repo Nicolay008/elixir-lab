@@ -117,12 +117,13 @@ function enlaceMazo(cartas, cat) {
 }
 // en el móvil el enlace abre el juego en la misma pestaña (copiar y pegar caduca); en PC, en otra pestaña, donde el juego muestra el QR
 const TACTIL = matchMedia("(pointer: coarse)").matches;
+const ICONO_COPIAR = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
 const ICONO_ABRIR = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>`;
 const ICONO_OK = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4 9-9"/></svg>`;
 function botonCopiar(cartas, cat) {
   const enlace = enlaceMazo(cartas, cat);
   if (!enlace) return `<p class="copiar-nota">${t("Mazo incompleto: no se puede copiar", "Incomplete deck: can’t copy it")}</p>`;
-  return `<a class="copiar-mazo abrir" href="${esc(enlace)}"${TACTIL ? "" : ' target="_blank" rel="noopener"'} aria-label="${t("Abrir mazo en el juego", "Open deck in game")}">${ICONO_ABRIR}<span>${t("Abrir en el juego", "Open in game")}</span></a>`;
+  return `<div class="copiar-fila"><button type="button" class="copiar-mazo" data-enlace="${esc(enlace)}" title="${t("Copiar mazo", "Copy deck")}" aria-label="${t("Copiar mazo", "Copy deck")}">${ICONO_COPIAR}</button><a class="copiar-juego" href="${esc(enlace)}"${TACTIL ? "" : ' target="_blank" rel="noopener"'}>${ICONO_ABRIR}<span>${t("Copiar en el juego", "Copy in game")}</span></a></div>`;
 }
 
 // barra enfrentada: jugador a la izquierda (violeta), rival a la derecha (gris)
@@ -216,8 +217,8 @@ export async function partidas(contenedor, boton, ps, nombres, alVerRival, cuant
       try {
         await navigator.clipboard.writeText(b.dataset.enlace);
         b.classList.add("copiado");
-        b.innerHTML = `${ICONO_OK}<span>${t("¡Copiado!", "Copied!")}</span>`;
-      } catch (e) { b.innerHTML = `<span>${t("No se pudo copiar", "Couldn’t copy")}</span>`; }
+        b.innerHTML = ICONO_OK;
+      } catch (e) { b.title = t("No se pudo copiar", "Couldn’t copy"); }
       setTimeout(() => { b.classList.remove("copiado"); b.innerHTML = orig; }, 1500);
     }));
     contenedor.querySelectorAll(".partida-abrir").forEach((b) => b.addEventListener("click", () => {
