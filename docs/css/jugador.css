@@ -77,6 +77,18 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
   padding:.3rem .75rem;border-radius:999px;cursor:pointer}
 .atajos button[aria-current="true"]{border-color:var(--elixir);color:var(--elixir)}
 .jugador-fila{display:flex;align-items:center;justify-content:space-between;gap:.75rem}
+.identidad{display:flex;align-items:center;gap:.75rem;min-width:0}
+.liga-bloque{display:flex;flex-direction:column;align-items:center;flex:none;color:var(--ink)}
+.liga-bloque[hidden]{display:none}
+.escudo{width:3.4rem;height:auto;display:block}
+.liga-texto{font-size:.68rem;font-weight:700;color:var(--muted);line-height:1;margin-top:.25rem;letter-spacing:.02em}
+.nombre-bloque{min-width:0}
+.nombre-bloque h2{overflow-wrap:anywhere}
+.rango{font-size:.85rem;font-weight:700;color:var(--muted);margin-top:.15rem}
+.modos{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .75rem}
+.modos button{border:1.5px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:700;font-size:.85rem;padding:.3rem .75rem;border-radius:999px;cursor:pointer}
+.modos button[aria-pressed="true"]{border-color:var(--elixir);color:var(--elixir)}
+.vacio{list-style:none;color:var(--muted);font-size:.9rem;padding:.75rem 0}
 .seguir{flex:none;border:2px solid var(--elixir);background:transparent;color:var(--elixir);font:inherit;font-weight:800;
   padding:.4rem .9rem;border-radius:999px;cursor:pointer}
 .seguir[aria-pressed="true"]{background:var(--elixir);color:#fff}

@@ -10,6 +10,15 @@ const GOTA = "M12 3.5c3 3.8 6 7.4 6 10.6a6 6 0 0 1-12 0c0-3.2 3-6.8 6-10.6z";
 const COPA = "M7 4h10v5a5 5 0 0 1-10 0z";
 const ESCUDO = "M15 6l6 2.5V13c0 4-2.6 6.7-6 8-3.4-1.3-6-4-6-8V8.5z";
 
+// Escudo de la liga actual: el número va dentro; la liga más alta lleva una gema amatista en el centro.
+export function escudoLiga(n, gema) {
+  const forma = "M20 3 L36 8.5 V22 C36 32.5 29 39.5 20 43 C11 39.5 4 32.5 4 22 V8.5 Z";
+  const centro = gema
+    ? `<path d=\"M13 19.5 L20 14 L27 19.5 L20 31 Z\" style=\"fill:var(--elixir)\" stroke=\"none\"/><path d=\"M13 19.5 H27 M17 19.5 L20 14 L23 19.5 M17 19.5 L20 31 L23 19.5\" fill=\"none\" stroke=\"#fff\" stroke-opacity=\".7\" stroke-width=\"1\" stroke-linejoin=\"round\"/>`
+    : `<text x=\"20\" y=\"27\" text-anchor=\"middle\" font-family=\"'Lilita One', Nunito, sans-serif\" font-size=\"15\" fill=\"currentColor\">${n}</text>`;
+  return `<svg class=\"escudo\" viewBox=\"0 0 40 46\" aria-hidden=\"true\"><path d=\"${forma}\" fill=\"currentColor\" fill-opacity=\".18\" stroke=\"none\"/><path d=\"${forma}\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\"/>${centro}</svg>`;
+}
+
 export const ICONOS = {
   ciclo: svg("M12 4a8 8 0 1 1 0 16a8 8 0 1 1 0-16z",
     '<path d="M20 11a8 8 0 0 0-14.6-4.5L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.6 4.5L20 16"/><path d="M20 20v-4h-4"/>'),

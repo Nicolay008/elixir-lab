@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=9";
+import { t } from "./i18n.js?v=10";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -46,6 +46,21 @@ export function movil(xs, w = VENTANA) {
     const vals = xs.slice(Math.max(0, i - w + 1), i + 1).filter((x) => x !== null);
     return vals.length >= MIN_MUESTRA ? media(vals) : null;
   });
+}
+
+// Grupos del filtro: Ranked = solo camino de leyendas; los eventos especiales van en Otros
+export const GRUPOS = ["todos", "ranked", "escalera", "guerra", "otros"];
+export function grupoDe(p) {
+  if (esEvento(p)) return "otros";
+  if (p.modo === "pathOfLegend") return "ranked";
+  if (p.modo === "trail" || p.modo === "ladder") return "escalera";
+  if (typeof p.modo === "string" && p.modo.startsWith("riverRace")) return "guerra";
+  return "otros";
+}
+// Devuelve los datos solo con las partidas del grupo elegido (todo lo demás se recalcula desde ahí)
+export function filtrarModo(data, grupo) {
+  if (!grupo || grupo === "todos") return data;
+  return { ...data, partidas: data.partidas.filter((p) => grupoDe(p) === grupo) };
 }
 
 export function modelo(data, mio = true) {

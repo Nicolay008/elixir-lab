@@ -1,14 +1,17 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=9";
-import { modelo } from "./stats.js?v=9";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=9";
-import { reloj } from "./clock.js?v=9";
-import { partidas } from "./partidas.js?v=9";
+import { consultar, seguir } from "./api.js?v=10";
+import { modelo, filtrarModo } from "./stats.js?v=10";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=10";
+import { reloj } from "./clock.js?v=10";
+import { partidas } from "./partidas.js?v=10";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=9";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=9";
-import * as seguidos from "./seguidos.js?v=9";
-import { ICONOS } from "./iconos.js?v=9";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=10";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=10";
+import * as seguidos from "./seguidos.js?v=10";
+import { ICONOS, escudoLiga } from "./iconos.js?v=10";
+
+const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
+let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
@@ -90,12 +93,29 @@ function pintarTendencia() {
 // el perfil fijado se trata como "tú"; los demás, por su nombre
 const esMio = () => ultimo && seguidos.esFijado(ultimo.jugador.tag);
 
+// escudo de la liga actual (protagonista), con el puesto mundial y el rating al lado del nombre
+function pintarIdentidad(j) {
+  const liga = $("liga");
+  liga.hidden = !j.liga;
+  liga.innerHTML = j.liga
+    ? `${escudoLiga(j.liga, j.liga === LIGA_TOP)}<span class="liga-texto">${t("Liga", "League")} ${j.liga}</span>`
+    : "";
+  const fmt = (n) => Number(n).toLocaleString(LANG === "en" ? "en-US" : "es-PE");
+  $("rango").textContent = [j.puesto ? `#${j.puesto}` : null, j.rating ? `${t("Rating", "Rating")} ${fmt(j.rating)}` : null].filter(Boolean).join(" · ");
+}
+
+function pintarModos() {
+  document.querySelectorAll("#modos button").forEach((b) => b.setAttribute("aria-pressed", b.dataset.modo === grupoModo));
+}
+
 function pintar(data) {
   ultimo = data;
-  m = modelo(data, !!esMio());
+  m = modelo(filtrarModo(data, grupoModo), !!esMio());
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
-  $("detalleJugador").textContent = [j.clan, j.liga ? `${t("Liga", "League")} ${j.liga}` : null, j.mejor_liga ? `${t("mejor liga", "best league")} ${j.mejor_liga}` : null].filter(Boolean).join(", ");
+  pintarIdentidad(j);
+  pintarModos();
+  $("detalleJugador").textContent = [j.clan, j.mejor_liga ? `${t("mejor liga", "best league")} ${j.mejor_liga}` : null].filter(Boolean).join(", ");
   $("estadoTitulo").textContent = m.estado.titulo;
   $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
@@ -116,6 +136,7 @@ function pintar(data) {
   partidas($("listaPartidas"), $("verMas"), m.todas, nombres, (tag) => {
     $("tag").value = tag; window.scrollTo({ top: 0, behavior: "smooth" }); buscar(tag);
   });
+  if (!m.todas.length) $("listaPartidas").innerHTML = `<li class="vacio">${t("No hay partidas de este modo.", "No matches in this mode.")}</li>`;
   graficasListas = false;
   if (vistaActual === "estadisticas") pintarGraficas();
 }
@@ -171,6 +192,11 @@ $("botonFijar").addEventListener("click", () => {
   pintar(ultimo);   // redibuja con "tú" o con el nombre
 });
 $("panelCerrar").addEventListener("click", cerrarPanel);
+document.querySelectorAll("#modos button").forEach((b) => b.addEventListener("click", () => {
+  grupoModo = b.dataset.modo;
+  if (ultimo) pintar(ultimo);
+  else pintarModos();
+}));
 
 aplicar();
 $("idioma").textContent = LANG === "en" ? "ES" : "EN";
