@@ -59,6 +59,12 @@ legend{font-weight:800;margin-bottom:.5rem}
   font-size:1.1rem;cursor:pointer;background:var(--elixir);color:#fff}
 .btn.ghost{background:transparent;color:var(--elixir);border:2px solid var(--elixir);margin-top:.75rem}
 .btn:focus-visible{outline:3px solid var(--elixir-2);outline-offset:3px}
+/* Empezar: botón con relieve, como los del juego, e icono de play */
+#start{display:flex;align-items:center;justify-content:center;gap:.55rem;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));text-shadow:0 1px 0 rgba(60,0,80,.35);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(60,0,80,.22),0 4px 0 color-mix(in srgb,var(--elixir) 60%,#000),0 8px 18px var(--glow);transition:transform .08s,box-shadow .08s}
+#start::before{content:"";width:1.75rem;height:1.75rem;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23f1d6f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='15' fill='rgba(60,0,80,.28)'/%3E%3Cpath d='M13 10.5 L22 16 L13 21.5 Z' fill='rgba(60,0,80,.35)' transform='translate(0 1.2)'/%3E%3Cpath d='M13 10.5 L22 16 L13 21.5 Z' fill='url(%23g)' stroke='url(%23g)' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+#start:active:not(:disabled){transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(60,0,80,.22),0 1px 0 color-mix(in srgb,var(--elixir) 60%,#000),0 4px 10px var(--glow)}
+#start:disabled{opacity:.6}
 .best{margin-top:1rem;font-weight:600;color:var(--muted)}
 
 /* game */
@@ -166,6 +172,11 @@ footer{max-width:30rem;margin:0 auto;padding:0 1rem 1.5rem;font-size:.8rem;color
 .ctrl .link{padding:.3rem 0;margin:0;font-weight:700}
 
 .tagline{font-size:1.05rem;margin:0 0 1.25rem}
+.top{margin-bottom:1rem}
+/* inicio de la zona de entrenamiento */
+.train-h{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0 0 .6rem}
+.train-h b{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;font-weight:400}
+.train-h span{color:var(--muted);font-size:.9rem;font-weight:600}
 .modes{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
 .mode{cursor:pointer}
 .mode input{position:absolute;opacity:0;pointer-events:none}
@@ -268,6 +279,48 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .seg>label>input:checked+span{background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff;box-shadow:0 0 16px var(--glow)}
 .seg>label>input:focus-visible+span{outline:2px solid var(--elixir-2);outline-offset:1px}
 .seg.stages>label>input:checked+span b{background:rgba(255,255,255,.25);color:#fff}
+/* la opción elegida se marca sin competir con Empezar */
+.seg>label>input:checked+span{background:var(--track);color:var(--elixir);box-shadow:inset 0 0 0 2px var(--elixir)}
+.seg.stages>label>input:checked+span b{background:var(--elixir);color:#fff}
+/* reglas y explicaciones: plegadas, se abren al tocar */
+.rule{margin:0 0 1rem;color:var(--muted);font-size:.9rem}
+.rule summary{cursor:pointer;font-weight:700;list-style:none;display:inline-flex;align-items:center;gap:.35rem}
+.rule summary::-webkit-details-marker{display:none}
+.rule summary::after{content:"";width:.45em;height:.45em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-.15em);transition:transform .15s}
+.rule[open] summary::after{transform:rotate(-135deg) translateY(-.1em)}
+.rule summary:focus-visible{outline:2px solid var(--elixir-2);outline-offset:2px;border-radius:.3rem}
+.rule p{margin:.35rem 0 0;color:var(--ink)}
+.info-btn{margin-left:.35rem;border:0;background:none;padding:0 .2rem;font:inherit;font-weight:700;color:var(--muted);cursor:pointer;vertical-align:baseline}
+.info-btn[aria-expanded="true"]{color:var(--elixir)}
+.info-btn:focus-visible{outline:2px solid var(--elixir-2);outline-offset:2px;border-radius:.3rem}
+fieldset.folded .desc{display:none}
+/* tarjetas de modo: solo título e imagen; la explicación aparece al elegir el modo */
+.modes .mode .mdesc{display:none}
+/* carrusel 3D de modos: la tarjeta del centro al frente, las de los lados giradas y en penumbra */
+.modes{position:relative;display:flex;gap:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;
+  margin:0 -1rem .35rem;padding:.6rem 18% .9rem;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);perspective:900px}
+.modes::-webkit-scrollbar{display:none}
+.modes .mode{flex:0 0 64%;scroll-snap-align:center;padding:0 .2rem}
+.modes .mode .box{height:100%;transform:rotateY(calc(var(--d,0) * -26deg)) scale(calc(1 - var(--a,0) * .14));opacity:calc(1 - var(--a,0) * .5);transform-origin:center;will-change:transform}
+.modes .mode .pv{height:118px}
+.modes .mode .pv img{height:86px}
+.modes .mode .pv.count img{height:60px}
+.modes .mode .pv.cyc img{height:54px}
+.modes .mode .mtitle{font-size:1.25rem}
+.modes .mode input:checked+.box{box-shadow:0 0 0 1px var(--elixir),0 10px 26px var(--glow)}
+.modes .mode.soon .box{border-style:dashed}
+.modes .mode.soon .mtitle{color:var(--muted)}
+.modes .mode.soon .conv{width:80%;max-width:150px}
+.modes .mode.soon.center .box{border-color:var(--muted)}
+#setup.on-decide .modes .mode input:checked+.box{border-color:var(--line);box-shadow:none}
+.cdots{display:flex;justify-content:center;gap:.4rem;margin:0 0 1rem}
+.cdots i{width:7px;height:7px;border-radius:4px;background:var(--line);transition:width .2s,background .2s}
+.cdots i.on{width:20px;background:var(--elixir)}
+.soon-note{margin:0 0 1rem;color:var(--muted)}
+#setup.on-decide #costOpts,#setup.on-decide #countOpts,#setup.on-decide #cycleOpts,#setup.on-decide #start,#setup.on-decide #resumeBtn,#setup.on-decide #practiceHard,#setup.on-decide #best{display:none!important}
+@media (prefers-reduced-motion:reduce){.modes .mode .box{transform:scale(calc(1 - var(--a,0) * .08))}}
+.mintro{margin:0 0 .9rem;font-size:1rem;font-weight:700;color:var(--ink)}
+.cfg-h{margin:1.1rem 0 .7rem;padding-top:.9rem;border-top:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:1.15rem}
 
 /* modo ciclo */
 .modes .mode.wide{grid-column:1/-1}
@@ -283,7 +336,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .rank.new b{color:var(--muted);font-weight:600}
 .mode.wide .rank{margin-top:.4rem}
 /* Decide: donde confluyen las tres habilidades */
-.decide{display:flex;align-items:center;gap:.75rem;margin:-.4rem 0 1.25rem;padding:.55rem .75rem;border:2px dashed var(--line);border-radius:1rem;opacity:.85}
+.decide{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 0;padding:.55rem .75rem;border:2px dashed var(--line);border-radius:1rem;opacity:.85}
 .decide .conv{width:96px;flex:none}
 .decide .mtxt{display:flex;flex-direction:column}
 .decide .mtitle{color:var(--muted)}
@@ -302,6 +355,15 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
 .lab button{flex:none;border:0;border-radius:.7rem;padding:0 1rem;font:inherit;font-weight:800;color:#fff;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));cursor:pointer}
 .lab button:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Ranking: fila delgada bajo el Laboratorio, lleva a ranking.html */
+.rk-link{display:flex;align-items:center;gap:.65rem;margin:-.35rem 0 1.1rem;padding:.45rem .75rem;border-radius:.9rem;color:var(--ink);text-decoration:none}
+.rk-link:hover{background:var(--track)}
+.rk-link:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
+.rk-link .cup{width:30px;height:30px;flex:none}
+.rk-link .mtxt{display:flex;flex-direction:column;flex:1;min-width:0}
+.rk-link .mtitle{font-size:1rem}
+.rk-link .mdesc{font-size:.8rem}
+.rk-link .chev{width:14px;height:14px;flex:none;stroke:var(--muted)}
 .next-skill{margin-bottom:.6rem}
 .feed li.start{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .6rem}
 .feed li.start .anc{font-weight:800}
@@ -425,7 +487,6 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
   <!-- SETUP -->
   <section id="setup">
     <div class="top"><h1 class="brand"><svg class="logo" viewBox="-34 -56 68 100" aria-hidden="true"><defs><linearGradient id="lgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--elixir-2)"/><stop offset="1" style="stop-color:var(--elixir)"/></linearGradient></defs><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" fill="url(#lgG)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" fill="url(#lgG)"/></svg>Elixir Lab</h1><div class="topbtns"><button class="langbtn snd" id="sndBtn" aria-label="Sonido"></button><button class="langbtn" id="langBtn" aria-label="Language"></button></div></div>
-    <p class="tagline" data-en="Sharpen your reactions and read your opponent.">Mejora tu reacción y lee a tu rival.</p>
 
     <form class="lab" id="labForm" action="jugador.html" method="get" autocomplete="off">
       <div class="lhead">
@@ -434,8 +495,8 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <circle cx="47" cy="6" r="3.5" style="fill:var(--gold)"/>
         </svg>
         <span class="mtxt">
-          <span class="mtitle" data-en="Personal lab">Laboratorio de entrenamiento</span>
-          <span class="mdesc" data-en="Your real matches: streak, wasted elixir, crowns and best time to play.">Tus partidas reales bajo el microscopio: Descubre tu meta real, racha, elixir perdido, coronas y mejor hora.</span>
+          <span class="mtitle" data-en="Training lab">Laboratorio de entrenamiento</span>
+          <span class="mdesc" data-en="Your real matches under the microscope: find your real meta, streak, wasted elixir, crowns and best time to play.">Tus partidas reales bajo el microscopio: Descubre tu meta real, racha, elixir perdido, coronas y mejor hora.</span>
         </span>
       </div>
       <div class="lsearch">
@@ -444,6 +505,20 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
       </div>
     </form>
 
+    <a class="rk-link" href="ranking.html">
+      <svg class="cup" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M9 5 h14 v6 a7 7 0 0 1 -14 0 z" style="fill:var(--gold)"/>
+        <path d="M9 7 H5 a4 4 0 0 0 5 6 M23 7 h4 a4 4 0 0 1 -5 6" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--gold)"/>
+        <path d="M14 18 h4 v4 h-4 z M10 25 h12 v3 h-12 z" style="fill:var(--gold)"/>
+      </svg>
+      <span class="mtxt">
+        <span class="mtitle" data-en="Path of Legends ranking">Ranking de Senda de Leyendas</span>
+        <span class="mdesc" data-en="Top players worldwide and by country, with their decks.">Top global y por país, con sus mazos.</span>
+      </span>
+      <svg class="chev" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2 L10 7 L5 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+
+    <h2 class="train-h"><b data-en="Train">Entrena</b><span data-en="Sharpen your reactions and read your opponent.">Mejora tu reacción y lee a tu rival.</span></h2>
     <div class="modes" role="radiogroup" aria-label="Modo">
       <label class="mode">
         <input type="radio" name="mode" value="cost" checked>
@@ -463,39 +538,46 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
           <span class="rank" id="rkCount" aria-live="polite"></span>
         </span>
       </label>
-      <label class="mode wide">
+      <label class="mode">
         <input type="radio" name="mode" value="cycle">
         <span class="box">
           <span class="pv cyc" id="pvCycle"></span>
-          <span class="mtxt">
-            <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
-            <span class="mdesc" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</span>
-            <span class="rank" id="rkCycle" aria-live="polite"></span>
-          </span>
+          <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
+          <span class="mdesc" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</span>
+          <span class="rank" id="rkCycle" aria-live="polite"></span>
         </span>
       </label>
+      <div class="mode soon" data-soon="decide" aria-disabled="true">
+        <span class="box">
+          <span class="pv">
+            <svg class="conv" viewBox="0 0 120 64" aria-hidden="true">
+              <path d="M14 12 C52 12 60 32 92 32 M14 32 L92 32 M14 52 C52 52 60 32 92 32" fill="none" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--line)"/>
+              <circle cx="12" cy="12" r="7" style="fill:var(--gold)"/>
+              <circle cx="12" cy="32" r="7" style="fill:var(--elixir)"/>
+              <circle cx="12" cy="52" r="7" style="fill:#3FA9F5"/>
+              <circle cx="100" cy="32" r="13" style="fill:var(--track);stroke:var(--line)" stroke-width="2"/>
+              <path d="M95 31 v-3 a5 5 0 0 1 10 0 v3 M93 31 h14 v9 h-14 z" fill="none" stroke-width="2" stroke-linejoin="round" style="stroke:var(--muted)"/>
+            </svg>
+          </span>
+          <span class="mtitle" data-en="Decide">Decide</span>
+          <span class="rank new"><b data-en="Coming soon">Próximamente</b></span>
+        </span>
+      </div>
     </div>
+    <div class="cdots" id="cdots" aria-hidden="true"></div>
 
-    <div class="decide" aria-disabled="true">
-      <svg class="conv" viewBox="0 0 120 64" aria-hidden="true">
-        <path d="M14 12 C52 12 60 32 92 32 M14 32 L92 32 M14 52 C52 52 60 32 92 32" fill="none" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--line)"/>
-        <circle cx="12" cy="12" r="7" style="fill:var(--gold)"/>
-        <circle cx="12" cy="32" r="7" style="fill:var(--elixir)"/>
-        <circle cx="12" cy="52" r="7" style="fill:#3FA9F5"/>
-        <circle cx="100" cy="32" r="13" style="fill:var(--track);stroke:var(--line)" stroke-width="2"/>
-        <path d="M95 31 v-3 a5 5 0 0 1 10 0 v3 M93 31 h14 v9 h-14 z" fill="none" stroke-width="2" stroke-linejoin="round" style="stroke:var(--muted)"/>
-      </svg>
-      <span class="mtxt">
-        <span class="mtitle" data-en="Decide">Decide</span>
-        <span class="mdesc" data-en="All three at once: attack or wait? · Coming soon">Las tres a la vez: ¿atacas o esperas? · Próximamente</span>
-      </span>
+
+    <div id="decideOpts" class="hidden">
+      <p class="mintro" data-en="All three at once: attack or wait?">Las tres a la vez: ¿atacas o esperas?</p>
+      <p class="soon-note" data-en="Coming soon. Meanwhile, train each skill separately.">Muy pronto. Mientras tanto, entrena cada habilidad por separado.</p>
     </div>
-
 
     <div id="costOpts">
+      <p class="mintro" data-en="Learn how much elixir &lt;i class=&quot;ix&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; every card costs until you master them all.">Aprende cuánto elixir <i class="ix" aria-hidden="true"></i> cuesta cada carta hasta dominarlas todas.</p>
       <div class="badges" id="badges" aria-label="Insignias de Maestría"></div>
       <p class="desc badge-info hidden" id="badgeInfo"></p>
-      <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;How many cards can you master?&lt;/b&gt;You have 3 towers 🏰🏰🏰. Every miss knocks one down; every streak of 10 earns you a crown 👑 and rebuilds a tower."><b class="challenge">¿Cuántas cartas eres capaz de dominar?</b>Tienes 3 torres 🏰🏰🏰. Cada fallo derriba una; cada racha de 10 aciertos te da una corona 👑 y reconstruye una torre.</p>
+      <details class="rule"><summary data-en="How many cards can you master?">¿Cuántas cartas eres capaz de dominar?</summary><p data-en="You have 3 towers. Every miss knocks one down; every streak of 10 earns you a crown and rebuilds a tower.">Tienes 3 torres. Cada fallo derriba una; cada racha de 10 aciertos te da una corona y reconstruye una torre.</p></details>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
       <fieldset>
         <legend data-en="Difficulty">Dificultad</legend>
         <div class="seg">
@@ -508,8 +590,10 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     </div>
 
     <div id="countOpts" class="hidden">
+      <p class="mintro" data-en="Learn to keep count of your opponent’s elixir.">Aprende a llevar la cuenta del elixir de tu rival.</p>
       <div class="badges" id="cBadges" aria-label="Insignias"></div>
       <p class="desc badge-info hidden" id="cBadgeInfo"></p>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
       <fieldset>
         <legend data-en="Stage">Etapa</legend>
         <div class="seg stages">
@@ -531,7 +615,9 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     </div>
 
     <div id="cycleOpts" class="hidden">
-      <p class="lives-intro" data-en="&lt;b class=&quot;challenge&quot;&gt;Every card returns after 4 plays&lt;/b&gt;When your opponent plays a card, they need to play 4 others to have it available again."><b class="challenge">Cada carta vuelve tras 4 jugadas</b>Cuando el rival juega una carta, necesita jugar otras 4 para tenerla disponible de nuevo.</p>
+      <p class="mintro" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</p>
+      <details class="rule"><summary data-en="Every card returns after 4 plays">Cada carta vuelve tras 4 jugadas</summary><p data-en="When your opponent plays a card, they need to play 4 others to have it available again.">Cuando el rival juega una carta, necesita jugar otras 4 para tenerla disponible de nuevo.</p></details>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
       <fieldset>
         <legend data-en="Stage">Etapa</legend>
         <div class="seg stages five">
@@ -549,6 +635,7 @@ footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
     <button class="btn" id="start" data-en="Start">Empezar</button>
     <button class="btn ghost hidden" id="practiceHard" data-en="Practice my hardest cards">Practicar mis cartas difíciles</button>
     <div class="best" id="best"></div>
+
   </section>
 
   <!-- GAME -->
@@ -838,7 +925,7 @@ const heartsTxt=()=>"🏰".repeat(lives)+"💥".repeat(MAX_LIVES-lives)+(crowns?
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{attempts:[],cards:{}};}catch(e){return {attempts:[],cards:{}};}}
 function save(h){try{localStorage.setItem(KEY,JSON.stringify(h));}catch(e){}}
-function show(id){["setup","game","results","count","countResults","cycle","cycleResults"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
+function show(id){if(id==="setup"&&typeof carSync==="function") requestAnimationFrame(()=>carSync(false));["setup","game","results","count","countResults","cycle","cycleResults"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
 const fmt = x => LANG==="en"?x.toFixed(1):x.toFixed(1).replace(".",",");
 
 // historic difficulty: errors first, then slowness
@@ -1081,6 +1168,68 @@ function renderPreviews(){
   $("pvCycle").innerHTML=`<span class="qs">?</span><span class="qs">?</span>`+cardVisual("Megacaballero")+`<span class="qs">?</span>`;
 }
 document.querySelectorAll('#setup input[type="radio"]').forEach(r=>r.addEventListener("change",refreshSetup));
+
+// Explicaciones de cada opción: plegadas, se abren con ⓘ junto al título
+document.querySelectorAll("#setup fieldset").forEach((fs,i)=>{
+  const d=fs.querySelector(".desc"), lg=fs.querySelector("legend");
+  if(!d||!lg) return;
+  d.id=d.id||("fd"+i);
+  const b=document.createElement("button");
+  b.type="button"; b.className="info-btn"; b.textContent="ⓘ";
+  b.setAttribute("aria-controls",d.id); b.setAttribute("aria-expanded","false");
+  b.setAttribute("aria-label",L("Ver explicación","Show explanation"));
+  fs.classList.add("folded"); lg.appendChild(b);
+  b.addEventListener("click",()=>{ const open=fs.classList.toggle("folded")===false; b.setAttribute("aria-expanded",String(open)); });
+});
+
+// ================= CARRUSEL DE MODOS =================
+const car=document.querySelector(".modes"), carItems=[...car.children];
+$("cdots").innerHTML=carItems.map(()=>"<i></i>").join("");
+const cdots=[...$("cdots").children];
+const carCenter=()=>car.scrollLeft+car.clientWidth/2;
+function carIdx(){ const c=carCenter(); let b=0,bd=Infinity; carItems.forEach((el,i)=>{const d=Math.abs(el.offsetLeft+el.offsetWidth/2-c); if(d<bd){bd=d;b=i;}}); return b; }
+function carPaint(){
+  const c=carCenter(), k=carIdx();
+  carItems.forEach((el,i)=>{
+    let d=(el.offsetLeft+el.offsetWidth/2-c)/el.offsetWidth; d=Math.max(-1.5,Math.min(1.5,d));
+    el.style.setProperty("--d",d.toFixed(3)); el.style.setProperty("--a",Math.abs(d).toFixed(3));
+    el.style.zIndex=String(10-Math.round(Math.abs(d)*4)); el.classList.toggle("center",i===k);
+  });
+  cdots.forEach((dt,i)=>dt.classList.toggle("on",i===k));
+}
+function carGo(i,smooth=true){
+  const el=carItems[i]; if(!el) return;
+  car.scrollTo({left:el.offsetLeft+el.offsetWidth/2-car.clientWidth/2,behavior:smooth&&!matchMedia("(prefers-reduced-motion: reduce)").matches?"smooth":"auto"});
+}
+function carPick(){
+  const el=carItems[carIdx()], r=el.querySelector('input[name="mode"]');
+  $("setup").classList.toggle("on-decide",!r);
+  $("decideOpts").classList.toggle("hidden",!!r);
+  if(r&&!r.checked){ r.checked=true; r.dispatchEvent(new Event("change",{bubbles:true})); }
+}
+function carSync(smooth=false){ const r=document.querySelector('input[name="mode"]:checked'); const i=carItems.indexOf(r.closest(".mode")); carGo(i,smooth); requestAnimationFrame(carPaint); }
+let carT=0, carRaf=0;
+car.addEventListener("scroll",()=>{
+  if(!carRaf) carRaf=requestAnimationFrame(()=>{carRaf=0; carPaint();});
+  clearTimeout(carT); carT=setTimeout(carPick,140);
+},{passive:true});
+carItems.forEach((el,i)=>el.addEventListener("click",()=>{ if(!el.classList.contains("center")) carGo(i); }));
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{ const i=carItems.indexOf(r.closest(".mode")); if(i!==carIdx()) carGo(i); }));
+window.addEventListener("resize",()=>carSync(false));
+requestAnimationFrame(()=>carSync(false));
+
+// Al tocar un modo: desliza lo justo para que se vean sus opciones y "Empezar"
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.closest("label").addEventListener("click",()=>{
+  if(!r.closest(".mode").classList.contains("center")) return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const opts=["costOpts","countOpts","cycleOpts"].map($).find(el=>!el.classList.contains("hidden"));
+    if(!opts) return;
+    const y=window.scrollY, top=opts.getBoundingClientRect().top+y-12;
+    const endBtn=$("start").getBoundingClientRect().bottom+y+16;
+    const target=Math.min(top, endBtn-window.innerHeight);
+    if(target>y+4) window.scrollTo({top:target,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  }));
+}));
 
 $("again").addEventListener("click",startFromSettings);
 $("retryMisses").addEventListener("click",()=>start(shuffle(misses.map(m=>m.card))));
