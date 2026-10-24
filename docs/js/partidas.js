@@ -115,10 +115,14 @@ function enlaceMazo(cartas, cat) {
   if (!ids.length || ids.includes(null)) return null;
   return `https://link.clashroyale.com/es/?clashroyale://copyDeck?deck=${ids.join(";")}&l=Royale%20Mobile`;
 }
+// en el móvil el enlace abre el juego en la misma pestaña (copiar y pegar caduca); en PC, en otra pestaña, donde el juego muestra el QR
+const TACTIL = matchMedia("(pointer: coarse)").matches;
+const ICONO_ABRIR = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>`;
+const ICONO_OK = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4 9-9"/></svg>`;
 function botonCopiar(cartas, cat) {
   const enlace = enlaceMazo(cartas, cat);
   if (!enlace) return `<p class="copiar-nota">${t("Mazo incompleto: no se puede copiar", "Incomplete deck: can’t copy it")}</p>`;
-  return `<button type="button" class="copiar-mazo" data-enlace="${esc(enlace)}">${t("Copiar mazo", "Copy deck")}</button>`;
+  return `<a class="copiar-mazo abrir" href="${esc(enlace)}"${TACTIL ? "" : ' target="_blank" rel="noopener"'} aria-label="${t("Abrir mazo en el juego", "Open deck in game")}">${ICONO_ABRIR}<span>${t("Abrir en el juego", "Open in game")}</span></a>`;
 }
 
 // barra enfrentada: jugador a la izquierda (violeta), rival a la derecha (gris)
@@ -208,12 +212,13 @@ export async function partidas(contenedor, boton, ps, nombres, alVerRival, cuant
     contenedor.innerHTML = recientes.slice(0, mostrar).map((p, i) => partidaHTML(p, cat, nombres, i)).join("");
     boton.hidden = mostrar >= recientes.length;
     contenedor.querySelectorAll(".copiar-mazo").forEach((b) => b.addEventListener("click", async () => {
-      const texto = t("Copiar mazo", "Copy deck");
+      const orig = b.innerHTML;
       try {
         await navigator.clipboard.writeText(b.dataset.enlace);
-        b.textContent = t("¡Copiado!", "Copied!");
-      } catch (e) { b.textContent = t("No se pudo copiar", "Couldn’t copy"); }
-      setTimeout(() => (b.textContent = texto), 1500);
+        b.classList.add("copiado");
+        b.innerHTML = `${ICONO_OK}<span>${t("¡Copiado!", "Copied!")}</span>`;
+      } catch (e) { b.innerHTML = `<span>${t("No se pudo copiar", "Couldn’t copy")}</span>`; }
+      setTimeout(() => { b.classList.remove("copiado"); b.innerHTML = orig; }, 1500);
     }));
     contenedor.querySelectorAll(".partida-abrir").forEach((b) => b.addEventListener("click", () => {
       const abierto = b.getAttribute("aria-expanded") === "true";
