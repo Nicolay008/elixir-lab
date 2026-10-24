@@ -275,3 +275,11 @@ footer a{color:inherit}
 .contador{font-size:.8rem;color:var(--muted);margin:0}
 .ver-mas{border:1.5px solid var(--elixir);background:transparent;color:var(--elixir);font:inherit;font-weight:800;padding:.4rem 1.1rem;border-radius:999px;cursor:pointer}
 .ver-mas[hidden]{display:none}
+
+/* ===== Pantalla ancha: la misma anchura en jugador y ranking; estadísticas en dos columnas ===== */
+@media (min-width:720px){
+  main{max-width:44rem}
+  .barra-fija{padding-left:max(1rem,calc((100vw - 44rem) / 2 + 1rem));padding-right:max(1rem,calc((100vw - 44rem) / 2 + 1rem))}
+  #vistaEstadisticas:not([hidden]){display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start}
+  #vistaEstadisticas .estad-cabecera{grid-column:1/-1}
+}
