@@ -481,6 +481,20 @@ fieldset.folded .desc{display:none}
 .cnt{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
 .cnt .nbtn{font-size:1.5rem;padding:.8rem 0}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}.edrop{animation:none;opacity:1}}
+/* ===== Pantalla ancha: minijuegos en cuadrícula en vez de carrusel, imágenes más grandes ===== */
+@media (min-width:720px){
+  main{max-width:44rem}
+  footer{max-width:44rem}
+  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:.9rem;margin:0 0 1.25rem;padding:0;overflow:visible;scroll-snap-type:none;-webkit-mask-image:none;mask-image:none;perspective:none}
+  .modes .mode{flex:none;width:auto;padding:0}
+  .modes .mode .box{transform:none;opacity:1}
+  .modes .mode .pv{height:auto;min-height:150px}
+  .modes .mode .pv img{height:110px}
+  .modes .mode .pv.count img{height:80px}
+  .modes .mode .pv.cyc img{height:72px}
+  .modes .mode .mtitle{font-size:1.35rem}
+  .cdots{display:none}
+}
 </style>
 </head>
 <body>
