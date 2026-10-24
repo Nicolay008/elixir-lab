@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=12";
-import { modelo, filtrarModo } from "./stats.js?v=12";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=12";
-import { reloj } from "./clock.js?v=12";
-import { partidas } from "./partidas.js?v=12";
+import { consultar, seguir } from "./api.js?v=13";
+import { modelo, filtrarModo } from "./stats.js?v=13";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=13";
+import { reloj } from "./clock.js?v=13";
+import { partidas } from "./partidas.js?v=13";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=12";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=12";
-import * as seguidos from "./seguidos.js?v=12";
-import { ICONOS, escudoLiga } from "./iconos.js?v=12";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=13";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=13";
+import * as seguidos from "./seguidos.js?v=13";
+import { ICONOS, escudoLiga } from "./iconos.js?v=13";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -22,11 +22,25 @@ const leyendas = {
 };
 
 // ---------- atajos y botón seguir ----------
+// Barra compacta: el perfil fijado a la vista y un desplegable con el resto de seguidos
 function pintarAtajos() {
   const l = seguidos.ordenados(), actual = ultimo?.jugador.tag.replace("#", ""), fij = seguidos.fijado();
   $("atajos").hidden = l.length === 0;
-  $("atajos").innerHTML = l.map((s) => `<button type="button" data-tag="${s.tag}"${s.tag === actual ? ' aria-current="true"' : ""}${s.tag === fij ? ' class="fijado"' : ""}>${s.tag === fij ? ICONOS.chincheta : ""}${s.nombre}</button>`).join("");
-  $("atajos").querySelectorAll("button").forEach((b) => b.addEventListener("click", () => { $("tag").value = `#${b.dataset.tag}`; buscar(b.dataset.tag); }));
+  const boton = (s) => `<button type="button" data-tag="${s.tag}"${s.tag === actual ? ' aria-current="true"' : ""}${s.tag === fij ? ' class="fijado"' : ""}>${s.tag === fij ? ICONOS.chincheta : ""}${s.nombre}</button>`;
+  const resto = l.filter((s) => s.tag !== fij);
+  const pin = l.find((s) => s.tag === fij);
+  $("pinSeguido").innerHTML = pin ? boton(pin) : "";
+  $("botonSeguidos").hidden = resto.length === 0;
+  $("botonSeguidos").innerHTML = `${t("Seguidos", "Following")} (${l.length})${ICONOS.flecha}`;
+  $("listaSeguidos").innerHTML = resto.map(boton).join("");
+  if (!resto.length) cerrarSeguidos();
+  $("atajos").querySelectorAll("button[data-tag]").forEach((b) => b.addEventListener("click", () => {
+    $("tag").value = `#${b.dataset.tag}`; cerrarSeguidos(); buscar(b.dataset.tag);
+  }));
+}
+function cerrarSeguidos() {
+  $("botonSeguidos").setAttribute("aria-expanded", "false");
+  $("listaSeguidos").hidden = true;
 }
 function pintarBotonSeguir() {
   const sigo = ultimo && seguidos.sigo(ultimo.jugador.tag);
@@ -167,6 +181,7 @@ async function buscar(tag, { silencioso = false } = {}) {
   if (!silencioso) { $("error").hidden = true; $("buscar").disabled = true; $("buscar").textContent = t("Consultando…", "Looking up…"); cerrarPanel(); }
   try {
     const data = await consultar(limpio);
+    $("intro").hidden = true;   // con un resultado en pantalla, la presentación sobra
     pintar(data);
     history.replaceState(null, "", `?tag=${encodeURIComponent(data.jugador.tag.replace("#", ""))}`);
     try { localStorage.setItem("elixirLabTag", data.jugador.tag); } catch (e) {}
@@ -191,6 +206,13 @@ $("botonFijar").addEventListener("click", () => {
   pintar(ultimo);   // redibuja con "tú" o con el nombre
 });
 $("panelCerrar").addEventListener("click", cerrarPanel);
+$("botonSeguidos").addEventListener("click", () => {
+  const abierto = $("botonSeguidos").getAttribute("aria-expanded") !== "true";
+  $("botonSeguidos").setAttribute("aria-expanded", abierto);
+  $("listaSeguidos").hidden = !abierto;
+});
+document.addEventListener("click", (e) => { if (!$("atajos").contains(e.target)) cerrarSeguidos(); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrarSeguidos(); });
 document.querySelectorAll("#modos button").forEach((b) => b.addEventListener("click", () => {
   grupoModo = b.dataset.modo;
   if (ultimo) pintar(ultimo);

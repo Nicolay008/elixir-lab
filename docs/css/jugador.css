@@ -245,3 +245,13 @@ footer a{color:inherit}
 .quien{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .partida.abierta > .fila-mazo,.partida.abierta > .ronda{display:none}
 .marcador small{font-family:"Nunito",sans-serif;font-size:.7rem;font-weight:700;color:var(--muted);margin-left:.2rem}
+
+/* ===== Barra de seguidos compacta ===== */
+.atajos{align-items:center}
+.pin-seguido{display:inline-flex}
+.seguidos-btn{display:inline-flex;align-items:center;gap:.3rem;border:1.5px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:700;font-size:.85rem;padding:.3rem .75rem;border-radius:999px;cursor:pointer}
+.seguidos-btn[aria-expanded="true"]{border-color:var(--elixir);color:var(--elixir)}
+.seguidos-btn .icono{transition:transform .15s}
+.seguidos-btn[aria-expanded="true"] .icono{transform:rotate(180deg)}
+.seguidos-lista{display:flex;flex-wrap:wrap;gap:.4rem;width:100%}
+.seguidos-lista[hidden]{display:none}
