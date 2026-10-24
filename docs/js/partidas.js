@@ -1,7 +1,7 @@
 // Lista de partidas: cabecera, mazos y un desplegable con la comparación cara a cara.
-import { t, LANG } from "./i18n.js?v=16";
-import { dia, hora } from "./stats.js?v=16";
-import { ICONOS } from "./iconos.js?v=16";
+import { t, LANG } from "./i18n.js?v=17";
+import { dia, hora } from "./stats.js?v=17";
+import { ICONOS } from "./iconos.js?v=17";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -105,6 +105,22 @@ function mazoDetalle(cartasP, cat) {
   }).join("")}</div>`;
 }
 
+// enlace para copiar el mazo al juego (mismo formato que el ranking); null si falta alguna carta en el catálogo
+function enlaceMazo(cartas, cat) {
+  const ids = cartas.map((x) => {
+    const nombre = typeof x === "string" ? x : x.carta;
+    const m = String(nombre ?? "").match(/^(.*?)(?: \((Evo|Héroe)\))?$/);
+    return cat.get(m[1])?.id ?? null;
+  });
+  if (!ids.length || ids.includes(null)) return null;
+  return `https://link.clashroyale.com/es/?clashroyale://copyDeck?deck=${ids.join(";")}&l=Royale%20Mobile`;
+}
+function botonCopiar(cartas, cat) {
+  const enlace = enlaceMazo(cartas, cat);
+  if (!enlace) return `<p class="copiar-nota">${t("Mazo incompleto: no se puede copiar", "Incomplete deck: can’t copy it")}</p>`;
+  return `<button type="button" class="copiar-mazo" data-enlace="${esc(enlace)}">${t("Copiar mazo", "Copy deck")}</button>`;
+}
+
 // barra enfrentada: jugador a la izquierda (violeta), rival a la derecha (gris)
 function barra(nombre, a, b, fmt = (x) => x) {
   if (a === null && b === null) return "";
@@ -137,8 +153,8 @@ function detalleHTML(p, cat, nombres) {
     ${hayUsadas ? barra(t("Cartas sin usar", "Cards not played"), sinUsarJ, sinUsarR) : ""}
     ${rondas.map((x, i) => `
       ${rondas.length > 1 ? `<p class="ronda">${t("Ronda", "Round")} ${i + 1} · ${x.j.coronas}-${x.r?.coronas ?? "–"}</p>` : ""}
-      <p class="detalle-quien lado-a">${esc(corto(nombres.jugador, 20))}</p>${mazoDetalle(x.j.cartas, cat)}
-      ${x.r ? `<p class="detalle-quien lado-b">${esc(corto(p.rival, 20))}</p>${mazoDetalle(x.r.cartas, cat)}` : ""}`).join("")}
+      <p class="detalle-quien lado-a">${esc(corto(nombres.jugador, 20))}</p>${mazoDetalle(x.j.cartas, cat)}${botonCopiar(x.j.cartas, cat)}
+      ${x.r ? `<p class="detalle-quien lado-b">${esc(corto(p.rival, 20))}</p>${mazoDetalle(x.r.cartas, cat)}${botonCopiar(x.r.cartas, cat)}` : ""}`).join("")}
     ${hayUsadas ? `<p class="detalle-nota">${t("Atenuadas: cartas que no se llegaron a jugar. El número es su nivel.", "Faded: cards that weren’t played. The number is the card level.")}</p>` : ""}
     ${p.rival_tag ? `<button type="button" class="enlace ver-rival" data-tag="${esc(p.rival_tag)}">${t("Ver el perfil de", "See the profile of")} ${esc(p.rival)}</button>` : ""}
   </div>`;
@@ -191,6 +207,14 @@ export async function partidas(contenedor, boton, ps, nombres, alVerRival, cuant
   const dibujar = () => {
     contenedor.innerHTML = recientes.slice(0, mostrar).map((p, i) => partidaHTML(p, cat, nombres, i)).join("");
     boton.hidden = mostrar >= recientes.length;
+    contenedor.querySelectorAll(".copiar-mazo").forEach((b) => b.addEventListener("click", async () => {
+      const texto = t("Copiar mazo", "Copy deck");
+      try {
+        await navigator.clipboard.writeText(b.dataset.enlace);
+        b.textContent = t("¡Copiado!", "Copied!");
+      } catch (e) { b.textContent = t("No se pudo copiar", "Couldn’t copy"); }
+      setTimeout(() => (b.textContent = texto), 1500);
+    }));
     contenedor.querySelectorAll(".partida-abrir").forEach((b) => b.addEventListener("click", () => {
       const abierto = b.getAttribute("aria-expanded") === "true";
       b.setAttribute("aria-expanded", !abierto);

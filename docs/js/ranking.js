@@ -1,4 +1,4 @@
-import { iniciarBarra } from './barra.js?v=16';
+import { iniciarBarra } from './barra.js?v=17';
 import { t } from './i18n.js?v=10';
 
 const PASO = 25;   // filas por vez

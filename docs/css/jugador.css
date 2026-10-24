@@ -292,3 +292,7 @@ footer a{color:inherit}
   #vistaEstadisticas #tarjetaTendencia.ampliada{grid-column:1/-1}
   #vistaEstadisticas #tarjetaTendencia.ampliada .lienzo{height:340px}
 }
+
+/* ===== Copiar mazo desde el desplegable de una partida ===== */
+.copiar-mazo{display:block;margin:.35rem 0 .6rem;border:1.5px solid var(--elixir);background:transparent;color:var(--elixir);font:inherit;font-weight:800;font-size:.8rem;padding:.3rem .8rem;border-radius:999px;cursor:pointer}
+.copiar-nota{font-size:.75rem;color:var(--muted);margin:.25rem 0 .5rem}

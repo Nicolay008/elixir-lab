@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=16";
-import { modelo, filtrarModo } from "./stats.js?v=16";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=16";
-import { reloj } from "./clock.js?v=16";
-import { partidas } from "./partidas.js?v=16";
+import { consultar, seguir } from "./api.js?v=17";
+import { modelo, filtrarModo } from "./stats.js?v=17";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=17";
+import { reloj } from "./clock.js?v=17";
+import { partidas } from "./partidas.js?v=17";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=16";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=16";
-import * as seguidos from "./seguidos.js?v=16";
-import { ICONOS, escudoLiga } from "./iconos.js?v=16";
-import { iniciarBarra } from "./barra.js?v=16";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=17";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=17";
+import * as seguidos from "./seguidos.js?v=17";
+import { ICONOS, escudoLiga } from "./iconos.js?v=17";
+import { iniciarBarra } from "./barra.js?v=17";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
