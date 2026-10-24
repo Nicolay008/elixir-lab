@@ -24,8 +24,30 @@ except ImportError:
     pass
 
 API = "https://proxy.royaleapi.dev/v1"
+REINTENTOS = (2, 5, 10)   # segundos de espera ante 429 o errores 5xx
 TOPS = [(57000184, "Perú", 50), (0, "Global", 100)]   # (location_id, nombre, cuántos)
 INTERVALO_MIN = "20 hours"
+
+
+def pedir_historial(headers, tag):
+    """Pide el historial; reintenta con espera ante límite de peticiones o errores del servidor."""
+    for espera in (0,) + REINTENTOS:
+        if espera:
+            time.sleep(espera)
+        r = requests.get(f"{API}/players/{tag.replace('#', '%23')}/battlelog", headers=headers, timeout=30)
+        if r.status_code == 200 or (r.status_code != 429 and r.status_code < 500):
+            return r
+    return r   # último intento: se devuelve con su código
+
+
+def ultimo_mazo(conn, loc_id, tag):
+    """Último mazo guardado de ese jugador en cualquier foto anterior, o None."""
+    return conn.execute(
+        """SELECT deck, partida_at FROM top_decks
+           WHERE location_id = %s AND tag = %s AND deck IS NOT NULL
+           ORDER BY snapshot_at DESC LIMIT 1""",
+        (loc_id, tag),
+    ).fetchone()
 
 
 def main():
@@ -51,26 +73,45 @@ def main():
                    ORDER BY puesto""",
                 (loc_id, loc_id, n),
             ).fetchall()
-            guardados = 0
+            guardados = anteriores = sin_datos = 0
             for puesto, tag, nom, rating in jugadores:
-                r = requests.get(f"{API}/players/{tag.replace('#', '%23')}/battlelog", headers=headers, timeout=30)
+                deck, jugada = None, None
+                r = pedir_historial(headers, tag)
                 if r.status_code != 200:
-                    print(f"  {tag}: HTTP {r.status_code}, se omite")
-                    continue
-                # la primera partida de ranked del historial es la más reciente
-                ranked = next((b for b in r.json() if b.get("type") == "pathOfLegend"), None)
-                if ranked is None:
-                    continue   # sin ranked reciente: mejor no guardar un mazo dudoso
-                deck = ranked["team"][0]["cards"]
-                jugada = datetime.strptime(ranked["battleTime"], "%Y%m%dT%H%M%S.%fZ").replace(tzinfo=timezone.utc)
+                    motivo = f"HTTP {r.status_code}"
+                else:
+                    # la primera partida de ranked del historial es la más reciente
+                    ranked = next((b for b in r.json() if b.get("type") == "pathOfLegend"), None)
+                    if ranked is None:
+                        motivo = "sin ranked en las últimas partidas"
+                    else:
+                        deck = ranked["team"][0]["cards"]
+                        jugada = datetime.strptime(ranked["battleTime"], "%Y%m%dT%H%M%S.%fZ").replace(tzinfo=timezone.utc)
+                        motivo = None
+
+                if deck is None:
+                    # no hay dato hoy: se conserva el último mazo conocido, con su fecha real de partida
+                    previo = ultimo_mazo(conn, loc_id, tag)
+                    if previo is None:
+                        sin_datos += 1
+                        print(f"  {tag} (puesto {puesto}): {motivo}, sin mazo anterior")
+                        continue
+                    deck, jugada = previo
+                    anteriores += 1
+                    print(f"  {tag} (puesto {puesto}): {motivo}, se usa el mazo de una foto anterior")
+                    if isinstance(deck, str):
+                        import json
+                        deck = json.loads(deck)
+                else:
+                    guardados += 1
+
                 conn.execute(
                     """INSERT INTO top_decks (location_id, puesto, tag, nombre, rating, deck, fuente, partida_at)
                        VALUES (%s, %s, %s, %s, %s, %s, 'ranked', %s)""",
                     (loc_id, puesto, tag, nom, rating, Jsonb(deck), jugada),
                 )
-                guardados += 1
                 time.sleep(0.1)   # sin prisas con la API
-            print(f"Mazos del top {nombre} guardados: {guardados} de {len(jugadores)}")
+            print(f"Mazos del top {nombre}: {guardados} nuevos, {anteriores} de foto anterior, {sin_datos} sin datos (de {len(jugadores)})")
 
 
 if __name__ == "__main__":
