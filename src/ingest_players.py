@@ -1,6 +1,7 @@
 """Guarda cada hora las partidas nuevas de los jugadores seguidos (tracked_players).
 
 Solo descarga los tags renovados en los últimos 30 días (v_tracked_activos).
+Caducidad: los tags que nadie renueva en 6 meses se borran, con todas sus partidas.
 Usa el mismo formato compacto que las funciones "seguir" y "consultar".
 
 Variables de entorno:
@@ -54,6 +55,12 @@ def compactar(b):
 def main():
     headers = {"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}
     with psycopg.connect(os.environ["SUPABASE_DB_URL"]) as conn:
+        # caducidad automática: privacidad por diseño y menos espacio ocupado
+        borrados = conn.execute(
+            "DELETE FROM tracked_players WHERE renovado_at < now() - interval '6 months' RETURNING tag"
+        ).fetchall()
+        if borrados:
+            print(f"Caducados (6 meses sin renovar): {len(borrados)} tags borrados con su historial")
         tags = [r[0] for r in conn.execute("SELECT tag FROM v_tracked_activos ORDER BY tag").fetchall()]
         nuevas = 0
         for tag in tags:
