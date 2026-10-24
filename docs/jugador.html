@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/jugador.css?v=15">
+<link rel="stylesheet" href="css/jugador.css?v=16">
 </head>
 <body>
 <nav id="barraFija" class="barra-fija" aria-label="Navegación">
@@ -94,7 +94,8 @@
 
     <section id="vistaEstadisticas" role="tabpanel" hidden>
       <div class="estad-cabecera"><h3 data-en="Player stats">Estadísticas del jugador</h3><p id="muestra" class="muestra"></p></div>
-    <article class="tarjeta">
+    <article id="tarjetaTendencia" class="tarjeta">
+      <button id="botonAmpliar" class="ampliar" type="button" aria-expanded="false" data-en="Expand">Ampliar</button>
       <div class="pulsador" role="group" aria-label="Qué gráfica ver">
         <button id="vistaRacha" type="button" aria-pressed="true" data-en="Streak">Racha</button>
         <button id="vistaElixir" type="button" aria-pressed="false">Elixir</button>
@@ -139,6 +140,6 @@
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-<script type="module" src="js/main.js?v=15"></script>
+<script type="module" src="js/main.js?v=16"></script>
 </body>
 </html>

@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=15";
-import { modelo, filtrarModo } from "./stats.js?v=15";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=15";
-import { reloj } from "./clock.js?v=15";
-import { partidas } from "./partidas.js?v=15";
+import { consultar, seguir } from "./api.js?v=16";
+import { modelo, filtrarModo } from "./stats.js?v=16";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=16";
+import { reloj } from "./clock.js?v=16";
+import { partidas } from "./partidas.js?v=16";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=15";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=15";
-import * as seguidos from "./seguidos.js?v=15";
-import { ICONOS, escudoLiga } from "./iconos.js?v=15";
-import { iniciarBarra } from "./barra.js?v=15";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=16";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=16";
+import * as seguidos from "./seguidos.js?v=16";
+import { ICONOS, escudoLiga } from "./iconos.js?v=16";
+import { iniciarBarra } from "./barra.js?v=16";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -207,6 +207,12 @@ $("botonFijar").addEventListener("click", () => {
   pintar(ultimo);   // redibuja con "tú" o con el nombre
 });
 $("panelCerrar").addEventListener("click", cerrarPanel);
+// en pantalla ancha, la gráfica de tendencia puede ocupar todo el ancho para estudiarla
+$("botonAmpliar").addEventListener("click", () => {
+  const ampliada = $("tarjetaTendencia").classList.toggle("ampliada");
+  $("botonAmpliar").setAttribute("aria-expanded", ampliada);
+  $("botonAmpliar").textContent = ampliada ? t("Reducir", "Shrink") : t("Ampliar", "Expand");
+});
 $("botonSeguidos").addEventListener("click", () => {
   const abierto = $("botonSeguidos").getAttribute("aria-expanded") !== "true";
   $("botonSeguidos").setAttribute("aria-expanded", abierto);
