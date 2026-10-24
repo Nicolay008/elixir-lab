@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=8";
-import { modelo } from "./stats.js?v=8";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=8";
-import { reloj } from "./clock.js?v=8";
-import { partidas } from "./partidas.js?v=8";
+import { consultar, seguir } from "./api.js?v=9";
+import { modelo } from "./stats.js?v=9";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=9";
+import { reloj } from "./clock.js?v=9";
+import { partidas } from "./partidas.js?v=9";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=8";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=8";
-import * as seguidos from "./seguidos.js?v=8";
-import { ICONOS } from "./iconos.js?v=8";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=9";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=9";
+import * as seguidos from "./seguidos.js?v=9";
+import { ICONOS } from "./iconos.js?v=9";
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
@@ -101,18 +101,19 @@ function pintar(data) {
   $("estado").dataset.tono = m.estado.tono;
   $("estado").style.setProperty("--lleno", `${m.estado.lleno}%`);
   $("muestra").textContent = esMio()
-    ? t(`Basadas en tus últimas ${data.resumen.partidas} partidas.`, `Based on your last ${data.resumen.partidas} matches.`)
-    : t(`Basadas en sus últimas ${data.resumen.partidas} partidas.`, `Based on their last ${data.resumen.partidas} matches.`);
-  $("resumenPartidas").textContent = data.resumen.partidas;
-  $("resumenWinrate").textContent = data.resumen.winrate === null ? "–" : `${data.resumen.winrate} %`;
-  $("resumenElixir").textContent = data.resumen.elixir_desperdiciado ?? "–";
+    ? t(`Basadas en tus últimas ${m.resumen.partidas} partidas.`, `Based on your last ${m.resumen.partidas} matches.`)
+    : t(`Basadas en sus últimas ${m.resumen.partidas} partidas.`, `Based on their last ${m.resumen.partidas} matches.`);
+  if (m.resumen.eventos) $("muestra").textContent += " " + t(`Sin contar ${m.resumen.eventos} de eventos especiales.`, `Not counting ${m.resumen.eventos} special event matches.`);
+  $("resumenPartidas").textContent = m.resumen.partidas;
+  $("resumenWinrate").textContent = m.resumen.winrate === null ? "–" : `${m.resumen.winrate} %`;
+  $("resumenElixir").textContent = m.resumen.elixir_desperdiciado ?? "–";
   $("notaApi").textContent = data.seguido
     ? t(`Historial guardado: ${data.resumen.partidas} partidas.`, `Saved history: ${data.resumen.partidas} matches.`)
     : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");
   $("resultado").hidden = false;
   pintarBotonSeguir(); pintarAtajos();
   const nombres = { yo: esMio() ? t("Tú", "You") : j.nombre, jugador: esMio() ? t("Tú", "You") : j.nombre };
-  partidas($("listaPartidas"), $("verMas"), m.ps, nombres, (tag) => {
+  partidas($("listaPartidas"), $("verMas"), m.todas, nombres, (tag) => {
     $("tag").value = tag; window.scrollTo({ top: 0, behavior: "smooth" }); buscar(tag);
   });
   graficasListas = false;

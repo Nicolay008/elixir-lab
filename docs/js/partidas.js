@@ -1,7 +1,7 @@
 // Lista de partidas: cabecera, mazos y un desplegable con la comparación cara a cara.
-import { t, LANG } from "./i18n.js?v=8";
-import { dia, hora } from "./stats.js?v=8";
-import { ICONOS } from "./iconos.js?v=8";
+import { t, LANG } from "./i18n.js?v=9";
+import { dia, hora } from "./stats.js?v=9";
+import { ICONOS } from "./iconos.js?v=9";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -26,7 +26,20 @@ const MODOS = {
   grandChallenge: ["laurel", "Gran desafío", "Grand challenge"], classicChallenge: ["laurel", "Desafío clásico", "Classic challenge"],
   friendly: ["amistosa", "Amistosa", "Friendly"], clanMate: ["amistosa", "Amistosa de clan", "Clan friendly"],
 };
+// nombres conocidos de eventos; los demás se muestran limpiando el nombre interno
+const EVENTOS = { GlobalLightning: ["Tormenta perfecta", "Perfect Storm"] };
+const esEvento = (p) => typeof p.evento === "string" && p.evento.startsWith("Event_");
+function nombreEvento(ev) {
+  const clave = ev.replace(/^Event_/, "").split("_")[0];
+  if (EVENTOS[clave]) return t(...EVENTOS[clave]);
+  return clave.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
 function modoHTML(p) {
+  if (esEvento(p)) {
+    const nombre = nombreEvento(p.evento);
+    return `<span class="meta-item" title="${esc(t("Evento", "Event"))}: ${esc(nombre)}">${ICONOS.destello}<span class="meta-texto">${esc(corto(nombre, 18))}</span></span>`;
+  }
   const m = MODOS[p.modo];
   let icono = m ? m[0] : "destello", nombre = m ? t(m[1], m[2]) : (p.evento || p.modo), numero = "";
   if (p.desafio_victorias_antes !== null && p.desafio_victorias_antes !== undefined) {
@@ -43,6 +56,8 @@ function copasHTML(d, p) {
   if (!d) return "";
   const cambio = d.cambio_copas, signo = cambio > 0 ? "+" : "";
   const chip = (texto, titulo, sube) => `<span class="copas ${sube ? "sube" : "baja"}" title="${titulo}">${texto}</span>`;
+  if (esEvento(p) && d.copas_inicio !== null && cambio !== null)
+    return chip(`${d.copas_inicio + cambio} ${signo}${cambio}`, t("Progreso en el evento", "Event progress"), cambio >= 0);
   if (p.modo === "trail" && d.copas_inicio !== null && cambio !== null)
     return chip(`${d.copas_inicio + cambio} ${signo}${cambio}`, t("Copas", "Trophies"), cambio >= 0);
   if (p.modo === "pathOfLegend") {

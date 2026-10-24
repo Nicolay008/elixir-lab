@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=8";
+import { t } from "./i18n.js?v=9";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -17,6 +17,10 @@ const media = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : n
 const pad = (n) => String(n).padStart(2, "0");
 export const dia = (d) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
 export const hora = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+
+// Eventos especiales (p. ej. Tormenta perfecta): llegan como "trail", pero su modo empieza por "Event_".
+// Se juegan con un mazo del evento, así que no cuentan en las estadísticas del jugador.
+export const esEvento = (p) => typeof p.evento === "string" && p.evento.startsWith("Event_");
 
 // Partidas en orden cronológico, con lo que necesitan las gráficas
 export function preparar(data) {
@@ -45,7 +49,15 @@ export function movil(xs, w = VENTANA) {
 }
 
 export function modelo(data, mio = true) {
-  const ps = preparar(data);
+  const todas = preparar(data);
+  const ps = todas.filter((p) => !esEvento(p));
+  const ganadas = ps.filter((p) => p.victoria).length;
+  const elx = ps.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+  const resumen = {
+    partidas: ps.length, eventos: todas.length - ps.length,
+    winrate: ps.length ? Math.round((100 * ganadas) / ps.length) : null,
+    elixir_desperdiciado: elx.length ? Math.round((100 * elx.reduce((a, b) => a + b, 0)) / elx.length) / 100 : null,
+  };
   const validas = ps.filter((p) => !p.desconexion);
   const elixires = validas.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
   const mediaElixir = media(elixires);
@@ -70,7 +82,7 @@ export function modelo(data, mio = true) {
     i = j + 1;
   }
 
-  return { ps, winrate, elixir, mediaElixir, limite, franjas, estado: estado(ps, mio), horas: porHora(validas) };
+  return { ps, todas, resumen, winrate, elixir, mediaElixir, limite, franjas, estado: estado(ps, mio), horas: porHora(validas) };
 }
 
 // Mensaje principal: titular corto, consejo y porcentaje para la barra de elixir.
