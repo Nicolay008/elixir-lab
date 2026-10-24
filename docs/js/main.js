@@ -1,14 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=13";
-import { modelo, filtrarModo } from "./stats.js?v=13";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=13";
-import { reloj } from "./clock.js?v=13";
-import { partidas } from "./partidas.js?v=13";
+import { consultar, seguir } from "./api.js?v=14";
+import { modelo, filtrarModo } from "./stats.js?v=14";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=14";
+import { reloj } from "./clock.js?v=14";
+import { partidas } from "./partidas.js?v=14";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=13";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=13";
-import * as seguidos from "./seguidos.js?v=13";
-import { ICONOS, escudoLiga } from "./iconos.js?v=13";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=14";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=14";
+import * as seguidos from "./seguidos.js?v=14";
+import { ICONOS, escudoLiga } from "./iconos.js?v=14";
+import { iniciarBarra } from "./barra.js?v=14";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -220,6 +221,7 @@ document.querySelectorAll("#modos button").forEach((b) => b.addEventListener("cl
 }));
 
 aplicar();
+iniciarBarra();
 $("idioma").textContent = LANG === "en" ? "ES" : "EN";
 $("idioma").addEventListener("click", alternar);
 pintarAtajos();

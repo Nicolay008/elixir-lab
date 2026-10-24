@@ -1,3 +1,7 @@
+import { iniciarBarra } from './barra.js?v=14';
+import { t } from './i18n.js?v=10';
+
+const PASO = 25;   // filas por vez
 const SB = 'https://jbhftetfnrdestjzrhgs.supabase.co';
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpiaGZ0ZXRmbnJkZXN0anpyaGdzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTIyNzU1ODQsImV4cCI6MjEwNzg1MTU4NH0.k__1Vy8l7-pqemokwBCkrGeX-aOTJUz4-Tv0yz06dSo';
 const LOCATIONS = { pe: 57000184, global: 0 };
@@ -142,8 +146,21 @@ async function iniciar(ambito = 'global') {
   document.getElementById('foto').textContent = snap
     ? new Date(snap).toLocaleString('es-PE', { timeZone: 'America/Lima' })
     : 'Sin datos';
-  document.getElementById('tabla-ranking').innerHTML = renderFilas(filas, mazosPorTag);
+  filasActuales = filas; mazosActuales = mazosPorTag; mostrar = PASO;
+  pintarTabla();
 }
+
+let filasActuales = [], mazosActuales = {}, mostrar = PASO;
+function pintarTabla() {
+  const visibles = filasActuales.slice(0, mostrar);
+  document.getElementById('tabla-ranking').innerHTML = renderFilas(visibles, mazosActuales);
+  document.getElementById('contador').textContent = t(
+    `Mostrando ${visibles.length} de ${filasActuales.length}`,
+    `Showing ${visibles.length} of ${filasActuales.length}`);
+  document.getElementById('verMasRanking').hidden = visibles.length >= filasActuales.length;
+}
+document.getElementById('verMasRanking').addEventListener('click', () => { mostrar += PASO; pintarTabla(); });
+iniciarBarra();
 
 document.querySelectorAll('[data-ambito]').forEach(b =>
   b.addEventListener('click', () => {

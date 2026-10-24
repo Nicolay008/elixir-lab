@@ -15,15 +15,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/jugador.css?v=13">
+<link rel="stylesheet" href="css/jugador.css?v=14">
 </head>
 <body>
+<nav id="barraFija" class="barra-fija" aria-label="Navegación">
+  <a class="brand-mini" href="./" aria-label="Volver a Elixir Lab"><svg class="logo-mini" viewBox="-34 -56 68 100" aria-hidden="true"><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" style="fill:var(--elixir-2)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" style="fill:var(--elixir-2)"/></svg><span>Elixir Lab</span></a>
+  <div class="barra-acciones">
+    <button id="subir" class="subir" type="button" aria-label="Subir" data-en-label="Back to top" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+    <button id="idioma" class="idioma" type="button" aria-label="Change language to English" data-en-label="Cambiar el idioma a español">EN</button>
+  </div>
+</nav>
 <main>
   <header class="cabecera">
-    <div class="arriba">
-    <a class="brand" href="./" aria-label="Volver a Elixir Lab"><svg class="logo" viewBox="-34 -56 68 100" aria-hidden="true"><defs><linearGradient id="lgJ" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--elixir-2)"/><stop offset="1" style="stop-color:var(--elixir)"/></linearGradient></defs><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" fill="url(#lgJ)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" fill="url(#lgJ)"/></svg>Elixir Lab</a>
-    <button id="idioma" class="idioma" type="button" aria-label="Change language to English" data-en-label="Cambiar el idioma a español">EN</button>
-    </div>
     <h1 data-en="Personal lab">Laboratorio personal</h1>
     <p id="intro" class="intro" data-en="Real matches under the microscope: streak, elixir leaked, crowns and best hour. Look up your tag or anyone’s.">Partidas reales bajo el microscopio: racha, elixir perdido, coronas y mejor hora. Busca tu tag o el de cualquier jugador.</p>
     <form id="formulario" class="buscador" autocomplete="off">
@@ -136,6 +139,6 @@
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-<script type="module" src="js/main.js?v=13"></script>
+<script type="module" src="js/main.js?v=14"></script>
 </body>
 </html>
