@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=10";
-import { modelo, filtrarModo } from "./stats.js?v=10";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=10";
-import { reloj } from "./clock.js?v=10";
-import { partidas } from "./partidas.js?v=10";
+import { consultar, seguir } from "./api.js?v=12";
+import { modelo, filtrarModo } from "./stats.js?v=12";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=12";
+import { reloj } from "./clock.js?v=12";
+import { partidas } from "./partidas.js?v=12";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=10";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=10";
-import * as seguidos from "./seguidos.js?v=10";
-import { ICONOS, escudoLiga } from "./iconos.js?v=10";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=12";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=12";
+import * as seguidos from "./seguidos.js?v=12";
+import { ICONOS, escudoLiga } from "./iconos.js?v=12";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -123,7 +123,6 @@ function pintar(data) {
   $("muestra").textContent = esMio()
     ? t(`Basadas en tus últimas ${m.resumen.partidas} partidas.`, `Based on your last ${m.resumen.partidas} matches.`)
     : t(`Basadas en sus últimas ${m.resumen.partidas} partidas.`, `Based on their last ${m.resumen.partidas} matches.`);
-  if (m.resumen.eventos) $("muestra").textContent += " " + t(`Sin contar ${m.resumen.eventos} de eventos especiales.`, `Not counting ${m.resumen.eventos} special event matches.`);
   $("resumenPartidas").textContent = m.resumen.partidas;
   $("resumenWinrate").textContent = m.resumen.winrate === null ? "–" : `${m.resumen.winrate} %`;
   $("resumenElixir").textContent = m.resumen.elixir_desperdiciado ?? "–";

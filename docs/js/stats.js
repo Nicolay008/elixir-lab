@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=10";
+import { t } from "./i18n.js?v=12";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -49,9 +49,9 @@ export function movil(xs, w = VENTANA) {
 }
 
 // Grupos del filtro: Ranked = solo camino de leyendas; los eventos especiales van en Otros
-export const GRUPOS = ["todos", "ranked", "escalera", "guerra", "otros"];
+export const GRUPOS = ["todos", "ranked", "escalera", "guerra", "otros", "eventos"];
 export function grupoDe(p) {
-  if (esEvento(p)) return "otros";
+  if (esEvento(p)) return "eventos";
   if (p.modo === "pathOfLegend") return "ranked";
   if (p.modo === "trail" || p.modo === "ladder") return "escalera";
   if (typeof p.modo === "string" && p.modo.startsWith("riverRace")) return "guerra";
@@ -65,11 +65,12 @@ export function filtrarModo(data, grupo) {
 
 export function modelo(data, mio = true) {
   const todas = preparar(data);
-  const ps = todas.filter((p) => !esEvento(p));
+  // las estadísticas salen de lo que haya en el filtro: Todos mezcla todo (también eventos)
+  const ps = todas;
   const ganadas = ps.filter((p) => p.victoria).length;
   const elx = ps.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
   const resumen = {
-    partidas: ps.length, eventos: todas.length - ps.length,
+    partidas: ps.length, eventos: ps.filter(esEvento).length,
     winrate: ps.length ? Math.round((100 * ganadas) / ps.length) : null,
     elixir_desperdiciado: elx.length ? Math.round((100 * elx.reduce((a, b) => a + b, 0)) / elx.length) / 100 : null,
   };
