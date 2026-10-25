@@ -10,7 +10,6 @@ Variables de entorno:
   FORZAR_FOTO      "true" para guardar aunque no haya pasado el intervalo
 """
 import os
-import requests
 import psycopg
 from psycopg.types.json import Jsonb
 
@@ -19,6 +18,8 @@ try:  # en local se leen del .env; en GitHub vienen de los secrets
     load_dotenv(".env")
 except ImportError:
     pass
+
+from api import get
 
 BASE = "https://proxy.royaleapi.dev/v1/locations"
 # location_id en la tabla: el id de la API para países; 0 para el ranking global
@@ -41,9 +42,9 @@ def main():
                 print("Última foto hace menos de 3,5 horas: no se guarda otra.")
                 return
 
-        headers = {"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}
         for loc_id, nombre, url in RANKINGS:
-            r = requests.get(url, headers=headers, timeout=30)
+            ruta = url.replace("https://proxy.royaleapi.dev/v1", "")
+            r = get(ruta)
             r.raise_for_status()
             data = r.json()
             conn.execute(

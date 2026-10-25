@@ -11,7 +11,6 @@ Variables de entorno:
 import os
 import time
 from datetime import datetime, timezone
-import requests
 import psycopg
 from psycopg.types.json import Jsonb
 
@@ -21,7 +20,7 @@ try:
 except ImportError:
     pass
 
-API = "https://proxy.royaleapi.dev/v1"
+from api import get, tag_url
 
 
 def carta(c):
@@ -53,7 +52,6 @@ def compactar(b):
 
 
 def main():
-    headers = {"Authorization": f"Bearer {os.environ['CR_TOKEN']}"}
     with psycopg.connect(os.environ["SUPABASE_DB_URL"]) as conn:
         # caducidad automática: privacidad por diseño y menos espacio ocupado
         borrados = conn.execute(
@@ -64,7 +62,7 @@ def main():
         tags = [r[0] for r in conn.execute("SELECT tag FROM v_tracked_activos ORDER BY tag").fetchall()]
         nuevas = 0
         for tag in tags:
-            r = requests.get(f"{API}/players/%23{tag}/battlelog", headers=headers, timeout=30)
+            r = get(f"/players/{tag_url(tag)}/battlelog")
             if r.status_code != 200:
                 print(f"  #{tag}: HTTP {r.status_code}, se omite")
                 continue

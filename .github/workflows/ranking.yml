@@ -17,10 +17,12 @@ jobs:
       - run: pip install requests "psycopg[binary]" python-dotenv
       - name: Partidas
         run: python src/ingest.py
+        continue-on-error: true   # si el proxy falla aquí, no se cancelan ranking ni mazos
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           DATABASE_URL: ${{ secrets.SUPABASE_DB_URL }}
       - name: Ranking Perú y global
+        continue-on-error: true
         run: python src/ingest_ranking.py
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
@@ -28,16 +30,19 @@ jobs:
           # al lanzarlo a mano, la foto se guarda siempre
           FORZAR_FOTO: ${{ github.event_name == 'workflow_dispatch' }}
       - name: Mazos del top (una vez al día)
+        continue-on-error: true
         run: python src/ingest_top_decks.py
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       - name: Jugadores seguidos
+        continue-on-error: true
         run: python src/ingest_players.py
         env:
           CR_TOKEN: ${{ secrets.CR_TOKEN }}
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
       - name: Tamaño de la base
+        continue-on-error: true
         run: python src/check_db_size.py
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}

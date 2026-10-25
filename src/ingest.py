@@ -2,19 +2,17 @@ import os
 from datetime import datetime, timezone
 
 import psycopg
-import requests
 from dotenv import load_dotenv
 from psycopg.types.json import Jsonb
 
 load_dotenv()
-TOKEN = os.getenv("CR_TOKEN")
 PLAYER_TAG = os.getenv("PLAYER_TAG", "#92CP0QJVG")
-BASE = "https://proxy.royaleapi.dev/v1"
+
+from api import get, tag_url
 
 
 def fetch_battlelog(tag):
-    url = f"{BASE}/players/{tag.replace('#', '%23')}/battlelog"
-    r = requests.get(url, headers={"Authorization": f"Bearer {TOKEN}"}, timeout=15)
+    r = get(f"/players/{tag_url(tag)}/battlelog", timeout=15)
     r.raise_for_status()
     return r.json()
 

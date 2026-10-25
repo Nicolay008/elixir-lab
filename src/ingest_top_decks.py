@@ -13,7 +13,6 @@ Variables de entorno:
 import os
 import time
 from datetime import datetime, timezone
-import requests
 import psycopg
 from psycopg.types.json import Jsonb
 
@@ -23,21 +22,13 @@ try:  # en local se leen del .env; en GitHub vienen de los secrets
 except ImportError:
     pass
 
-API = "https://proxy.royaleapi.dev/v1"
-REINTENTOS = (2, 5, 10)   # segundos de espera ante 429 o errores 5xx
+from api import get, tag_url
 TOPS = [(57000184, "Perú", 50), (0, "Global", 100)]   # (location_id, nombre, cuántos)
 INTERVALO_MIN = "20 hours"
 
 
-def pedir_historial(headers, tag):
-    """Pide el historial; reintenta con espera ante límite de peticiones o errores del servidor."""
-    for espera in (0,) + REINTENTOS:
-        if espera:
-            time.sleep(espera)
-        r = requests.get(f"{API}/players/{tag.replace('#', '%23')}/battlelog", headers=headers, timeout=30)
-        if r.status_code == 200 or (r.status_code != 429 and r.status_code < 500):
-            return r
-    return r   # último intento: se devuelve con su código
+def pedir_historial(tag):
+    return get(f"/players/{tag_url(tag)}/battlelog")
 
 
 def ultimo_mazo(conn, loc_id, tag):
@@ -76,7 +67,7 @@ def main():
             guardados = anteriores = sin_datos = 0
             for puesto, tag, nom, rating in jugadores:
                 deck, jugada = None, None
-                r = pedir_historial(headers, tag)
+                r = pedir_historial(tag)
                 if r.status_code != 200:
                     motivo = f"HTTP {r.status_code}"
                 else:
