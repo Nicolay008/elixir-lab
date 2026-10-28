@@ -1,6 +1,6 @@
 // Gráficas de Racha, Elixir y Coronas (Chart.js, cargado como script global).
-import { dia, hora } from "./stats.js?v=30";
-import { t } from "./i18n.js?v=30";
+import { dia, hora } from "./stats.js?v=31";
+import { t } from "./i18n.js?v=31";
 
 const MOSTRAR = 20; // partidas visibles
 

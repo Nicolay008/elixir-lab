@@ -340,9 +340,9 @@ footer a{color:inherit}
 .pos-n{width:2rem;font-size:.72rem;color:var(--muted);text-align:right;flex:none}
 .pos-bar-track{flex:1;height:1.2rem;background:var(--line);border-radius:.35rem;overflow:hidden}
 .pos-bar-fill{height:100%;border-radius:.35rem;transition:width .3s}
-.pos-bar-fill.ok{background:var(--ok)}
-.pos-bar-fill.mid{background:var(--gold)}
-.pos-bar-fill.bad{background:var(--bad)}
+.pos-bar-fill.ok{background:linear-gradient(90deg,var(--ok),color-mix(in srgb,var(--ok) 70%,var(--gold)))}
+.pos-bar-fill.mid{background:linear-gradient(90deg,var(--gold),color-mix(in srgb,var(--gold) 70%,var(--ok)))}
+.pos-bar-fill.bad{background:linear-gradient(90deg,var(--bad),color-mix(in srgb,var(--bad) 70%,var(--gold)))}
 .pos-bar-fill.muted{background:var(--muted)}
 .pos-wr{width:3rem;font-size:.82rem;font-weight:800;text-align:right;flex:none}
 .pos-wr.ok{color:var(--ok)}
@@ -355,7 +355,7 @@ footer a{color:inherit}
 .pesadillas-cols h4{font-size:.85rem;font-weight:800;margin-bottom:.5rem;color:var(--muted)}
 .matchups{display:flex;flex-direction:column;gap:.3rem}
 .mu-item{display:flex;align-items:center;gap:.45rem;padding:.3rem .5rem;border-radius:.5rem;position:relative;overflow:hidden}
-.mu-heat{position:absolute;inset:0;background:var(--elixir);border-radius:.5rem;z-index:0;pointer-events:none}
+.mu-heat{position:absolute;inset:0;border-radius:.5rem;z-index:0;pointer-events:none;background:linear-gradient(90deg,transparent,var(--elixir))}
 .mu-ico{width:1.6rem;height:1.6rem;flex:none;position:relative;z-index:1;border-radius:.25rem}
 .mu-name{font-size:.8rem;font-weight:700;flex:1;position:relative;z-index:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mu-wr{font-size:.8rem;font-weight:800;width:2.5rem;text-align:right;flex:none;position:relative;z-index:1}
