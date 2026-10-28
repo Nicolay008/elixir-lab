@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=32";
+import { t } from "./i18n.js?v=33";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -81,6 +81,20 @@ export function modelo(data, mio = true) {
   const validas = ps.filter((p) => !p.desconexion);
   const elixires = validas.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
   const mediaElixir = media(elixires);
+  // elixir separado por resultado: ayuda a saber si el problema es de gestión o de derrotas
+  const elxVic = validas.filter((p) => p.victoria).map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+  const elxDer = validas.filter((p) => !p.victoria).map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+  const elixirVictorias = media(elxVic);
+  const elixirDerrotas = media(elxDer);
+  // tendencia del elixir: pendiente de regresión lineal sobre las últimas partidas válidas
+  const elxTendencia = (() => {
+    const vals = validas.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+    if (vals.length < 10) return null;
+    const n = vals.length, sx = n * (n - 1) / 2, sx2 = n * (n - 1) * (2 * n - 1) / 6;
+    const sy = vals.reduce((a, b) => a + b, 0), sxy = vals.reduce((a, v, i) => a + i * v, 0);
+    return (n * sxy - sx * sy) / (n * sx2 - sx * sx);
+  })();
+
   // umbral de tilt basado en el propio jugador: mediana + 1.5 × IQR
   // un +1 fijo no distingue entre un jugador controlado (2.3) y uno suelto (6.5)
   const sorted = [...elixires].sort((a, b) => a - b);
@@ -162,7 +176,7 @@ export function modelo(data, mio = true) {
   const pesadillas = matchups.filter((x) => x.wr < 45).slice(0, 8);
   const fortalezas = matchups.filter((x) => x.wr > 55).sort((a, b) => b.wr - a.wr).slice(0, 8);
 
-  return { ps, todas, resumen, winrate, elixir, mediaElixir, mediana, iqr, limite, franjas, tasaCerrada, porPosicion, pctCambioMazo, pesadillas, fortalezas, estado: estado(ps, mio), horas: porHora(validas) };
+  return { ps, todas, resumen, winrate, elixir, mediaElixir, mediana, iqr, limite, elixirVictorias, elixirDerrotas, elxTendencia, franjas, tasaCerrada, porPosicion, pctCambioMazo, pesadillas, fortalezas, estado: estado(ps, mio), horas: porHora(validas) };
 }
 
 // Mensaje principal: titular corto, consejo y porcentaje para la barra de elixir.

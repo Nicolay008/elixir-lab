@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=32";
-import { modelo, filtrarModo } from "./stats.js?v=32";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=32";
-import { reloj } from "./clock.js?v=32";
-import { partidas } from "./partidas.js?v=32";
+import { consultar, seguir } from "./api.js?v=33";
+import { modelo, filtrarModo } from "./stats.js?v=33";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=33";
+import { reloj } from "./clock.js?v=33";
+import { partidas } from "./partidas.js?v=33";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=32";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=32";
-import * as seguidos from "./seguidos.js?v=32";
-import { ICONOS, escudoLiga } from "./iconos.js?v=32";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=33";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=33";
+import * as seguidos from "./seguidos.js?v=33";
+import { ICONOS, escudoLiga } from "./iconos.js?v=33";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -20,7 +20,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=32";
+import { iniciarBarra } from "./barra.js?v=33";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -110,8 +110,13 @@ function pintarTendencia() {
   $("vistaElixir").setAttribute("aria-pressed", vista === "elixir");
   $("leyendaTendencia").innerHTML = leyendas[vista]();
   $("explicaElixir").hidden = vista !== "elixir";
-  if (m.limite !== null)
-    $("detalleLimite").textContent = t(`Tu media en estas partidas es ${m.mediaElixir.toFixed(1)}. El límite es tu media más 1 punto: ${m.limite.toFixed(1)}.`, `Your average in these matches is ${m.mediaElixir.toFixed(1)}. Your limit is your average plus 1: ${m.limite.toFixed(1)}.`);
+  if (m.limite !== null) {
+    const rMin = m.mediana !== null && m.iqr !== null ? Math.max(0, m.mediana - m.iqr).toFixed(1) : "?";
+    const rMax = m.mediana !== null && m.iqr !== null ? (m.mediana + m.iqr).toFixed(1) : "?";
+    $("detalleLimite").textContent = t(
+      `Mediana: ${m.mediana?.toFixed(1) ?? "?"} · Tu zona normal: ${rMin} – ${rMax} · Tilt: por encima de ${m.limite?.toFixed(1) ?? "?"}`,
+      `Median: ${m.mediana?.toFixed(1) ?? "?"} · Normal range: ${rMin} – ${rMax} · Tilt: above ${m.limite?.toFixed(1) ?? "?"}`);
+  }
   graficaTendencia = tendencia($("graficaTendencia"), m, vista, graficaTendencia);
   $("franjas").innerHTML = franjasVisibles(m).map((f) => `<li class="chip ${f.tipo}">${f.texto}</li>`).join("");
 }
@@ -152,7 +157,17 @@ function pintar(data) {
     : t(`Basadas en sus últimas ${m.resumen.partidas} partidas.`, `Based on their last ${m.resumen.partidas} matches.`);
   $("resumenPartidas").textContent = m.resumen.partidas;
   $("resumenWinrate").textContent = m.resumen.winrate === null ? "–" : `${m.resumen.winrate} %`;
-  $("resumenElixir").textContent = m.resumen.elixir_desperdiciado ?? "–";
+  const elxNum = m.resumen.elixir_desperdiciado;
+  const flecha = m.elxTendencia === null ? "" : m.elxTendencia < -0.01 ? " ↓" : m.elxTendencia > 0.01 ? " ↑" : " →";
+  const flechaCls = m.elxTendencia === null ? "" : m.elxTendencia < -0.01 ? "ok" : m.elxTendencia > 0.01 ? "bad" : "mid";
+  $("resumenElixir").innerHTML = elxNum !== null
+    ? `${elxNum}<span class="tendencia ${flechaCls}">${flecha}</span>`
+    : "–";
+  const elxVic = m.elixirVictorias !== null ? m.elixirVictorias.toFixed(1) : "–";
+  const elxDer = m.elixirDerrotas !== null ? m.elixirDerrotas.toFixed(1) : "–";
+  $("detalleElixir").textContent = t(
+    `En victorias: ${elxVic} · En derrotas: ${elxDer}`,
+    `In wins: ${elxVic} · In losses: ${elxDer}`);
   $("notaApi").textContent = data.seguido
     ? t(`Historial guardado: ${data.resumen.partidas} partidas.`, `Saved history: ${data.resumen.partidas} matches.`)
     : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");

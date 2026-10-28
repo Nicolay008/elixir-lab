@@ -361,3 +361,15 @@ footer a{color:inherit}
 .mu-wr{font-size:.8rem;font-weight:800;width:2.5rem;text-align:right;flex:none;position:relative;z-index:1}
 .mu-wr.bad{color:var(--bad)}.mu-wr.mid{color:var(--gold)}.mu-wr.ok{color:var(--ok)}
 .mu-n{font-size:.7rem;color:var(--muted);width:2rem;text-align:right;flex:none;position:relative;z-index:1}
+
+/* ===== Elixir: flecha de tendencia y detalle victorias/derrotas ===== */
+.tendencia{font-size:.85rem;margin-left:.2rem}
+.tendencia.ok{color:var(--ok)}
+.tendencia.bad{color:var(--bad)}
+.tendencia.mid{color:var(--gold)}
+.detalle-elixir{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.15rem}
+
+/* ===== Leyenda del mapa de calor ===== */
+.leyenda-calor{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
+.calor-barra{width:5rem;height:.55rem;border-radius:.25rem;background:linear-gradient(90deg,transparent,var(--elixir));flex:none}
+.calor-texto{font-size:.72rem;color:var(--muted);font-weight:600}
