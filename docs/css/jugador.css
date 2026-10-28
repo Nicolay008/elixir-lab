@@ -92,6 +92,16 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 .seguir{flex:none;border:2px solid var(--elixir);background:transparent;color:var(--elixir);font:inherit;font-weight:800;
   padding:.4rem .9rem;border-radius:999px;cursor:pointer}
 .seguir[aria-pressed="true"]{background:var(--elixir);color:#fff}
+.seguir,.fijar{display:inline-flex;align-items:center;gap:.3rem}
+.seguir .icono,.fijar .icono{width:1.05rem;height:1.05rem;flex:none}
+/* en móvil, solo iconos: el nombre tiene todo el ancho */
+@media (max-width:600px){
+  .identidad{flex:1;min-width:0}
+  .nombre-bloque{min-width:0}
+  .acciones{gap:.35rem}
+  .fijar,.seguir{padding:.4rem;width:2.3rem;height:2.3rem;justify-content:center;border-width:1.5px}
+  .fijar span,.seguir span{display:none}
+}
 .panel{background:var(--surface);border:2px solid var(--elixir);border-radius:1.25rem;padding:.9rem 1rem;margin:.75rem 0 1rem}
 .panel p{color:var(--ink);font-size:.9rem}
 .panel-lista{display:flex;flex-direction:column;gap:.35rem;margin:.25rem 0 .5rem}

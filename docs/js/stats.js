@@ -20,7 +20,7 @@ export const hora = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
 // Eventos especiales (p. ej. Tormenta perfecta): llegan como "trail", pero su modo empieza por "Event_".
 // Se juegan con un mazo del evento, así que no cuentan en las estadísticas del jugador.
-export const esEvento = (p) => typeof p.evento === "string" && p.evento.startsWith("Event_");
+export const esEvento = (p) => typeof p.evento === "string" && (p.evento.startsWith("Event_") || p.evento.startsWith("Challenge_"));
 
 // Partidas en orden cronológico, con lo que necesitan las gráficas
 export function preparar(data) {

@@ -35,4 +35,5 @@ export const ICONOS = {
   // amistosas: dos personas
   amistosa: svg("M9 11a3 3 0 1 0 0-6a3 3 0 1 0 0 6z", '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5a3 3 0 0 1 0 5.5"/><path d="M18 14.5c1.8.8 3 2.9 3 5.5"/>'),
   flecha: svg(null, '<path d="m6 9 6 6 6-6"/>'),
+  corazon: svg("M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z", '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>'),
 };

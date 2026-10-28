@@ -50,7 +50,7 @@ function pintarBotonSeguir() {
   $("botonFijar").innerHTML = `${ICONOS.chincheta}<span>${fij ? t("Fijado", "Pinned") : t("Fijar", "Pin")}</span>`;
   $("botonFijar").title = fij ? t("Quitar como perfil principal", "Unpin as main profile") : t("Fijar como tu perfil principal", "Pin as your main profile");
   $("botonSeguir").setAttribute("aria-pressed", !!sigo);
-  $("botonSeguir").textContent = sigo ? t("Siguiendo", "Following") : t("Seguir", "Follow");
+  $("botonSeguir").innerHTML = `${ICONOS.corazon}<span>${sigo ? t("Siguiendo", "Following") : t("Seguir", "Follow")}</span>`;
 }
 function cerrarPanel() {
   $("panelSeguir").hidden = true; $("panelError").hidden = true; $("panelLista").innerHTML = "";
