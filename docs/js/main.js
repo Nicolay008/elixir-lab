@@ -129,6 +129,7 @@ function pintar(data) {
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
   pintarIdentidad(j);
+  $("compartir").hidden = false;
   pintarModos();
   $("detalleJugador").textContent = [j.clan, j.mejor_liga ? `${t("mejor liga", "best league")} ${j.mejor_liga}` : null].filter(Boolean).join(", ");
   $("estadoTitulo").textContent = m.estado.titulo;
@@ -220,6 +221,22 @@ $("botonSeguidos").addEventListener("click", () => {
 });
 document.addEventListener("click", (e) => { if (!$("atajos").contains(e.target)) cerrarSeguidos(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrarSeguidos(); });
+// Compartir el perfil del jugador actual
+$("compartir").addEventListener("click", async () => {
+  const tag = ultimo?.jugador?.tag;
+  if (!tag) return;
+  const url = `${location.origin}${location.pathname}?tag=${tag.replace("#", "")}`;
+  const titulo = `${ultimo.jugador.nombre} · Elixir Lab`;
+  if (navigator.share) {
+    try { await navigator.share({ title: titulo, url }); } catch (e) { /* cancelado */ }
+  } else {
+    try {
+      await navigator.clipboard.writeText(url);
+      $("compartir").classList.add("copiado");
+      setTimeout(() => $("compartir").classList.remove("copiado"), 1500);
+    } catch (e) { /* sin acceso */ }
+  }
+});
 document.querySelectorAll("#modos button").forEach((b) => b.addEventListener("click", () => {
   grupoModo = b.dataset.modo;
   if (ultimo) pintar(ultimo);

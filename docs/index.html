@@ -495,9 +495,39 @@ fieldset.folded .desc{display:none}
   .modes .mode .mtitle{font-size:1.35rem}
   .cdots{display:none}
 }
+
+/* ===== Barra fija (importada de jugador.css para index) ===== */
+.barra-fija{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+  padding:calc(.45rem + env(safe-area-inset-top,0px)) max(1rem,env(safe-area-inset-right,0px)) .45rem max(1rem,env(safe-area-inset-left,0px));
+  background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1.5px solid var(--line)}
+.brand-mini{display:flex;align-items:center;gap:.35rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1rem;color:var(--ink);text-decoration:none;flex:none}
+.logo-mini{width:.7rem;height:1.05rem;flex:none;overflow:visible}
+.barra-acciones{display:flex;align-items:center;gap:.4rem;flex:none}
+.barra-fija .idioma{font-size:.8rem;padding:.25rem .6rem;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;border-radius:999px;cursor:pointer}
+.subir{width:2rem;height:2rem;display:grid;place-items:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;cursor:pointer;padding:0}
+.subir[hidden]{display:none}
+.barra-fija + main{padding-top:3.5rem}
+.barra-nav{display:flex;align-items:center;gap:.55rem;flex:none}
+.nav-link{display:flex;align-items:center;color:var(--muted);text-decoration:none;transition:color .15s;flex:none}
+.nav-link:hover{color:var(--ink)}
+.nav-link[aria-current="page"]{color:var(--elixir)}
+.nav-link[aria-current="page"] .nav-ico [fill-opacity]{fill-opacity:.35}
+.nav-ico{width:1.1rem;height:1.1rem;flex:none;display:block}
+
 </style>
 </head>
 <body>
+<nav id="barraFija" class="barra-fija" aria-label="Navegación">
+  <div class="barra-nav">
+    <a class="brand-mini" href="./" aria-current="page"><svg class="logo-mini" viewBox="-34 -56 68 100" aria-hidden="true"><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" style="fill:var(--elixir-2)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" style="fill:var(--elixir-2)"/></svg><span>Elixir Lab</span></a>
+    <a class="nav-link" href="jugador.html" aria-label="Laboratorio" data-en-label="Lab"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5 L20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+    <a class="nav-link" href="ranking.html" aria-label="Clasificación" data-en-label="Ranking"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L3 10 7 13 12 7 17 13 21 10 21 18Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+  </div>
+  <div class="barra-acciones">
+    <button id="subir" class="subir" type="button" aria-label="Subir" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+    <button id="idioma" class="idioma" type="button" aria-label="Change language to English">EN</button>
+  </div>
+</nav>
 <main>
   <!-- SETUP -->
   <section id="setup">
@@ -2012,6 +2042,29 @@ fetch("cards.json").then(r=>{if(!r.ok) throw new Error(r.status); return r.json(
     $("start").textContent=L("No se pudo cargar cards.json","Couldn’t load cards.json");
     $("best").innerHTML='<span class="loaderr">Abre la página con un servidor (no como archivo) y comprueba que cards.json está en la misma carpeta.</span>';
   });
+</script>
+<script type="module">
+import { iniciarBarra } from "./js/barra.js?v=28";
+iniciarBarra();
+const idiomaBtn = document.getElementById("idioma");
+const es = () => (localStorage.getItem("lang") ?? (navigator.language?.startsWith("en") ? "en" : "es")) !== "en";
+function aplicarIdioma() {
+  const eng = !es();
+  idiomaBtn.textContent = eng ? "ES" : "EN";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    if (!el.dataset.es) el.dataset.es = el.textContent;
+    el.textContent = eng ? el.dataset.en : el.dataset.es;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => {
+    if (!el.dataset.phEs) el.dataset.phEs = el.placeholder;
+    el.placeholder = eng ? el.dataset.phEn : el.dataset.phEs;
+  });
+}
+idiomaBtn.addEventListener("click", () => {
+  localStorage.setItem("lang", es() ? "en" : "es");
+  aplicarIdioma();
+});
+aplicarIdioma();
 </script>
 </body>
 </html>
