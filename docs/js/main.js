@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=31";
-import { modelo, filtrarModo } from "./stats.js?v=31";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=31";
-import { reloj } from "./clock.js?v=31";
-import { partidas } from "./partidas.js?v=31";
+import { consultar, seguir } from "./api.js?v=32";
+import { modelo, filtrarModo } from "./stats.js?v=32";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=32";
+import { reloj } from "./clock.js?v=32";
+import { partidas } from "./partidas.js?v=32";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=31";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=31";
-import * as seguidos from "./seguidos.js?v=31";
-import { ICONOS, escudoLiga } from "./iconos.js?v=31";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=32";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=32";
+import * as seguidos from "./seguidos.js?v=32";
+import { ICONOS, escudoLiga } from "./iconos.js?v=32";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -20,7 +20,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=31";
+import { iniciarBarra } from "./barra.js?v=32";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
