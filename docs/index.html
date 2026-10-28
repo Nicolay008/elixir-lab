@@ -497,9 +497,6 @@ fieldset.folded .desc{display:none}
 }
 
 /* ===== Barra fija (importada de jugador.css para index) ===== */
-@media (min-width:720px){
-  .barra-fija{padding-left:max(1rem,calc((100vw - 44rem) / 2 + 1rem));padding-right:max(1rem,calc((100vw - 44rem) / 2 + 1rem))}
-}
 .barra-fija{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
   padding:calc(.45rem + env(safe-area-inset-top,0px)) max(1rem,env(safe-area-inset-right,0px)) .45rem max(1rem,env(safe-area-inset-left,0px));
   background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1.5px solid var(--line)}
@@ -510,6 +507,7 @@ fieldset.folded .desc{display:none}
 .subir{width:2rem;height:2rem;display:grid;place-items:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;cursor:pointer;padding:0}
 .subir[hidden]{display:none}
 .barra-fija + main{}
+@media (min-width:720px){.barra-fija{padding-left:max(1rem,calc((100vw - 44rem) / 2 + 1rem));padding-right:max(1rem,calc((100vw - 44rem) / 2 + 1rem))}}
 .barra-nav{display:flex;align-items:center;gap:.55rem;flex:none}
 .nav-link{display:flex;align-items:center;color:var(--muted);text-decoration:none;transition:color .15s;flex:none}
 .nav-link:hover{color:var(--ink)}
