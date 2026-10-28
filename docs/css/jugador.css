@@ -83,7 +83,7 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 .escudo{width:3.4rem;height:auto;display:block}
 .liga-texto{font-size:.68rem;font-weight:700;color:var(--muted);line-height:1;margin-top:.25rem;letter-spacing:.02em}
 .nombre-bloque{min-width:0}
-.nombre-bloque h2{overflow-wrap:anywhere}
+.nombre-bloque h2{overflow-wrap:anywhere;font-size:1.15rem;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rango{font-size:.85rem;font-weight:700;color:var(--muted);margin-top:.15rem}
 .modos{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .75rem}
 .modos button{border:1.5px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:700;font-size:.85rem;padding:.3rem .75rem;border-radius:999px;cursor:pointer}

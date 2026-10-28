@@ -20,7 +20,8 @@ export const hora = (d) => `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 
 // Eventos especiales (p. ej. Tormenta perfecta): llegan como "trail", pero su modo empieza por "Event_".
 // Se juegan con un mazo del evento, así que no cuentan en las estadísticas del jugador.
-export const esEvento = (p) => typeof p.evento === "string" && (p.evento.startsWith("Event_") || p.evento.startsWith("Challenge_"));
+export const esEvento = (p) => typeof p.evento === "string" && p.evento.startsWith("Event_");
+export const esDesafio = (p) => typeof p.evento === "string" && p.evento.startsWith("Challenge_");
 
 // Partidas en orden cronológico, con lo que necesitan las gráficas
 export function preparar(data) {
@@ -49,8 +50,9 @@ export function movil(xs, w = VENTANA) {
 }
 
 // Grupos del filtro: Ranked = solo camino de leyendas; los eventos especiales van en Otros
-export const GRUPOS = ["todos", "ranked", "escalera", "guerra", "otros", "eventos"];
+export const GRUPOS = ["todos", "ranked", "escalera", "guerra", "otros", "eventos", "desafio"];
 export function grupoDe(p) {
+  if (esDesafio(p)) return "desafio";
   if (esEvento(p)) return "eventos";
   if (p.modo === "pathOfLegend") return "ranked";
   if (p.modo === "trail" || p.modo === "ladder") return "escalera";
