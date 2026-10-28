@@ -326,3 +326,38 @@ footer a{color:inherit}
 .compartir.copiado{color:var(--elixir);border-color:var(--elixir)}
 .compartir[hidden]{display:none}
 .compartir .icono{width:1.1rem;height:1.1rem}
+
+/* ===== Indicadores compactos (cerradas, rendiciones, cambio de mazo) ===== */
+.indicadores-fila{display:flex;gap:1rem;flex-wrap:wrap}
+.indicador{flex:1;min-width:6rem;text-align:center}
+.indicador-label{display:block;font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.03em;margin-bottom:.2rem}
+.indicador-valor{font-family:'Lilita One',sans-serif;font-size:1.6rem;line-height:1}
+
+/* ===== Rendimiento por posición en sesión ===== */
+.tabla-posicion{display:flex;flex-direction:column;gap:.35rem}
+.pos-fila{display:flex;align-items:center;gap:.5rem}
+.pos-label{width:3.5rem;font-size:.8rem;font-weight:700;color:var(--muted);flex:none}
+.pos-n{width:2rem;font-size:.72rem;color:var(--muted);text-align:right;flex:none}
+.pos-bar-track{flex:1;height:1.2rem;background:var(--line);border-radius:.35rem;overflow:hidden}
+.pos-bar-fill{height:100%;border-radius:.35rem;transition:width .3s}
+.pos-bar-fill.ok{background:var(--ok)}
+.pos-bar-fill.mid{background:var(--gold)}
+.pos-bar-fill.bad{background:var(--bad)}
+.pos-bar-fill.muted{background:var(--muted)}
+.pos-wr{width:3rem;font-size:.82rem;font-weight:800;text-align:right;flex:none}
+.pos-wr.ok{color:var(--ok)}
+.pos-wr.mid{color:var(--gold)}
+.pos-wr.bad{color:var(--bad)}
+
+/* ===== Pesadillas y fortalezas ===== */
+.pesadillas-cols{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:500px){.pesadillas-cols{grid-template-columns:1fr}}
+.pesadillas-cols h4{font-size:.85rem;font-weight:800;margin-bottom:.5rem;color:var(--muted)}
+.matchups{display:flex;flex-direction:column;gap:.3rem}
+.mu-item{display:flex;align-items:center;gap:.45rem;padding:.3rem .5rem;border-radius:.5rem;position:relative;overflow:hidden}
+.mu-heat{position:absolute;inset:0;background:var(--elixir);border-radius:.5rem;z-index:0;pointer-events:none}
+.mu-ico{width:1.6rem;height:1.6rem;flex:none;position:relative;z-index:1;border-radius:.25rem}
+.mu-name{font-size:.8rem;font-weight:700;flex:1;position:relative;z-index:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mu-wr{font-size:.8rem;font-weight:800;width:2.5rem;text-align:right;flex:none;position:relative;z-index:1}
+.mu-wr.bad{color:var(--bad)}.mu-wr.mid{color:var(--gold)}.mu-wr.ok{color:var(--ok)}
+.mu-n{font-size:.7rem;color:var(--muted);width:2rem;text-align:right;flex:none;position:relative;z-index:1}

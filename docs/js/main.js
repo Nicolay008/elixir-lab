@@ -1,15 +1,26 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=17";
-import { modelo, filtrarModo } from "./stats.js?v=17";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=17";
-import { reloj } from "./clock.js?v=17";
-import { partidas } from "./partidas.js?v=17";
+import { consultar, seguir } from "./api.js?v=30";
+import { modelo, filtrarModo } from "./stats.js?v=30";
+import { tendencia, coronas, franjasVisibles } from "./charts.js?v=30";
+import { reloj } from "./clock.js?v=30";
+import { partidas } from "./partidas.js?v=30";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=17";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=17";
-import * as seguidos from "./seguidos.js?v=17";
-import { ICONOS, escudoLiga } from "./iconos.js?v=17";
-import { iniciarBarra } from "./barra.js?v=17";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=30";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=30";
+import * as seguidos from "./seguidos.js?v=30";
+import { ICONOS, escudoLiga } from "./iconos.js?v=30";
+
+let catalogo = null;
+async function cargarCatalogo() {
+  if (catalogo) return catalogo;
+  try {
+    const r = await fetch("cards.json");
+    const arr = await r.json();
+    catalogo = new Map(arr.map((c) => [c.nombre_en, c.icono]));
+    return catalogo;
+  } catch (e) { return new Map(); }
+}
+import { iniciarBarra } from "./barra.js?v=30";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -161,7 +172,39 @@ function pintarGraficas() {
   pintarTendencia();
   graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
   reloj({ svg: $("reloj"), botonAM: $("botonAM"), botonPM: $("botonPM"), detalle: $("detalleHora") }, m.horas);
+  pintarNuevos();
   graficasListas = true;
+}
+
+function pintarPosicion(pos) {
+  const GRUPOS = [["1-3", "1\u00AA-3\u00AA"], ["4-6", "4\u00AA-6\u00AA"], ["7-10", "7\u00AA-10\u00AA"], ["11+", "11+"]];
+  const filas = GRUPOS.map(([k, label]) => {
+    const g = pos[k];
+    if (!g) return "";
+    const wr = g.wr ?? null;
+    const cls = wr === null ? "muted" : wr >= 55 ? "ok" : wr >= 45 ? "mid" : "bad";
+    return `<div class="pos-fila"><span class="pos-label">${label}</span><span class="pos-n">${g.n}p</span><div class="pos-bar-track"><div class="pos-bar-fill ${cls}" style="width:${wr ?? 0}%"></div></div><span class="pos-wr ${cls}">${wr !== null ? wr + " %" : "\u2013"}</span></div>`;
+  }).join("");
+  $("tablaPosicion").innerHTML = filas || `<p class="muted">${t("Pocas partidas para calcular.", "Too few matches.")}</p>`;
+}
+
+async function pintarMatchups(contenedor, lista) {
+  const cat = await cargarCatalogo();
+  contenedor.innerHTML = lista.map((x) => {
+    const ico = cat.get(x.carta);
+    const img = ico ? `<img class="mu-ico" src="${ico}" alt="" loading="lazy">` : "";
+    const cls = x.wr < 35 ? "bad" : x.wr < 45 ? "mid" : x.wr > 55 ? "ok" : "";
+    return `<div class="mu-item"><div class="mu-heat" style="opacity:${(0.25 + 0.75 * x.calor).toFixed(2)}"></div>${img}<span class="mu-name">${x.carta}</span><span class="mu-wr ${cls}">${x.wr} %</span><span class="mu-n">${x.partidas}p</span></div>`;
+  }).join("") || `<p class="muted">${t("Pocas partidas para calcular.", "Too few matches.")}</p>`;
+}
+
+function pintarNuevos() {
+  $("tasaCerrada").textContent = m.tasaCerrada !== null ? `${m.tasaCerrada} %` : "\u2013";
+  $("rendiciones").textContent = m.resumen.rendiciones ?? 0;
+  $("cambioMazo").textContent = m.pctCambioMazo !== null ? `${m.pctCambioMazo} %` : "\u2013";
+  pintarPosicion(m.porPosicion);
+  pintarMatchups($("pesadillas"), m.pesadillas);
+  pintarMatchups($("fortalezas"), m.fortalezas);
 }
 
 function verPestana(cual) {

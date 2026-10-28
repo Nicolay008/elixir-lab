@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=17";
+import { t } from "./i18n.js?v=30";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -35,6 +35,7 @@ export function preparar(data) {
     if (i > 0 && (p.t - ps[i - 1].t) / 60000 > SESION_MIN) s++;
     p.sesion = s;
     p.desconexion = !p.victoria && (p.elixir_desperdiciado ?? 0) >= DESCONEXION;
+    p.rendicion = !p.victoria && (p.elixir_desperdiciado ?? 0) >= 15 && p.coronas === "0-3";
   });
   return ps;
 }
@@ -70,19 +71,27 @@ export function modelo(data, mio = true) {
   // las estadísticas salen de lo que haya en el filtro: Todos mezcla todo (también eventos)
   const ps = todas;
   const ganadas = ps.filter((p) => p.victoria).length;
-  const elx = ps.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+  const elx = ps.filter((p) => !p.rendicion).map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+  const rendiciones = ps.filter((p) => p.rendicion).length;
   const resumen = {
-    partidas: ps.length, eventos: ps.filter(esEvento).length,
+    partidas: ps.length, eventos: ps.filter(esEvento).length, rendiciones,
     winrate: ps.length ? Math.round((100 * ganadas) / ps.length) : null,
     elixir_desperdiciado: elx.length ? Math.round((100 * elx.reduce((a, b) => a + b, 0)) / elx.length) / 100 : null,
   };
   const validas = ps.filter((p) => !p.desconexion);
   const elixires = validas.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
   const mediaElixir = media(elixires);
-  const limite = mediaElixir !== null ? mediaElixir + 1 : null;
+  // umbral de tilt basado en el propio jugador: mediana + 1.5 × IQR
+  // un +1 fijo no distingue entre un jugador controlado (2.3) y uno suelto (6.5)
+  const sorted = [...elixires].sort((a, b) => a - b);
+  const q1 = sorted.length >= 4 ? sorted[Math.floor(sorted.length * 0.25)] : null;
+  const q3 = sorted.length >= 4 ? sorted[Math.floor(sorted.length * 0.75)] : null;
+  const mediana = sorted.length ? sorted[Math.floor(sorted.length / 2)] : null;
+  const iqr = q1 !== null ? q3 - q1 : null;
+  const limite = mediana !== null && iqr !== null ? mediana + 1.5 * iqr : (mediaElixir !== null ? mediaElixir + 1 : null);
 
   const winrate = movil(ps.map((p) => (p.victoria ? 100 : 0)));
-  const elixir = movil(ps.map((p) => (p.desconexion ? null : p.elixir_desperdiciado)));
+  const elixir = movil(ps.map((p) => (p.desconexion || p.rendicion ? null : p.elixir_desperdiciado)));
 
   // franjas: derrotas seguidas en una sesión, victorias seguidas en cualquier momento
   const franjas = [];
@@ -100,7 +109,60 @@ export function modelo(data, mio = true) {
     i = j + 1;
   }
 
-  return { ps, todas, resumen, winrate, elixir, mediaElixir, limite, franjas, estado: estado(ps, mio), horas: porHora(validas) };
+  // tasa de partidas cerradas (diferencia de 1 corona en la derrota)
+  const derrotas = ps.filter((p) => !p.victoria && !p.rendicion);
+  const cerradas = derrotas.filter((p) => { const [m, s] = p.coronas.split("-").map(Number); return Math.abs(m - s) <= 1; });
+  const tasaCerrada = derrotas.length >= 3 ? Math.round((100 * cerradas.length) / derrotas.length) : null;
+
+  // winrate por posición en la sesión
+  const porPosicion = {};
+  const contSesion = {};
+  for (const p of ps) {
+    contSesion[p.sesion] = (contSesion[p.sesion] ?? 0) + 1;
+    const pos = contSesion[p.sesion];
+    const grupo = pos <= 3 ? "1-3" : pos <= 6 ? "4-6" : pos <= 10 ? "7-10" : "11+";
+    porPosicion[grupo] ??= { n: 0, v: 0 };
+    porPosicion[grupo].n++;
+    if (p.victoria) porPosicion[grupo].v++;
+  }
+  for (const g of Object.values(porPosicion)) g.wr = g.n >= 3 ? Math.round((100 * g.v) / g.n) : null;
+
+  // cambio de mazo tras 3+ derrotas seguidas
+  let cambiosTrasRacha = 0, rachasTotales = 0;
+  for (let k = 2; k < ps.length; k++) {
+    if (!ps[k - 1].victoria && !ps[k - 2].victoria && (k < 3 || !ps[k - 3].victoria || k === 2)) {
+      // empieza una racha de 3+ en k-2
+    } else if (!ps[k].victoria && !ps[k - 1].victoria && !ps[k - 2].victoria) {
+      // en medio de racha, solo contar si hay partida siguiente
+    } else continue;
+    // buscar el final de la racha
+    let fin = k;
+    while (fin + 1 < ps.length && !ps[fin + 1].victoria) fin++;
+    if (fin + 1 < ps.length) {
+      rachasTotales++;
+      if (ps[fin + 1].mazo !== ps[fin].mazo) cambiosTrasRacha++;
+    }
+    k = fin + 1; // saltar al final
+  }
+  const pctCambioMazo = rachasTotales >= 2 ? Math.round((100 * cambiosTrasRacha) / rachasTotales) : null;
+
+  // pesadillas y fortalezas: cartas del rival con más partidas, ordenadas por winrate
+  const cuentaCartas = {};
+  for (const p of ps) for (const c of (p.mazo_rival ?? [])) {
+    const base = c.replace(/ \((Evo|Héroe)\)$/, "");
+    cuentaCartas[base] ??= { n: 0, v: 0 };
+    cuentaCartas[base].n++;
+    if (p.victoria) cuentaCartas[base].v++;
+  }
+  const maxFrec = Math.max(1, ...Object.values(cuentaCartas).map((x) => x.n));
+  const matchups = Object.entries(cuentaCartas)
+    .filter(([, x]) => x.n >= 5)
+    .map(([carta, x]) => ({ carta, partidas: x.n, wr: Math.round((100 * x.v) / x.n), calor: x.n / maxFrec }))
+    .sort((a, b) => a.wr - b.wr);
+  const pesadillas = matchups.filter((x) => x.wr < 45).slice(0, 8);
+  const fortalezas = matchups.filter((x) => x.wr > 55).sort((a, b) => b.wr - a.wr).slice(0, 8);
+
+  return { ps, todas, resumen, winrate, elixir, mediaElixir, mediana, iqr, limite, franjas, tasaCerrada, porPosicion, pctCambioMazo, pesadillas, fortalezas, estado: estado(ps, mio), horas: porHora(validas) };
 }
 
 // Mensaje principal: titular corto, consejo y porcentaje para la barra de elixir.
