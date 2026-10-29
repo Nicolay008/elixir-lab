@@ -1,14 +1,15 @@
 // Sección Meta (solo perfil propio). La API manda la liga; dentro de la liga el escalón se cuenta
 // con tus partidas ranked desde una referencia guardada en este navegador, y se puede corregir a mano.
-import { t, LANG } from "./i18n.js?v=51";
-import { preparar, filtrarModo } from "./stats.js?v=51";
+import { t, LANG } from "./i18n.js?v=52";
+import { preparar, filtrarModo } from "./stats.js?v=52";
 
 const LIGA_META = 7;                                        // desde aquí se sube por medallas
 const ESCALONES = { 1: 11, 2: 11, 3: 11, 4: 10, 5: 10, 6: 10, 7: 0 };
 const MIN_LISTA = 10;                                       // partidas mínimas para mostrar un mazo
 const MIN_RECOMENDAR = 15;                                  // por debajo, nota de "pocos datos"
 const MIN_CORTE = 10;                                       // partidas mínimas para fiarse de un corte de sesión
-const CORTES = [3, 6, 10];                                  // "sesiones de N": partidas 1..N de cada sesión
+const CORTES = [3, 6, 10];
+const REF_MAZO = "RG Fantasma";                             // mazo de referencia para comparar (nombre tal como aparece en partidas)                                  // "sesiones de N": partidas 1..N de cada sesión
 const LAPIZ = `<svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 20l4-1L19 8l-3-3L5 16z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
 
 let abierto = false;   // el acordeón conserva su estado al repintar
@@ -45,17 +46,37 @@ export function resolverEscalon(liga, ref, ps, ahora = Date.now()) {
 
 const winrate = (xs) => (xs.length ? xs.filter((p) => p.victoria).length / xs.length : null);
 
-// Mazo con mejor winrate en ranked (mínimo MIN_LISTA partidas)
-function mejorMazo(ps) {
+// Límite inferior de Wilson (95 %) del winrate: el valor "seguro" de un mazo.
+// Penaliza las muestras pequeñas: 10 partidas al 60 % valen menos que 100 partidas al 54 %.
+export function wilsonInferior(victorias, n) {
+  if (n === 0) return 0;
+  const z = 1.96, p = victorias / n;
+  const centro = p + (z * z) / (2 * n);
+  const margen = z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n));
+  return (centro - margen) / (1 + (z * z) / n);
+}
+
+// Todos los mazos ranked con al menos MIN_LISTA partidas, ordenados por su límite inferior
+function rankingMazos(ps) {
   const grupos = {};
   for (const p of ps) (grupos[p.mazo] ??= []).push(p);
-  let mejor = null;
-  for (const [mazo, arr] of Object.entries(grupos)) {
-    if (arr.length < MIN_LISTA) continue;
-    const w = winrate(arr);
-    if (!mejor || w > mejor.wr) mejor = { mazo, wr: w, n: arr.length, cartas: arr[0].mi_mazo ?? [] };
-  }
-  return mejor;
+  return Object.entries(grupos)
+    .filter(([, arr]) => arr.length >= MIN_LISTA)
+    .map(([mazo, arr]) => {
+      const v = arr.filter((p) => p.victoria).length;
+      return { mazo, wr: v / arr.length, n: arr.length, seguro: wilsonInferior(v, arr.length), cartas: arr[0].mi_mazo ?? [] };
+    })
+    .sort((a, b) => b.seguro - a.seguro);
+}
+
+// Recomendado: el mejor por límite inferior, solo si tiene MIN_RECOMENDAR partidas.
+// Si no, el mejor queda "en observación". El mazo de referencia se muestra para comparar.
+function recomendacion(ranking) {
+  if (!ranking.length) return { tipo: "vacio" };
+  const mejor = ranking[0];
+  const ref = ranking.find((m) => m.mazo === REF_MAZO) ?? null;
+  if (mejor.n >= MIN_RECOMENDAR) return { tipo: "recomendado", mazo: mejor, ref };
+  return { tipo: "observacion", mazo: mejor, ref, faltan: MIN_RECOMENDAR - mejor.n };
 }
 
 // Winrate de cada corte acumulado (partidas 1..N de cada sesión)
@@ -115,7 +136,7 @@ export function pintarMeta(el, data, mio, tag, iconoFn = () => "") {
   const opciones = Array.from({ length: N }, (_, i) => i + 1)
     .map((n) => `<option value="${n}"${n === e ? " selected" : ""}>${n}</option>`).join("");
 
-  const mejor = mejorMazo(ps);
+  const rec = recomendacion(rankingMazos(ps));
   const corte = mejorCorte(winratePorCorte(ps));
   const proy = [];
   if (mejor) proy.push(`<li>${t("Sin disciplina", "Without discipline")} (${pct(mejor.wr)}): ${estimacion(restantes, mejor.wr)}</li>`);
@@ -133,7 +154,7 @@ export function pintarMeta(el, data, mio, tag, iconoFn = () => "") {
     </div>
     <div class="barra-meta" role="img" aria-label="${avance} %"><span style="width:${avance}%"></span></div>
     <p class="meta-linea">${t(`Faltan ${restantes} victorias netas para liga 7`, `${restantes} net wins left to league 7`)}</p>
-    ${bloqueMazo(mejor, iconoFn)}
+    ${bloqueMazo(rec, iconoFn)}
     ${proy.length ? `<ul class="meta-proy">${proy.join("")}</ul>` : ""}`;
 
   el.innerHTML = `<details id="metaDet" class="meta-det"${abierto ? " open" : ""}>
@@ -157,16 +178,24 @@ function estimacion(pasos, wr) {
   return n === null ? t("no converge con este winrate", "does not converge at this winrate") : `~${n} ${t("partidas", "matches")}`;
 }
 
-function bloqueMazo(mejor, iconoFn) {
-  if (!mejor) {
-    return `<p class="meta-linea meta-nota">${t(`Aún no hay un mazo con al menos ${MIN_LISTA} partidas en ranked.`, `No deck has at least ${MIN_LISTA} ranked matches yet.`)}</p>`;
+function bloqueMazo(rec, iconoFn) {
+  if (rec.tipo === "vacio") {
+    return `<p class="meta-linea meta-nota">${t(`Aún no hay ningún mazo con ${MIN_LISTA} partidas en ranked.`, `No deck has ${MIN_LISTA} ranked matches yet.`)}</p>`;
   }
-  const iconos = mejor.cartas.slice(0, 8).map((c) => `<span class="mz-ico">${iconoFn(c)}</span>`).join("");
-  const pocos = mejor.n < MIN_RECOMENDAR ? ` <span class="meta-nota">${t("pocos datos", "low sample")}</span>` : "";
+  const m = rec.mazo;
+  const iconos = m.cartas.slice(0, 8).map((c) => `<span class="mz-ico">${iconoFn(c)}</span>`).join("");
+  const seguro = Math.round(m.seguro * 100);
+  const cabecera = rec.tipo === "recomendado"
+    ? `<span class="meta-etiqueta">${t("Recomendado", "Recommended")}</span>`
+    : `<span class="meta-etiqueta">${t("En observación", "Under observation")}</span> <span class="meta-nota">${t(`faltan ${rec.faltan} partidas para recomendar`, `${rec.faltan} more matches to recommend`)}</span>`;
+  const comparacion = rec.ref && rec.ref.mazo !== m.mazo
+    ? `<p class="meta-linea meta-nota">${t("Tu referencia", "Your reference")}: ${esc(rec.ref.mazo)} · ${pct(rec.ref.wr)} · ${rec.ref.n} ${t("partidas", "matches")} (${t("seguro desde", "safe from")} ${Math.round(rec.ref.seguro * 100)} %)</p>`
+    : "";
   return `<div class="rec">
-    <span class="meta-etiqueta">${t("Recomendado", "Recommended")}</span>
+    ${cabecera}
     <div class="rec-cartas">${iconos}</div>
-    <div class="rec-wr"><span class="barra-wr"><span style="width:${Math.round(mejor.wr * 100)}%"></span></span>
-      <span>${pct(mejor.wr)} · ${mejor.n} ${t("partidas", "matches")}${pocos}</span></div>
+    <div class="rec-wr"><span class="barra-wr"><span style="width:${Math.round(m.wr * 100)}%"></span></span>
+      <span>${pct(m.wr)} · ${m.n} ${t("partidas", "matches")} · ${t("seguro desde", "safe from")} ${seguro} %</span></div>
+    ${comparacion}
   </div>`;
 }
