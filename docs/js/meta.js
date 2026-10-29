@@ -1,7 +1,7 @@
 // Sección Meta (solo perfil propio). La API manda la liga; dentro de la liga el escalón se cuenta
 // con tus partidas ranked desde una referencia guardada en este navegador, y se puede corregir a mano.
-import { t, LANG } from "./i18n.js?v=56";
-import { preparar, filtrarModo } from "./stats.js?v=56";
+import { t, LANG } from "./i18n.js?v=57";
+import { preparar, filtrarModo } from "./stats.js?v=57";
 
 const LIGA_META = 7;                                        // desde aquí se sube por medallas
 const ESCALONES = { 1: 11, 2: 11, 3: 11, 4: 10, 5: 10, 6: 10, 7: 0 };
@@ -173,7 +173,7 @@ export function pintarMeta(el, data, mio, tag, iconoFn = () => "") {
   const bloqueRec = bloqueMazo(rec, iconoFn);
 
   el.innerHTML = `<details id="metaDet" class="meta-det"${abierto ? " open" : ""}>
-    <summary><span class="hud-lbl">Meta</span> <span class="meta-resumen">${t("Escalón", "Step")} ${e} · ${restantes} ${t(`para liga ${objetivo}`, `to league ${objetivo}`)}</span></summary>
+    <summary><span class="hud-lbl">Meta</span> <span class="meta-resumen"><strong>${restantes}</strong> ${t(`victorias para subir a liga ${objetivo}`, `wins to reach league ${objetivo}`)}</span><span class="meta-mini" role="img" aria-label="${avance} %"><span style="width:${avance}%"></span></span></summary>
     <div class="meta-hud">
       <div class="hud-top">
         <div class="hud-big">

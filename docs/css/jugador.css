@@ -502,3 +502,15 @@ footer a{color:inherit}
 .badge-aviso { font-size: .65rem; padding: .15rem .45rem; border-radius: 999px; background: var(--line); color: var(--muted); }
 .rec-ref { font-size: .72rem; color: var(--muted); }
 .meta-explica { margin: .2rem 0 0; text-align: center; }
+
+/* ===== Meta v57: un solo contenedor, encabezado legible, iconos más grandes en PC ===== */
+section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius: 0; font-size: inherit; }
+.meta-resumen { font-size: .95rem; opacity: 1; }
+.meta-resumen strong { font: 400 1.2rem/1 "Lilita One", "Arial Rounded MT Bold", sans-serif; color: var(--elixir); margin-right: .15rem; }
+.meta-mini { display: inline-block; width: 90px; height: 6px; border-radius: 999px; background: var(--line); overflow: hidden; vertical-align: middle; margin-left: .4rem; }
+.meta-mini > span { display: block; height: 100%; background: var(--elixir); }
+@media (min-width: 520px) {
+  .rec-cartas { grid-template-columns: repeat(8, 56px); gap: .5rem; }
+  .mz-ico img { width: 56px; height: 56px; }
+  .tile-rec { padding: .9rem 1rem; }
+}
