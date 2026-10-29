@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=44";
-import { modelo, filtrarModo } from "./stats.js?v=44";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=44";
-import { reloj } from "./clock.js?v=44";
-import { partidas } from "./partidas.js?v=44";
+import { consultar, seguir } from "./api.js?v=45";
+import { modelo, filtrarModo } from "./stats.js?v=45";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=45";
+import { reloj } from "./clock.js?v=45";
+import { partidas } from "./partidas.js?v=45";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=44";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=44";
-import * as seguidos from "./seguidos.js?v=44";
-import { ICONOS, escudoLiga } from "./iconos.js?v=44";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=45";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=45";
+import * as seguidos from "./seguidos.js?v=45";
+import { ICONOS, escudoLiga } from "./iconos.js?v=45";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -28,7 +28,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=44";
+import { iniciarBarra } from "./barra.js?v=45";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -189,6 +189,7 @@ function pintar(data) {
   });
   if (!m.todas.length) $("listaPartidas").innerHTML = `<li class="vacio">${t("No hay partidas de este modo.", "No matches in this mode.")}</li>`;
   graficasListas = false;
+  pintarVistaMazos();
   verPestana(vistaActual);
 }
 
@@ -257,7 +258,7 @@ function verPestana(cual) {
     try { localStorage.setItem("elixirVioEstadisticas", "1"); } catch (e) {}
     pintarGraficas();
   }
-  if (cual === "mazos") { cargarCatalogo().then(() => pintarVistaMazos()); }
+  // mazos se pinta en pintar(), aquí solo se muestra/oculta
 }
 
 async function buscar(tag, { silencioso = false } = {}) {
@@ -413,6 +414,7 @@ document.querySelectorAll("#modos button").forEach((b) => b.addEventListener("cl
 
 aplicar();
 iniciarBarra();
+cargarCatalogo();  // pre-cargar iconos de cartas
 $("idioma").textContent = LANG === "en" ? "ES" : "EN";
 $("idioma").addEventListener("click", alternar);
 pintarAtajos();
