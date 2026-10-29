@@ -1,5 +1,5 @@
-import { iniciarBarra } from './barra.js?v=38';
-import { t } from './i18n.js?v=38';
+import { iniciarBarra } from './barra.js?v=39';
+import { t } from './i18n.js?v=39';
 
 const PASO = 25;   // filas por vez
 // copiar: portapapeles. Copiar en el juego: en el móvil abre el juego en la misma pestaña (el enlace caduca); en PC, en otra pestaña, donde el juego muestra el QR

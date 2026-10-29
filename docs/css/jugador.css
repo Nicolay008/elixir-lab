@@ -290,11 +290,7 @@ footer a{color:inherit}
 @media (min-width:720px){
   main{max-width:44rem}
   .barra-fija{padding-left:max(1rem,calc((100vw - 44rem) / 2 + 1rem));padding-right:max(1rem,calc((100vw - 44rem) / 2 + 1rem))}
-  #vistaEstadisticas:not([hidden]){display:grid;grid-template-columns:1fr 1fr;gap:1rem;align-items:start}
-  #vistaEstadisticas .estad-cabecera{grid-column:1/-1}
-  #vistaEstadisticas #tarjetaTendencia{grid-column:1/-1}
-  #vistaEstadisticas .indicadores-fila{grid-column:1/-1}
-  #vistaEstadisticas .mazos-calif{grid-template-columns:1fr}
+  /* en escritorio: columna única con buen ancho, sin grid de dos columnas */
 }
 
 /* ===== Ampliar la gráfica de tendencia (solo pantalla ancha) ===== */
