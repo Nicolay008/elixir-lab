@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=58";
-import { pintarMeta } from "./meta.js?v=58";
-import { modelo, filtrarModo } from "./stats.js?v=58";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=58";
-import { reloj } from "./clock.js?v=58";
-import { partidas } from "./partidas.js?v=58";
+import { consultar, seguir } from "./api.js?v=59";
+import { pintarMeta } from "./meta.js?v=59";
+import { modelo, filtrarModo } from "./stats.js?v=59";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=59";
+import { reloj } from "./clock.js?v=59";
+import { partidas } from "./partidas.js?v=59";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=58";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=58";
-import * as seguidos from "./seguidos.js?v=58";
-import { ICONOS, escudoLiga } from "./iconos.js?v=58";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=59";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=59";
+import * as seguidos from "./seguidos.js?v=59";
+import { ICONOS, escudoLiga } from "./iconos.js?v=59";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -29,7 +29,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=58";
+import { iniciarBarra } from "./barra.js?v=59";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -308,7 +308,10 @@ function pintarVistaMazos() {
     const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
     const wrColor = d.wr >= 55 ? "ok" : d.wr >= 45 ? "mid" : "bad";
     const banda = `left:${d.ic[0]}%;width:${Math.max(2, d.ic[1] - d.ic[0])}%`;
-    const det = (titulo, valor, ayuda) => `<div class="mc-tile"><span class="mc-det-label">${titulo}</span><span class="mc-det-val">${valor}</span><span class="mc-det-ayuda">${ayuda}</span></div>`;
+    const det = (titulo, valor, ayuda, faltaTxt, clase = "") => {
+      const falta = valor === null;
+      return `<div class="mc-tile ${clase}${falta ? " mc-tile-falta" : ""}"><span class="mc-det-label">${titulo}</span><span class="mc-det-val">${falta ? t("pocos datos", "low sample") : valor}</span><span class="mc-det-ayuda">${falta ? faltaTxt : ayuda}</span></div>`;
+    };
     return `<article class="mc-item" data-idx="${idx}" role="button" tabindex="0" aria-expanded="false">
       <div class="mc-cab">
         <span class="mc-letra ${letraCls}" aria-label="${t("Nota", "Score")} ${d.letra}">${d.letra}</span>
@@ -325,14 +328,14 @@ function pintarVistaMazos() {
       </div>
     </article>
     <div class="mc-detalle" id="mcDetalle${idx}" hidden>
-      <div class="mc-det-grid">
-        ${det(t("Confianza", "Confidence"), `${d.ic[0]}–${d.ic[1]} %`, t("rango probable de tu winrate real", "likely range of your real win rate"))}
-        ${det(t("Elixir perdido", "Elixir leaked"), d.elxMedia ?? "–", t("por partida; menos es mejor", "per match; lower is better"))}
-        ${det(t("Consistencia", "Consistency"), d.consistencia !== null ? d.consistencia + " %" : "–", t("qué tan parejo rindes", "how steady you play"))}
-        ${det(t("Partidas cerradas", "Close games"), d.resCierre !== null ? d.resCierre + " %" : "–", t("derrotas por 1 corona", "losses by 1 crown"))}
-        ${det(t("Cobertura", "Coverage"), d.cobertura !== null ? d.cobertura + " %" : "–", t("rivales a los que ganas", "rivals you beat"))}
-      </div>
       <button class="mc-filtrar" type="button" data-mazo="${idx}">${t("Ver estadísticas de este mazo", "View stats for this deck")}</button>
+      <div class="mc-det-grid">
+        ${det(t("Confianza", "Confidence"), `${d.ic[0]}–${d.ic[1]} %`, t("rango probable de tu winrate real", "likely range of your real win rate"), "", "mc-tile-full")}
+        ${det(t("Elixir perdido", "Elixir leaked"), d.elxMedia ?? null, t("por partida; menos es mejor", "per match; lower is better"), t("sin datos de elixir", "no elixir data"))}
+        ${det(t("Consistencia", "Consistency"), d.consistencia !== null ? d.consistencia + " %" : null, t("qué tan parejo rindes", "how steady you play"), t("necesita al menos 20 partidas", "needs at least 20 matches"))}
+        ${det(t("Partidas cerradas", "Close games"), d.resCierre !== null ? d.resCierre + " %" : null, t("derrotas por 1 corona", "losses by 1 crown"), t("necesita 3 derrotas o más", "needs 3 or more losses"))}
+        ${det(t("Cobertura", "Coverage"), d.cobertura !== null ? d.cobertura + " %" : null, t("rivales a los que ganas", "rivals you beat"), t("necesita 3 rivales con 2 partidas o más", "needs 3 rivals with 2+ matches"))}
+      </div>
     </div>`;
   }).join("");
   $("vistaMazos").innerHTML = html ? legenda + html : `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;

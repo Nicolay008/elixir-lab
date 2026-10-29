@@ -558,3 +558,13 @@ section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius
 .mc-det-val { font: 400 1.2rem/1.1 "Lilita One", sans-serif; }
 .mc-det-ayuda { font-size: .7rem; color: var(--muted); line-height: 1.3; }
 .mc-filtrar { margin-top: .6rem; }
+
+/* ===== Mazos v59: botón arriba, confianza a todo el ancho, cuadrícula 2x2 ===== */
+.mc-detalle .mc-filtrar { margin: 0 0 .6rem; padding: .55rem; font-size: .85rem; }
+.mc-det-grid { grid-template-columns: 1fr 1fr; }
+.mc-tile-full { grid-column: 1 / -1; }
+.mc-tile-falta .mc-det-val { font: 800 .85rem/1.2 inherit; color: var(--muted); }
+.mc-tile-falta { border-style: dashed; }
+@media (min-width: 520px) {
+  .mc-det-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
