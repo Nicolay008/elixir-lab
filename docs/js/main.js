@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=57";
-import { pintarMeta } from "./meta.js?v=57";
-import { modelo, filtrarModo } from "./stats.js?v=57";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=57";
-import { reloj } from "./clock.js?v=57";
-import { partidas } from "./partidas.js?v=57";
+import { consultar, seguir } from "./api.js?v=58";
+import { pintarMeta } from "./meta.js?v=58";
+import { modelo, filtrarModo } from "./stats.js?v=58";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=58";
+import { reloj } from "./clock.js?v=58";
+import { partidas } from "./partidas.js?v=58";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=57";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=57";
-import * as seguidos from "./seguidos.js?v=57";
-import { ICONOS, escudoLiga } from "./iconos.js?v=57";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=58";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=58";
+import * as seguidos from "./seguidos.js?v=58";
+import { ICONOS, escudoLiga } from "./iconos.js?v=58";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -29,7 +29,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=57";
+import { iniciarBarra } from "./barra.js?v=58";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -290,46 +290,59 @@ $("vistaRacha").addEventListener("click", () => { vista = "racha"; pintarTendenc
 function pintarVistaMazos() {
   if (!m) return;
   const cat = catalogo || new Map();
+  const legenda = `<div class="mz-leyenda">
+    <p class="mz-leyenda-tit">${t("Cómo leer esta lista", "How to read this list")}</p>
+    <ul>
+      <li><span class="mz-l-letra s">S</span><span>${t("Nota global de 1 a 10 para tu juego. Va de S (mejor) a D.", "Overall score from 1 to 10 for your play. From S (best) to D.")}</span></li>
+      <li><span class="mz-l-barra"><span></span></span><span>${t("Porcentaje de victorias. La parte clara muestra el rango probable de tu winrate real.", "Win rate. The light part shows the likely range of your real win rate.")}</span></li>
+      <li><span class="mz-l-p">29</span><span>${t("Partidas jugadas con ese mazo.", "Matches played with that deck.")}</span></li>
+    </ul>
+    <p class="mz-leyenda-pie">${t("Toca un mazo para ver el detalle.", "Tap a deck to see the details.")}</p>
+  </div>`;
+
   const html = m.mazosCalif.map((d, idx) => {
-    const iconos = (d.cartas ?? []).map((c) => {
+    const iconos = (d.cartas ?? []).slice(0, 8).map((c) => {
       const { img, nombre } = iconoCarta(cat, c);
       return img ? `<img class="mc-ico" src="${img}" alt="${nombre}" title="${nombre}" loading="lazy">` : `<span class="mc-ico mc-falta">?</span>`;
     }).join("");
     const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
-    const opacidad = Math.max(0.3, Math.min(1, (d.ic[1] - d.ic[0] < 30) ? 1 : (d.ic[1] - d.ic[0] < 50) ? 0.7 : 0.4));
     const wrColor = d.wr >= 55 ? "ok" : d.wr >= 45 ? "mid" : "bad";
-    return `<div class="mc-item" data-idx="${idx}">
-      <div class="mc-fila1">
-        <div class="mc-letra ${letraCls}">${d.letra}</div>
-        <div class="mc-cartas">${iconos}</div>
-        <svg class="mc-flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    const banda = `left:${d.ic[0]}%;width:${Math.max(2, d.ic[1] - d.ic[0])}%`;
+    const det = (titulo, valor, ayuda) => `<div class="mc-tile"><span class="mc-det-label">${titulo}</span><span class="mc-det-val">${valor}</span><span class="mc-det-ayuda">${ayuda}</span></div>`;
+    return `<article class="mc-item" data-idx="${idx}" role="button" tabindex="0" aria-expanded="false">
+      <div class="mc-cab">
+        <span class="mc-letra ${letraCls}" aria-label="${t("Nota", "Score")} ${d.letra}">${d.letra}</span>
+        <div class="mc-nota-bloque"><span class="mc-nota">${d.nota}<small> /10</small></span><span class="mc-sub">${t("nota global", "overall score")}</span></div>
+        <svg class="mc-flecha" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
       </div>
-      <div class="mc-fila2">
-        <div class="mc-barra-wrap"><div class="mc-barra ${wrColor}" style="width:${d.wr}%;opacity:${opacidad}"></div></div>
-        <span class="mc-wr">${d.wr} %</span>
-        <span class="mc-n">${d.n}p</span>
+      <div class="mc-cartas">${iconos}</div>
+      <div class="mc-stats">
+        <div class="mc-wrbox">
+          <div class="mc-barra-wrap"><span class="mc-band" style="${banda}"></span><span class="mc-barra ${wrColor}" style="width:${d.wr}%"></span></div>
+          <span class="mc-wr">${d.wr} % <small>${t("victorias", "wins")}</small></span>
+        </div>
+        <span class="mc-n">${d.n} ${t("partidas", "matches")}</span>
       </div>
-    </div>
+    </article>
     <div class="mc-detalle" id="mcDetalle${idx}" hidden>
       <div class="mc-det-grid">
-        <div><span class="mc-det-label">${t("Partidas", "Matches")}</span><span class="mc-det-val">${d.n}</span></div>
-        <div><span class="mc-det-label">${t("Confianza", "Confidence")}</span><span class="mc-det-val">${d.ic[0]}-${d.ic[1]} %</span></div>
-        <div><span class="mc-det-label">${t("Elixir perdido", "Elixir leaked")}</span><span class="mc-det-val">${d.elxMedia ?? "\u2013"}</span></div>
-        <div><span class="mc-det-label">${t("Consistencia", "Consistency")}</span><span class="mc-det-val">${d.consistencia !== null ? d.consistencia + " %" : "\u2013"}</span></div>
-        <div><span class="mc-det-label">${t("Cerradas", "Close games")}</span><span class="mc-det-val">${d.resCierre !== null ? d.resCierre + " %" : "\u2013"}</span></div>
-        <div><span class="mc-det-label">${t("Cobertura", "Coverage")}</span><span class="mc-det-val">${d.cobertura !== null ? d.cobertura + " %" : "\u2013"}</span></div>
-        <div><span class="mc-det-label">${t("Nota", "Score")}</span><span class="mc-det-val">${d.nota}</span></div>
+        ${det(t("Confianza", "Confidence"), `${d.ic[0]}–${d.ic[1]} %`, t("rango probable de tu winrate real", "likely range of your real win rate"))}
+        ${det(t("Elixir perdido", "Elixir leaked"), d.elxMedia ?? "–", t("por partida; menos es mejor", "per match; lower is better"))}
+        ${det(t("Consistencia", "Consistency"), d.consistencia !== null ? d.consistencia + " %" : "–", t("qué tan parejo rindes", "how steady you play"))}
+        ${det(t("Partidas cerradas", "Close games"), d.resCierre !== null ? d.resCierre + " %" : "–", t("derrotas por 1 corona", "losses by 1 crown"))}
+        ${det(t("Cobertura", "Coverage"), d.cobertura !== null ? d.cobertura + " %" : "–", t("rivales a los que ganas", "rivals you beat"))}
       </div>
       <button class="mc-filtrar" type="button" data-mazo="${idx}">${t("Ver estadísticas de este mazo", "View stats for this deck")}</button>
     </div>`;
   }).join("");
-  $("vistaMazos").innerHTML = html || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
+  $("vistaMazos").innerHTML = html ? legenda + html : `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
   $("vistaMazos").querySelectorAll(".mc-item").forEach((el) => {
     el.addEventListener("click", () => {
       const det = $("mcDetalle" + el.dataset.idx);
       const abierto = !det.hidden;
       det.hidden = abierto;
       el.classList.toggle("abierto", !abierto);
+      el.setAttribute("aria-expanded", String(!abierto));
     });
   });
   $("vistaMazos").querySelectorAll(".mc-filtrar").forEach((btn) => {

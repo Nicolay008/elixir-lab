@@ -514,3 +514,47 @@ section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius
   .mz-ico img { width: 56px; height: 56px; }
   .tile-rec { padding: .9rem 1rem; }
 }
+
+/* ===== Pestaña Mazos v58: cuadrícula de 8 cartas, leyenda y detalle con explicación ===== */
+.mz-leyenda { background: var(--surface); border: 2px solid var(--line); border-radius: 1rem; padding: .7rem .85rem; margin: 0 0 .75rem; }
+.mz-leyenda-tit { margin: 0 0 .4rem; font-size: .72rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.mz-leyenda ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .45rem; }
+.mz-leyenda li { display: flex; align-items: center; gap: .6rem; font-size: .82rem; line-height: 1.3; }
+.mz-leyenda-pie { margin: .5rem 0 0; font-size: .75rem; color: var(--muted); }
+.mz-l-letra { font: 400 1.1rem/1 "Lilita One", sans-serif; width: 1.6rem; text-align: center; flex: none; color: var(--gold); }
+.mz-l-letra.s { color: var(--gold); }
+.mz-l-barra { width: 2.6rem; height: .45rem; border-radius: 999px; background: var(--line); flex: none; overflow: hidden; }
+.mz-l-barra > span { display: block; width: 62%; height: 100%; background: var(--ok); }
+.mz-l-p { width: 2.6rem; text-align: center; font-weight: 800; font-size: .8rem; color: var(--muted); flex: none; }
+
+.mc-item { gap: .6rem; padding: .8rem .85rem; border: 2px solid var(--line); border-radius: 1rem; }
+.mc-cab { display: flex; align-items: center; gap: .6rem; }
+.mc-letra { width: 2.2rem; height: 2.2rem; border-radius: .6rem; display: grid; place-items: center; background: var(--line); font-size: 1.4rem; }
+.mc-letra.s { background: color-mix(in srgb, var(--gold) 25%, transparent); }
+.mc-letra.a { background: color-mix(in srgb, var(--ok) 25%, transparent); }
+.mc-letra.b { background: color-mix(in srgb, var(--elixir) 25%, transparent); }
+.mc-letra.c { background: var(--line); }
+.mc-nota-bloque { display: flex; flex-direction: column; line-height: 1.1; }
+.mc-nota { font: 400 1.05rem/1 "Lilita One", sans-serif; }
+.mc-nota small { font-size: .7rem; opacity: .6; }
+.mc-sub { font-size: .7rem; color: var(--muted); }
+.mc-flecha { margin-left: auto; color: var(--muted); transition: transform .2s; }
+.mc-item.abierto .mc-flecha { transform: rotate(180deg); }
+.mc-cartas { display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 4px; }
+.mc-ico { width: 100%; height: auto; aspect-ratio: 1 / 1; object-fit: contain; border-radius: .3rem; display: block; }
+.mc-falta { display: grid; place-items: center; background: var(--line); color: var(--muted); font-size: .7rem; }
+.mc-stats { display: flex; align-items: center; gap: .6rem; }
+.mc-wrbox { flex: 1; display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+.mc-barra-wrap { position: relative; height: .6rem; background: var(--line); border-radius: 999px; overflow: hidden; }
+.mc-band { position: absolute; top: 0; bottom: 0; background: color-mix(in srgb, var(--muted) 35%, transparent); }
+.mc-barra { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+.mc-wr { font-size: .8rem; font-weight: 800; }
+.mc-wr small { font-weight: 600; color: var(--muted); font-size: .7rem; }
+.mc-n { font-size: .72rem; color: var(--muted); white-space: nowrap; }
+.mc-detalle { margin-top: -.3rem; padding: .7rem; border: 2px solid var(--line); border-top: 0; border-radius: 0 0 1rem 1rem; background: var(--surface); }
+.mc-det-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: .5rem; }
+.mc-tile { background: var(--bg, transparent); border: 1.5px solid var(--line); border-radius: .75rem; padding: .5rem .6rem; display: flex; flex-direction: column; gap: .15rem; }
+.mc-det-label { font-size: .72rem; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+.mc-det-val { font: 400 1.2rem/1.1 "Lilita One", sans-serif; }
+.mc-det-ayuda { font-size: .7rem; color: var(--muted); line-height: 1.3; }
+.mc-filtrar { margin-top: .6rem; }
