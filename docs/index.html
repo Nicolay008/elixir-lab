@@ -883,11 +883,14 @@ fieldset.folded .desc{display:none}
   <h3 data-en="Want to contribute?">¿Quieres colaborar?</h3>
   <p data-en="Report bugs or suggest ideas in the repository’s &lt;a href=&quot;https://github.com/Nicolay008/elixir-lab/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Issues&lt;/a&gt;, or improve the code with a pull request. Every bit helps, and if it’s useful to you, a ⭐ on GitHub helps more people find it.">Reporta errores o propón ideas en la sección <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> del repositorio, o mejora el código con un pull request. Toda ayuda suma, y si te sirve, una ⭐ en GitHub ayuda a que más gente lo encuentre.</p>
   <p class="fine" data-en="&lt;b&gt;Your data:&lt;/b&gt; Clash Royale matches are public in the game’s API. When you follow a tag, we store its history, which will be visible to anyone who looks up that tag. If nobody follows a tag for 6 months, its history is deleted automatically.&lt;br&gt;Is your tag followed and you’d rather your history not be stored? Ask in &lt;a href=&quot;https://github.com/Nicolay008/elixir-lab/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Issues&lt;/a&gt; and we’ll remove it."><b>Tus datos:</b> las partidas de Clash Royale son públicas en la API del juego. Al seguir un tag, guardamos su historial, que será visible para quien consulte ese tag. Si nadie sigue un tag durante 6 meses, su historial se borra automáticamente.<br>¿Tu tag está seguido y prefieres que no se guarde tu historial? Pídelo en <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> y lo retiramos.</p>
-  <p class="studio" data-en="Made by &lt;b id=&quot;studioName&quot;&gt;&lt;/b&gt;">Desarrollado por <b id="studioName"></b></p>
+  <p class="studio" data-en="Developed by &lt;a href=&quot;https://x.com/NickolayPaul&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;NickolayPaul&lt;/a&gt;">Desarrollado por <a href="https://x.com/NickolayPaul" target="_blank" rel="noopener">NickolayPaul</a></p>
   <button class="btn" id="aboutClose" data-en="Close">Cerrar</button>
 </dialog>
-<footer><button class="link" id="aboutOpen" data-en="About Elixir Lab · Contribute">Acerca de Elixir Lab · Colabora</button>
-<span data-en="This material is unofficial and is not endorsed by Supercell. For more information see Supercell’s Fan Content Policy: &lt;a href=&quot;https://www.supercell.com/fan-content-policy&quot; style=&quot;color:inherit&quot;&gt;www.supercell.com/fan-content-policy&lt;/a&gt;.">Este material no es oficial y no está respaldado por Supercell. Para más información, consulta la política de contenido de fans de Supercell: <a href="https://www.supercell.com/fan-content-policy" style="color:inherit">www.supercell.com/fan-content-policy</a>.</span></footer>
+<footer class="pie">
+  <p class="pie-autor"><span data-en="Developed by">Desarrollado por</span> <a href="https://x.com/NickolayPaul" target="_blank" rel="noopener">NickolayPaul</a></p>
+  <button class="pie-acerca" id="aboutOpen" type="button" data-en="About Elixir Lab · Contribute">Acerca de Elixir Lab · Colabora</button>
+  <p class="pie-legal" data-en="Elixir Lab is unofficial fan content, not endorsed by Supercell. &lt;a href=&quot;https://www.supercell.com/fan-content-policy&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Fan Content Policy&lt;/a&gt;.">Elixir Lab es contenido no oficial y no está respaldado por Supercell. <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener">Política de contenido de fans</a>.</p>
+</footer>
 
 <script>
 let CARDS = []; // se carga desde cards.json: [nombre, coste, rareza, icono]
@@ -1382,9 +1385,8 @@ function renderResume(isCount){
 document.addEventListener("visibilitychange",()=>{ if(document.hidden && !$("game").classList.contains("hidden") && !locked) pauseRun(); });
 
 // ================= INSIGNIAS Y ACERCA DE =================
-const STUDIO="Inka Lobby GG";   // nombre del estudio: cámbialo aquí
-$("studioName").textContent=STUDIO;
 $("aboutOpen").addEventListener("click",()=>$("about").showModal());
+if (new URLSearchParams(location.search).has("acerca")) $("about").showModal();
 $("aboutClose").addEventListener("click",()=>$("about").close());
 const MKEY="elixirMasteryV1";   // {8|5|3: {done, perfect, bestAvg}}
 function loadM(){ try{return JSON.parse(localStorage.getItem(MKEY))||{};}catch(e){return {};} }

@@ -58,3 +58,9 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
   .mazo-antiguedad{font-size:11px}
   .mazo-coste{font-size:12px}
 }
+/* Pie compartido (todas las páginas) */
+.pie { margin: 2rem auto 1.5rem; max-width: 36rem; padding: 0 1rem; text-align: center; font-size: .8rem; color: var(--muted); display: flex; flex-direction: column; gap: .5rem; align-items: center; }
+.pie a { color: inherit; font-weight: 700; }
+.pie-autor { margin: 0; }
+.pie-acerca { font: inherit; font-weight: 800; color: var(--elixir, #b44fd9); background: none; border: 1.5px solid currentColor; border-radius: 999px; padding: .35rem .9rem; cursor: pointer; text-decoration: none; }
+.pie-legal { margin: 0; font-size: .72rem; opacity: .85; line-height: 1.4; }

@@ -176,7 +176,7 @@ No automatiza ni interactúa con Clash Royale.
 Elixir Lab es material no oficial y no está respaldado por Supercell. Consulta la
 [política de contenido de fans de Supercell](https://www.supercell.com/fan-content-policy).
 
-Desarrollado por **Inka Lobby GG**.
+Desarrollado por **NickolayPaul** ([X](https://x.com/NickolayPaul)).
 
 ## Licencia
 
