@@ -373,3 +373,11 @@ footer a{color:inherit}
 .leyenda-calor{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
 .calor-barra{width:5rem;height:.55rem;border-radius:.25rem;background:linear-gradient(90deg,transparent,var(--elixir));flex:none}
 .calor-texto{font-size:.72rem;color:var(--muted);font-weight:600}
+
+/* ===== Navegación de páginas de la gráfica ===== */
+.nav-grafica{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-top:.5rem}
+.nav-grafica button{border:1.5px solid var(--line);background:var(--surface);color:var(--muted);font:inherit;font-weight:700;font-size:.8rem;padding:.3rem .7rem;border-radius:999px;cursor:pointer}
+.nav-grafica button:hover:not(:disabled){color:var(--ink);border-color:var(--ink)}
+.nav-grafica button:disabled{opacity:.35;cursor:default}
+.graf-pagina{font-size:.78rem;color:var(--muted);font-weight:700;min-width:3rem;text-align:center}
+.nav-grafica[hidden]{display:none}

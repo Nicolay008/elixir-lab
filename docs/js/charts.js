@@ -1,8 +1,8 @@
 // Gráficas de Racha, Elixir y Coronas (Chart.js, cargado como script global).
-import { dia, hora } from "./stats.js?v=33";
-import { t } from "./i18n.js?v=33";
+import { dia, hora } from "./stats.js?v=34";
+import { t } from "./i18n.js?v=34";
 
-const MOSTRAR = 20; // partidas visibles
+const MOSTRAR = 25; // partidas por página
 
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 const colores = () => ({
@@ -13,13 +13,21 @@ const colores = () => ({
   mala: css("--franja-mala"), malaTinta: css("--tinta-mala"),
 });
 
-// recorta a las últimas MOSTRAR partidas y ajusta los índices de las franjas
+// paginación: 0 = más recientes, 1 = anteriores, etc.
+let _pag = 0;
+export function setPagina(p) { _pag = p; }
+export function getPagina() { return _pag; }
+export function totalPaginas(m) { return Math.max(1, Math.ceil(m.ps.length / MOSTRAR)); }
+
 function ventana(m) {
-  const ini = Math.max(0, m.ps.length - MOSTRAR);
-  const ps = m.ps.slice(ini);
+  const total = m.ps.length, pags = totalPaginas(m);
+  const pag = Math.min(_pag, pags - 1);
+  const fin = total - pag * MOSTRAR;
+  const ini = Math.max(0, fin - MOSTRAR);
+  const ps = m.ps.slice(ini, fin);
   const franjas = m.franjas
-    .filter((f) => f.hasta >= ini)
-    .map((f) => ({ ...f, desde: Math.max(0, f.desde - ini), hasta: f.hasta - ini }));
+    .filter((f) => f.hasta >= ini && f.desde < fin)
+    .map((f) => ({ ...f, desde: Math.max(0, f.desde - ini), hasta: Math.min(f.hasta - ini, ps.length - 1) }));
   const etiquetas = ps.map((p, i) => (i === 0 || dia(p.t) !== dia(ps[i - 1].t) ? dia(p.t) : ""));
   return { ini, ps, franjas, etiquetas };
 }
@@ -63,7 +71,7 @@ function base(c, ymin, ymax, fmt) {
 // franjas visibles con su texto, para mostrarlas como chips bajo la gráfica
 export function franjasVisibles(m) {
   const v = ventana(m), nombre = { tilt: t("Posible tilt", "Possible tilt"), buena: t("Buena racha", "Good streak"), mala: t("Mala racha", "Bad streak") };
-  return v.franjas.map((f) => {
+  return v.franjas.slice(-6).map((f) => {
     const a = v.ps[f.desde], b = v.ps[f.hasta], n = f.hasta - f.desde + 1;
     const cuando = dia(a.t) === dia(b.t) ? `${dia(a.t)}, ${hora(a.t)} ${t("a","to")} ${hora(b.t)}` : `${dia(a.t)} ${t("a","to")} ${dia(b.t)}`;
     return { tipo: f.tipo, texto: `${nombre[f.tipo]} · ${cuando} · ${n} ${f.tipo === "buena" ? t("victorias seguidas", "wins in a row") : t("derrotas seguidas", "losses in a row")}` };

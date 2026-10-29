@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=33";
-import { modelo, filtrarModo } from "./stats.js?v=33";
-import { tendencia, coronas, franjasVisibles } from "./charts.js?v=33";
-import { reloj } from "./clock.js?v=33";
-import { partidas } from "./partidas.js?v=33";
+import { consultar, seguir } from "./api.js?v=34";
+import { modelo, filtrarModo } from "./stats.js?v=34";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=34";
+import { reloj } from "./clock.js?v=34";
+import { partidas } from "./partidas.js?v=34";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=33";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=33";
-import * as seguidos from "./seguidos.js?v=33";
-import { ICONOS, escudoLiga } from "./iconos.js?v=33";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=34";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=34";
+import * as seguidos from "./seguidos.js?v=34";
+import { ICONOS, escudoLiga } from "./iconos.js?v=34";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -20,7 +20,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=33";
+import { iniciarBarra } from "./barra.js?v=34";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -141,6 +141,7 @@ function pintarModos() {
 
 function pintar(data) {
   ultimo = data;
+  setPagina(0);
   m = modelo(filtrarModo(data, grupoModo), !!esMio());
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
@@ -182,9 +183,18 @@ function pintar(data) {
   if (vistaActual === "estadisticas") pintarGraficas();
 }
 
+function actualizarNavGrafica() {
+  const pags = totalPaginas(m);
+  $("navGrafica").hidden = pags <= 1;
+  $("grafPagina").textContent = (getPagina() + 1) + " / " + pags;
+  $("grafAnterior").disabled = getPagina() >= pags - 1;
+  $("grafSiguiente").disabled = getPagina() <= 0;
+}
+
 function pintarGraficas() {
   if (graficasListas || !m) return;
   pintarTendencia();
+  actualizarNavGrafica();
   graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
   reloj({ svg: $("reloj"), botonAM: $("botonAM"), botonPM: $("botonPM"), detalle: $("detalleHora") }, m.horas);
   pintarNuevos();
@@ -267,6 +277,16 @@ $("botonFijar").addEventListener("click", () => {
 });
 $("panelCerrar").addEventListener("click", cerrarPanel);
 // en pantalla ancha, la gráfica de tendencia puede ocupar todo el ancho para estudiarla
+$("grafAnterior").addEventListener("click", () => {
+  setPagina(getPagina() + 1); pintarTendencia();
+  graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
+  actualizarNavGrafica();
+});
+$("grafSiguiente").addEventListener("click", () => {
+  setPagina(Math.max(0, getPagina() - 1)); pintarTendencia();
+  graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
+  actualizarNavGrafica();
+});
 $("botonAmpliar").addEventListener("click", () => {
   const ampliada = $("tarjetaTendencia").classList.toggle("ampliada");
   $("botonAmpliar").setAttribute("aria-expanded", ampliada);
