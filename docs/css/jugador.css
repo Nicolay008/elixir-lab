@@ -136,7 +136,7 @@ p{margin:.25rem 0 1rem;color:var(--muted)}
 .tarjeta h3{margin-bottom:.35rem}
 
 /* selector segmentado del Lab: contenedor de cristal, opción elegida rellena */
-.pulsador{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin:0 0 .7rem;border:1.5px solid var(--line);border-radius:1rem;
+.pulsador{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:4px;padding:4px;margin:0 0 .7rem;border:1.5px solid var(--line);border-radius:1rem;
   background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .pulsador button{border:0;border-radius:.75rem;background:transparent;color:var(--muted);font:inherit;font-weight:800;padding:.6rem .35rem;cursor:pointer;transition:background .15s,color .15s}
 .pulsador button[aria-pressed="true"]{background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff;box-shadow:0 0 16px var(--glow)}
@@ -377,18 +377,27 @@ footer a{color:inherit}
 .graf-pagina{font-size:.78rem;color:var(--muted);font-weight:700;min-width:3rem;text-align:center}
 .nav-grafica[hidden]{display:none}
 
-/* ===== Calificación de mazos ===== */
-.mazos-calif{display:flex;flex-direction:column;gap:.5rem}
-.mc-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:.75rem;background:color-mix(in srgb,var(--surface) 80%,transparent)}
-.mc-letra{font-family:'Lilita One',sans-serif;font-size:1.6rem;width:2rem;text-align:center;flex:none;line-height:1}
+/* ===== Pestaña Mazos: vista compacta con desplegable ===== */
+#vistaMazos{display:flex;flex-direction:column;gap:.25rem}
+.mc-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;border-radius:.75rem;background:var(--surface);cursor:pointer;transition:background .15s}
+.mc-item:hover{background:color-mix(in srgb,var(--surface) 60%,var(--elixir))}
+.mc-letra{font-family:'Lilita One',sans-serif;font-size:1.4rem;width:1.6rem;text-align:center;flex:none;line-height:1}
 .mc-letra.s{color:var(--gold)}
 .mc-letra.a{color:var(--ok)}
 .mc-letra.b{color:var(--elixir)}
 .mc-letra.c{color:var(--muted)}
-.mc-datos{flex:1;min-width:0}
-.mc-cartas{display:flex;gap:.15rem;flex-wrap:wrap}
-.mc-ico{width:1.5rem;height:1.5rem;border-radius:.2rem;flex:none}
+.mc-cartas{display:flex;gap:.15rem;flex:none}
+.mc-ico{width:1.4rem;height:1.4rem;border-radius:.2rem;flex:none}
 .mc-falta{display:inline-flex;align-items:center;justify-content:center;background:var(--line);font-size:.7rem;color:var(--muted)}
-.mc-stats{display:flex;flex-wrap:wrap;gap:.3rem .6rem;font-size:.75rem;font-weight:700;margin-top:.25rem}
-.mc-stats .muted{color:var(--muted);font-weight:600}
-.mc-nota{font-family:'Lilita One',sans-serif;font-size:1.1rem;color:var(--muted);width:2.5rem;text-align:right;flex:none}
+.mc-barra-wrap{flex:1;height:.6rem;background:var(--line);border-radius:.3rem;overflow:hidden;min-width:2rem}
+.mc-barra{height:100%;border-radius:.3rem;transition:width .3s}
+.mc-barra.ok{background:var(--ok)}
+.mc-barra.mid{background:var(--gold)}
+.mc-barra.bad{background:var(--bad)}
+.mc-wr{font-size:.8rem;font-weight:800;width:2.5rem;text-align:right;flex:none}
+.mc-n{font-size:.72rem;color:var(--muted);width:2rem;text-align:right;flex:none}
+.mc-detalle{background:var(--surface);border-radius:0 0 .75rem .75rem;margin-top:-.25rem;padding:.5rem .6rem .6rem;border-top:1px solid var(--line)}
+.mc-detalle[hidden]{display:none}
+.mc-det-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .8rem}
+.mc-det-label{font-size:.72rem;font-weight:700;color:var(--muted);display:block}
+.mc-det-val{font-size:.85rem;font-weight:800}

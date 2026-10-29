@@ -1,26 +1,34 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=39";
-import { modelo, filtrarModo } from "./stats.js?v=39";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=39";
-import { reloj } from "./clock.js?v=39";
-import { partidas } from "./partidas.js?v=39";
+import { consultar, seguir } from "./api.js?v=40";
+import { modelo, filtrarModo } from "./stats.js?v=40";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=40";
+import { reloj } from "./clock.js?v=40";
+import { partidas } from "./partidas.js?v=40";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=39";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=39";
-import * as seguidos from "./seguidos.js?v=39";
-import { ICONOS, escudoLiga } from "./iconos.js?v=39";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=40";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=40";
+import * as seguidos from "./seguidos.js?v=40";
+import { ICONOS, escudoLiga } from "./iconos.js?v=40";
 
 let catalogo = null;
+function iconoCarta(cat, nombre) {
+  const m = nombre.match(/^(.*?)(?: \((Evo|Héroe)\))?$/);
+  const base = m[1], forma = m[2] ?? "";
+  const entry = cat.get(base);
+  if (!entry) return { img: null, nombre: LANG === "es" ? base : base };
+  const ico = forma === "Evo" ? (entry.evo || entry.icono) : forma === "Héroe" ? (entry.heroe || entry.icono) : entry.icono;
+  return { img: ico, nombre: LANG === "es" ? entry.es : entry.en };
+}
 async function cargarCatalogo() {
   if (catalogo) return catalogo;
   try {
     const r = await fetch("cards.json");
     const arr = await r.json();
-    catalogo = new Map(arr.map((c) => [c.nombre_en, { icono: c.icono, es: c.nombre, en: c.nombre_en }]));
+    catalogo = new Map(arr.map((c) => [c.nombre_en, { icono: c.icono, evo: c.icono_evo, heroe: c.icono_heroe, es: c.nombre, en: c.nombre_en }]));
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=39";
+import { iniciarBarra } from "./barra.js?v=40";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -222,31 +230,7 @@ async function pintarMatchups(contenedor, lista) {
   }).join("") || `<p class="muted">${t("Pocas partidas para calcular.", "Too few matches.")}</p>`;
 }
 
-async function pintarMazosCalif() {
-  const cat = await cargarCatalogo();
-  $("mazosCalif").innerHTML = m.mazosCalif.map((d) => {
-    const iconos = (d.cartas ?? []).map((c) => {
-      const base = c.replace(/ \((Evo|Héroe)\)$/, "");
-      const entry = cat.get(base);
-      const nombre = entry ? (LANG === "es" ? entry.es : entry.en) : base;
-      return entry ? `<img class="mc-ico" src="${entry.icono}" alt="${nombre}" loading="lazy" title="${nombre}">` : `<span class="mc-ico mc-falta">?</span>`;
-    }).join("");
-    const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
-    return `<div class="mc-item">
-      <div class="mc-letra ${letraCls}">${d.letra}</div>
-      <div class="mc-datos">
-        <div class="mc-cartas">${iconos}</div>
-        <div class="mc-stats">
-          <span>${d.wr} % wr</span>
-          <span class="muted">${d.n}p</span>
-          <span class="muted">${t("IC", "CI")} ${d.ic[0]}-${d.ic[1]} %</span>
-          ${d.elxMedia !== null ? `<span class="muted">${t("elx", "elx")} ${d.elxMedia}</span>` : ""}
-        </div>
-      </div>
-      <div class="mc-nota">${d.nota}</div>
-    </div>`;
-  }).join("") || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
-}
+
 
 function pintarNuevos() {
   $("tasaCerrada").textContent = m.tasaCerrada !== null ? `${m.tasaCerrada} %` : "\u2013";
@@ -255,20 +239,22 @@ function pintarNuevos() {
   pintarPosicion(m.porPosicion);
   pintarMatchups($("pesadillas"), m.pesadillas);
   pintarMatchups($("fortalezas"), m.fortalezas);
-  pintarMazosCalif();
 }
 
 function verPestana(cual) {
   vistaActual = cual;
-  const p = cual === "partidas";
-  $("tabPartidas").setAttribute("aria-pressed", p); $("tabPartidas").setAttribute("aria-selected", p);
-  $("tabEstadisticas").setAttribute("aria-pressed", !p); $("tabEstadisticas").setAttribute("aria-selected", !p);
-  $("vistaPartidas").hidden = !p; $("vistaEstadisticas").hidden = p;
-  if (!p) {
+  $("tabPartidas").setAttribute("aria-pressed", cual === "partidas"); $("tabPartidas").setAttribute("aria-selected", cual === "partidas");
+  $("tabEstadisticas").setAttribute("aria-pressed", cual === "estadisticas"); $("tabEstadisticas").setAttribute("aria-selected", cual === "estadisticas");
+  $("tabMazos").setAttribute("aria-pressed", cual === "mazos"); $("tabMazos").setAttribute("aria-selected", cual === "mazos");
+  $("vistaPartidas").hidden = cual !== "partidas";
+  $("vistaEstadisticas").hidden = cual !== "estadisticas";
+  $("vistaMazos").hidden = cual !== "mazos";
+  if (cual === "estadisticas") {
     $("tabEstadisticas").classList.remove("brillo");
     try { localStorage.setItem("elixirVioEstadisticas", "1"); } catch (e) {}
     pintarGraficas();
   }
+  if (cual === "mazos") { cargarCatalogo().then(() => pintarVistaMazos()); }
 }
 
 async function buscar(tag, { silencioso = false } = {}) {
@@ -291,8 +277,46 @@ async function buscar(tag, { silencioso = false } = {}) {
 $("formulario").addEventListener("submit", (e) => { e.preventDefault(); buscar($("tag").value); });
 $("tabPartidas").addEventListener("click", () => verPestana("partidas"));
 $("tabEstadisticas").addEventListener("click", () => verPestana("estadisticas"));
+$("tabMazos").addEventListener("click", () => verPestana("mazos"));
 try { if (!localStorage.getItem("elixirVioEstadisticas")) $("tabEstadisticas").classList.add("brillo"); } catch (e) {}
 $("vistaRacha").addEventListener("click", () => { vista = "racha"; pintarTendencia(); });
+// Pestaña Mazos
+function pintarVistaMazos() {
+  if (!m) return;
+  const cat = catalogo || new Map();
+  const html = m.mazosCalif.map((d, idx) => {
+    const iconos = (d.cartas ?? []).map((c) => {
+      const { img, nombre } = iconoCarta(cat, c);
+      return img ? `<img class="mc-ico" src="${img}" alt="${nombre}" title="${nombre}" loading="lazy">` : `<span class="mc-ico mc-falta">?</span>`;
+    }).join("");
+    const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
+    const opacidad = Math.max(0.3, Math.min(1, (d.ic[1] - d.ic[0] < 30) ? 1 : (d.ic[1] - d.ic[0] < 50) ? 0.7 : 0.4));
+    const wrColor = d.wr >= 55 ? "ok" : d.wr >= 45 ? "mid" : "bad";
+    return `<div class="mc-item" data-idx="${idx}">
+      <div class="mc-letra ${letraCls}">${d.letra}</div>
+      <div class="mc-cartas">${iconos}</div>
+      <div class="mc-barra-wrap"><div class="mc-barra ${wrColor}" style="width:${d.wr}%;opacity:${opacidad}"></div></div>
+      <span class="mc-wr">${d.wr} %</span>
+      <span class="mc-n">${d.n}p</span>
+    </div>
+    <div class="mc-detalle" id="mcDetalle${idx}" hidden>
+      <div class="mc-det-grid">
+        <div><span class="mc-det-label">${t("Partidas", "Matches")}</span><span class="mc-det-val">${d.n}</span></div>
+        <div><span class="mc-det-label">${t("Confianza", "Confidence")}</span><span class="mc-det-val">${d.ic[0]}-${d.ic[1]} %</span></div>
+        <div><span class="mc-det-label">${t("Elixir perdido", "Elixir leaked")}</span><span class="mc-det-val">${d.elxMedia ?? "–"}</span></div>
+        <div><span class="mc-det-label">${t("Consistencia", "Consistency")}</span><span class="mc-det-val">${d.consistencia !== null ? d.consistencia + " %" : "–"}</span></div>
+        <div><span class="mc-det-label">${t("Cerradas", "Close games")}</span><span class="mc-det-val">${d.resCierre !== null ? d.resCierre + " %" : "–"}</span></div>
+        <div><span class="mc-det-label">${t("Cobertura", "Coverage")}</span><span class="mc-det-val">${d.cobertura !== null ? d.cobertura + " %" : "–"}</span></div>
+        <div><span class="mc-det-label">${t("Nota", "Score")}</span><span class="mc-det-val">${d.nota}</span></div>
+      </div>
+    </div>`;
+  }).join("");
+  $("vistaMazos").innerHTML = html || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
+  $("vistaMazos").querySelectorAll(".mc-item").forEach((el) => el.addEventListener("click", () => {
+    const det = $("mcDetalle" + el.dataset.idx);
+    det.hidden = !det.hidden;
+  }));
+}
 $("vistaElixir").addEventListener("click", () => { vista = "elixir"; pintarTendencia(); });
 $("botonSeguir").addEventListener("click", pedirSeguir);
 $("botonFijar").addEventListener("click", () => {
