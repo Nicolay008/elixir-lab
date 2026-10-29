@@ -83,3 +83,10 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
 .ranking-rating{white-space:nowrap;line-height:1;gap:.3rem}
 .ranking-rating .ranking-medalla{width:13px !important;height:13px !important;min-width:13px;max-width:13px;flex:0 0 13px;color:var(--elixir);opacity:.55;display:inline-block;vertical-align:middle}
 .cabecera-rating-col{width:auto}
+
+/* Ranking v70: medalla lila como en el juego; en PC el clan queda como dato secundario */
+.ranking-rating .ranking-medalla{color:#c9a3ff !important;opacity:.9}
+@media (min-width:601px){
+  .ranking-fila{column-gap:.9rem}
+  .ranking-clan{font-size:.78rem;font-weight:400;opacity:.65;letter-spacing:.01em}
+}
