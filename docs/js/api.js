@@ -1,5 +1,5 @@
 // Llamadas a las funciones de Supabase.
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js?v=62";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "./config.js?v=63";
 
 const cabeceras = { Authorization: `Bearer ${SUPABASE_ANON_KEY}`, "Content-Type": "application/json" };
 

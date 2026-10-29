@@ -1,5 +1,5 @@
-import { iniciarBarra } from './barra.js?v=62';
-import { t } from './i18n.js?v=62';
+import { iniciarBarra } from './barra.js?v=63';
+import { t } from './i18n.js?v=63';
 
 const PASO = 25;   // filas por vez
 // copiar: portapapeles. Copiar en el juego: en el móvil abre el juego en la misma pestaña (el enlace caduca); en PC, en otra pestaña, donde el juego muestra el QR
@@ -119,7 +119,7 @@ function renderMazo(m) {
 }
 
 // medalla tenue junto al rating (son las medallas de Senda de Leyendas)
-const ICONO_MEDALLA = '<svg class="ranking-medalla" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.6 13.2 L7 21 L12 19 L17 21 L15.4 13.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+const ICONO_MEDALLA = '<svg class="ranking-medalla" width="13" height="13" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.6 13.2 L7 21 L12 19 L17 21 L15.4 13.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
 
 function renderFilas(filas, mazosPorTag) {
   return filas.map(f => {

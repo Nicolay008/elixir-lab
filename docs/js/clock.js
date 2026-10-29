@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=62";
+import { t } from "./i18n.js?v=63";
 // Cronómetro AM / PM: cada sector es una hora; largo = partidas, color = winrate.
 const NS = "http://www.w3.org/2000/svg";
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
