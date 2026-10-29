@@ -401,3 +401,20 @@ footer a{color:inherit}
 .mc-det-grid{display:grid;grid-template-columns:1fr 1fr;gap:.3rem .8rem}
 .mc-det-label{font-size:.72rem;font-weight:700;color:var(--muted);display:block}
 .mc-det-val{font-size:.85rem;font-weight:800}
+
+/* ===== Toggle pesadillas/fortalezas en móvil ===== */
+.mu-toggle{display:none;margin-bottom:.5rem}
+@media (max-width:500px){
+  .mu-toggle{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border:1.5px solid var(--line);border-radius:1rem;background:var(--surface)}
+  .mu-toggle button{border:0;background:transparent;color:var(--muted);font:inherit;font-weight:800;font-size:.85rem;padding:.4rem;border-radius:.75rem;cursor:pointer}
+  .mu-toggle button[aria-pressed="true"]{background:var(--elixir);color:#fff}
+  .mu-oculto-movil{display:none}
+  .pesadillas-cols h4{display:none}
+}
+
+/* ===== Chip de mazo filtrado ===== */
+.chip-mazo{display:flex;align-items:center;gap:.35rem;padding:.3rem .6rem;border-radius:999px;background:var(--surface);border:1.5px solid var(--elixir);margin-bottom:.5rem;flex-wrap:nowrap}
+.chip-mazo[hidden]{display:none}
+.chip-mazo-ico{width:1.2rem;height:1.2rem;border-radius:.15rem}
+.chip-mazo-txt{font-size:.78rem;font-weight:700;color:var(--elixir);flex:1}
+.chip-mazo-x{border:0;background:transparent;color:var(--muted);font-size:1rem;cursor:pointer;padding:0 .2rem;flex:none}

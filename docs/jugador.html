@@ -15,7 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/jugador.css?v=41">
+<link rel="stylesheet" href="css/jugador.css?v=43">
 </head>
 <body>
 <nav id="barraFija" class="barra-fija" aria-label="Navegación">
@@ -78,6 +78,7 @@
       <div><dt data-en="Elixir leaked">Elixir perdido</dt><dd id="resumenElixir"></dd><dd id="detalleElixir" class="detalle-elixir"></dd></div>
     </dl>
 
+    <div id="chipMazo" class="chip-mazo" hidden></div>
     <div id="modos" class="modos" role="group" aria-label="Filtrar por modo" data-en-label="Filter by mode">
       <button type="button" data-modo="todos" aria-pressed="true" data-en="All">Todos</button>
       <button type="button" data-modo="ranked" aria-pressed="false">Ranked</button>
@@ -130,13 +131,15 @@
       <h3 data-en="Nightmares and strengths">Pesadillas y fortalezas</h3>
       <p class="explica" data-en="Cards you face the most, and how you do against them. The heat bar shows how often they appear.">Las cartas que más enfrentas y cómo te va contra ellas. La barra de calor indica qué tan frecuentes son.</p>
       <div class="leyenda-calor"><span class="calor-barra"></span><span class="calor-texto" data-en="Rare → Very frequent">Rara vez → Muy frecuente</span></div>
+      <div class="mu-toggle" role="tablist">
+        <button id="btnPesadillas" type="button" role="tab" aria-pressed="true" data-en="Nightmares">Pesadillas</button>
+        <button id="btnFortalezas" type="button" role="tab" aria-pressed="false" data-en="Strengths">Fortalezas</button>
+      </div>
       <div class="pesadillas-cols">
-        <div>
-          <h4 data-en="Nightmares">Pesadillas</h4>
+        <div id="panelPesadillas">
           <div id="pesadillas" class="matchups"></div>
         </div>
-        <div>
-          <h4 data-en="Strengths">Fortalezas</h4>
+        <div id="panelFortalezas" class="mu-oculto-movil">
           <div id="fortalezas" class="matchups"></div>
         </div>
       </div>
@@ -188,6 +191,6 @@
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
-<script type="module" src="js/main.js?v=41"></script>
+<script type="module" src="js/main.js?v=43"></script>
 </body>
 </html>

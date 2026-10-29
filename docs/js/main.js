@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=41";
-import { modelo, filtrarModo } from "./stats.js?v=41";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=41";
-import { reloj } from "./clock.js?v=41";
-import { partidas } from "./partidas.js?v=41";
+import { consultar, seguir } from "./api.js?v=43";
+import { modelo, filtrarModo } from "./stats.js?v=43";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=43";
+import { reloj } from "./clock.js?v=43";
+import { partidas } from "./partidas.js?v=43";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=41";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=41";
-import * as seguidos from "./seguidos.js?v=41";
-import { ICONOS, escudoLiga } from "./iconos.js?v=41";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=43";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=43";
+import * as seguidos from "./seguidos.js?v=43";
+import { ICONOS, escudoLiga } from "./iconos.js?v=43";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -28,10 +28,11 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=41";
+import { iniciarBarra } from "./barra.js?v=43";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
-let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
+let grupoModo = "todos";  // filtro por modo
+let mazoFiltro = null;    // firma del mazo seleccionado, o null: todos, ranked, escalera, guerra, otros
 
 const $ = (id) => document.getElementById(id);
 let m = null, ultimo = null, vista = "racha", graficaTendencia = null, graficaCoronas = null, captchaId = null;
@@ -150,7 +151,9 @@ function pintarModos() {
 function pintar(data) {
   ultimo = data;
   setPagina(0);
-  m = modelo(filtrarModo(data, grupoModo), !!esMio());
+  let filtrado = filtrarModo(data, grupoModo);
+  if (mazoFiltro) filtrado = { ...filtrado, partidas: filtrado.partidas.filter((p) => p.mazo === mazoFiltro) };
+  m = modelo(filtrado, !!esMio());
   const j = data.jugador;
   $("nombre").textContent = j.nombre;
   pintarIdentidad(j);
@@ -186,7 +189,7 @@ function pintar(data) {
   });
   if (!m.todas.length) $("listaPartidas").innerHTML = `<li class="vacio">${t("No hay partidas de este modo.", "No matches in this mode.")}</li>`;
   graficasListas = false;
-  if (vistaActual === "estadisticas") pintarGraficas();
+  verPestana(vistaActual);
 }
 
 function actualizarNavGrafica() {
@@ -312,10 +315,21 @@ function pintarVistaMazos() {
     </div>`;
   }).join("");
   $("vistaMazos").innerHTML = html || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
-  $("vistaMazos").querySelectorAll(".mc-item").forEach((el) => el.addEventListener("click", () => {
-    const det = $("mcDetalle" + el.dataset.idx);
-    det.hidden = !det.hidden;
-  }));
+  $("vistaMazos").querySelectorAll(".mc-item").forEach((el) => {
+    // tap to expand detail
+    el.addEventListener("click", () => {
+      const det = $("mcDetalle" + el.dataset.idx);
+      det.hidden = !det.hidden;
+    });
+    // long press or double tap to filter by this deck
+    el.addEventListener("dblclick", () => {
+      const d = m.mazosCalif[parseInt(el.dataset.idx)];
+      if (!d) return;
+      mazoFiltro = mazoFiltro === d.mazo ? null : d.mazo;
+      pintarChipMazo();
+      if (ultimo) pintar(ultimo);
+    });
+  });
 }
 $("vistaElixir").addEventListener("click", () => { vista = "elixir"; pintarTendencia(); });
 $("botonSeguir").addEventListener("click", pedirSeguir);
@@ -327,6 +341,36 @@ $("botonFijar").addEventListener("click", () => {
 });
 $("panelCerrar").addEventListener("click", cerrarPanel);
 // en pantalla ancha, la gráfica de tendencia puede ocupar todo el ancho para estudiarla
+// chip del mazo filtrado
+function pintarChipMazo() {
+  if (!mazoFiltro) { $("chipMazo").hidden = true; return; }
+  const cartas = (ultimo?.partidas ?? []).find((p) => p.mazo === mazoFiltro)?.mi_mazo ?? [];
+  const cat = catalogo || new Map();
+  const iconos = cartas.slice(0, 4).map((c) => {
+    const { img } = iconoCarta(cat, c);
+    return img ? `<img class="chip-mazo-ico" src="${img}">` : "";
+  }).join("");
+  $("chipMazo").innerHTML = `${iconos}<span class="chip-mazo-txt">${t("Filtrando por mazo", "Filtered by deck")}</span><button class="chip-mazo-x" type="button" aria-label="${t("Quitar filtro", "Clear filter")}">✕</button>`;
+  $("chipMazo").hidden = false;
+  $("chipMazo").querySelector(".chip-mazo-x").addEventListener("click", () => {
+    mazoFiltro = null; pintarChipMazo(); if (ultimo) pintar(ultimo);
+  });
+}
+
+// toggle pesadillas/fortalezas en móvil
+$("btnPesadillas").addEventListener("click", () => {
+  $("btnPesadillas").setAttribute("aria-pressed", "true");
+  $("btnFortalezas").setAttribute("aria-pressed", "false");
+  $("panelPesadillas").classList.remove("mu-oculto-movil");
+  $("panelFortalezas").classList.add("mu-oculto-movil");
+});
+$("btnFortalezas").addEventListener("click", () => {
+  $("btnFortalezas").setAttribute("aria-pressed", "true");
+  $("btnPesadillas").setAttribute("aria-pressed", "false");
+  $("panelFortalezas").classList.remove("mu-oculto-movil");
+  $("panelPesadillas").classList.add("mu-oculto-movil");
+});
+
 $("grafAnterior").addEventListener("click", () => {
   setPagina(getPagina() + 1); pintarTendencia();
   graficaCoronas = coronas($("graficaCoronas"), m, graficaCoronas);
