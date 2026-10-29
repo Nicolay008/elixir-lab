@@ -381,3 +381,19 @@ footer a{color:inherit}
 .nav-grafica button:disabled{opacity:.35;cursor:default}
 .graf-pagina{font-size:.78rem;color:var(--muted);font-weight:700;min-width:3rem;text-align:center}
 .nav-grafica[hidden]{display:none}
+
+/* ===== Calificación de mazos ===== */
+.mazos-calif{display:flex;flex-direction:column;gap:.5rem}
+.mc-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:.75rem;background:color-mix(in srgb,var(--surface) 80%,transparent)}
+.mc-letra{font-family:'Lilita One',sans-serif;font-size:1.6rem;width:2rem;text-align:center;flex:none;line-height:1}
+.mc-letra.s{color:var(--gold)}
+.mc-letra.a{color:var(--ok)}
+.mc-letra.b{color:var(--elixir)}
+.mc-letra.c{color:var(--muted)}
+.mc-datos{flex:1;min-width:0}
+.mc-cartas{display:flex;gap:.15rem;flex-wrap:wrap}
+.mc-ico{width:1.5rem;height:1.5rem;border-radius:.2rem;flex:none}
+.mc-falta{display:inline-flex;align-items:center;justify-content:center;background:var(--line);font-size:.7rem;color:var(--muted)}
+.mc-stats{display:flex;flex-wrap:wrap;gap:.3rem .6rem;font-size:.75rem;font-weight:700;margin-top:.25rem}
+.mc-stats .muted{color:var(--muted);font-weight:600}
+.mc-nota{font-family:'Lilita One',sans-serif;font-size:1.1rem;color:var(--muted);width:2.5rem;text-align:right;flex:none}

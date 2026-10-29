@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=34";
-import { modelo, filtrarModo } from "./stats.js?v=34";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=34";
-import { reloj } from "./clock.js?v=34";
-import { partidas } from "./partidas.js?v=34";
+import { consultar, seguir } from "./api.js?v=37";
+import { modelo, filtrarModo } from "./stats.js?v=37";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=37";
+import { reloj } from "./clock.js?v=37";
+import { partidas } from "./partidas.js?v=37";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=34";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=34";
-import * as seguidos from "./seguidos.js?v=34";
-import { ICONOS, escudoLiga } from "./iconos.js?v=34";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=37";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=37";
+import * as seguidos from "./seguidos.js?v=37";
+import { ICONOS, escudoLiga } from "./iconos.js?v=37";
 
 let catalogo = null;
 async function cargarCatalogo() {
@@ -16,11 +16,11 @@ async function cargarCatalogo() {
   try {
     const r = await fetch("cards.json");
     const arr = await r.json();
-    catalogo = new Map(arr.map((c) => [c.nombre_en, c.icono]));
+    catalogo = new Map(arr.map((c) => [c.nombre_en, { icono: c.icono, es: c.nombre, en: c.nombre_en }]));
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=34";
+import { iniciarBarra } from "./barra.js?v=37";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo: todos, ranked, escalera, guerra, otros
@@ -166,9 +166,7 @@ function pintar(data) {
     : "–";
   const elxVic = m.elixirVictorias !== null ? m.elixirVictorias.toFixed(1) : "–";
   const elxDer = m.elixirDerrotas !== null ? m.elixirDerrotas.toFixed(1) : "–";
-  $("detalleElixir").textContent = t(
-    `En victorias: ${elxVic} · En derrotas: ${elxDer}`,
-    `In wins: ${elxVic} · In losses: ${elxDer}`);
+  $("detalleElixir").textContent = `W ${elxVic} · L ${elxDer}`;
   $("notaApi").textContent = data.seguido
     ? t(`Historial guardado: ${data.resumen.partidas} partidas.`, `Saved history: ${data.resumen.partidas} matches.`)
     : t("La API solo conserva las últimas ~30 partidas de cada jugador.", "The API only keeps each player’s last ~30 matches.");
@@ -216,11 +214,38 @@ function pintarPosicion(pos) {
 async function pintarMatchups(contenedor, lista) {
   const cat = await cargarCatalogo();
   contenedor.innerHTML = lista.map((x) => {
-    const ico = cat.get(x.carta);
-    const img = ico ? `<img class="mu-ico" src="${ico}" alt="" loading="lazy">` : "";
+    const entry = cat.get(x.carta);
+    const img = entry ? `<img class="mu-ico" src="${entry.icono}" alt="" loading="lazy">` : "";
+    const nombre = entry ? (LANG === "es" ? entry.es : entry.en) : x.carta;
     const cls = x.wr < 35 ? "bad" : x.wr < 45 ? "mid" : x.wr > 55 ? "ok" : "";
-    return `<div class="mu-item"><div class="mu-heat" style="opacity:${(0.25 + 0.75 * x.calor).toFixed(2)}"></div>${img}<span class="mu-name">${x.carta}</span><span class="mu-wr ${cls}">${x.wr} %</span><span class="mu-n">${x.partidas}p</span></div>`;
+    return `<div class="mu-item"><div class="mu-heat" style="opacity:${(0.25 + 0.75 * x.calor).toFixed(2)}"></div>${img}<span class="mu-name">${nombre}</span><span class="mu-wr ${cls}">${x.wr} %</span><span class="mu-n">${x.partidas}p</span></div>`;
   }).join("") || `<p class="muted">${t("Pocas partidas para calcular.", "Too few matches.")}</p>`;
+}
+
+async function pintarMazosCalif() {
+  const cat = await cargarCatalogo();
+  $("mazosCalif").innerHTML = m.mazosCalif.map((d) => {
+    const iconos = (d.cartas ?? []).map((c) => {
+      const base = c.replace(/ \((Evo|Héroe)\)$/, "");
+      const entry = cat.get(base);
+      const nombre = entry ? (LANG === "es" ? entry.es : entry.en) : base;
+      return entry ? `<img class="mc-ico" src="${entry.icono}" alt="${nombre}" loading="lazy" title="${nombre}">` : `<span class="mc-ico mc-falta">?</span>`;
+    }).join("");
+    const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
+    return `<div class="mc-item">
+      <div class="mc-letra ${letraCls}">${d.letra}</div>
+      <div class="mc-datos">
+        <div class="mc-cartas">${iconos}</div>
+        <div class="mc-stats">
+          <span>${d.wr} % wr</span>
+          <span class="muted">${d.n}p</span>
+          <span class="muted">${t("IC", "CI")} ${d.ic[0]}-${d.ic[1]} %</span>
+          ${d.elxMedia !== null ? `<span class="muted">${t("elx", "elx")} ${d.elxMedia}</span>` : ""}
+        </div>
+      </div>
+      <div class="mc-nota">${d.nota}</div>
+    </div>`;
+  }).join("") || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
 }
 
 function pintarNuevos() {
@@ -230,6 +255,7 @@ function pintarNuevos() {
   pintarPosicion(m.porPosicion);
   pintarMatchups($("pesadillas"), m.pesadillas);
   pintarMatchups($("fortalezas"), m.fortalezas);
+  pintarMazosCalif();
 }
 
 function verPestana(cual) {

@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=34";
+import { t } from "./i18n.js?v=37";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -13,6 +13,10 @@ export function fecha(s) {
   return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5], +m[6]));
 }
 
+function stddev(xs) {
+  const m = xs.reduce((a, b) => a + b, 0) / xs.length;
+  return Math.sqrt(xs.reduce((a, x) => a + (x - m) ** 2, 0) / xs.length);
+}
 const media = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 const pad = (n) => String(n).padStart(2, "0");
 export const dia = (d) => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}`;
@@ -160,6 +164,75 @@ export function modelo(data, mio = true) {
   }
   const pctCambioMazo = rachasTotales >= 2 ? Math.round((100 * cambiosTrasRacha) / rachasTotales) : null;
 
+  // calificación de mazos: winrate, control de elixir, consistencia, resistencia al cierre, cobertura
+  const porMazo = {};
+  for (const p of ps) { (porMazo[p.mazo] ??= []).push(p); }
+  const mazosCalif = Object.entries(porMazo)
+    .filter(([, arr]) => arr.length >= 5)
+    .map(([mazo, arr]) => {
+      const n = arr.length;
+      const vic = arr.filter((p) => p.victoria).length;
+      const wr = Math.round((100 * vic) / n);
+
+      // intervalo de confianza Wilson 95 %
+      const z = 1.96, phat = vic / n;
+      const den = 1 + z * z / n;
+      const centro = (phat + z * z / (2 * n)) / den;
+      const margen = (z * Math.sqrt(phat * (1 - phat) / n + z * z / (4 * n * n))) / den;
+      const ic = [Math.round(100 * Math.max(0, centro - margen)), Math.round(100 * Math.min(1, centro + margen))];
+
+      // control de elixir (normalizado por costo promedio si se conoce)
+      const elxArr = arr.map((p) => p.elixir_desperdiciado).filter((x) => x !== null);
+      const elxMedia = elxArr.length ? elxArr.reduce((a, b) => a + b, 0) / elxArr.length : null;
+
+      // consistencia: desviación del winrate en bloques de 10
+      const bloques = [];
+      for (let i = 0; i + 9 < n; i += 10) {
+        const bl = arr.slice(i, i + 10);
+        bloques.push(bl.filter((p) => p.victoria).length / bl.length);
+      }
+      const consis = bloques.length >= 2
+        ? 1 - Math.min(1, stddev(bloques) * 2)
+        : null;
+
+      // resistencia al cierre: % de derrotas que fueron por 1 corona
+      const derrotas = arr.filter((p) => !p.victoria && !p.rendicion);
+      const cerradas = derrotas.filter((p) => {
+        const [a, b] = p.coronas.split("-").map(Number);
+        return Math.abs(a - b) <= 1;
+      });
+      const resCierre = derrotas.length >= 3 ? cerradas.length / derrotas.length : null;
+
+      // cobertura: contra cuántos mazos rivales distintos gana más del 50 %
+      const vsRival = {};
+      for (const p of arr) {
+        const riv = (p.mazo_rival ?? []).sort().join(",");
+        if (riv) { vsRival[riv] ??= { n: 0, v: 0 }; vsRival[riv].n++; if (p.victoria) vsRival[riv].v++; }
+      }
+      const rivales5 = Object.values(vsRival).filter((x) => x.n >= 2);
+      const cobertura = rivales5.length >= 3
+        ? rivales5.filter((x) => x.v / x.n > 0.5).length / rivales5.length
+        : null;
+
+      // nota compuesta (1-10): pesos wr 35%, elixir 25%, consistencia 20%, cierre 10%, cobertura 10%
+      const nWr = wr / 100;
+      const nElx = elxMedia !== null ? Math.max(0, 1 - elxMedia / 10) : 0.5;
+      const nCon = consis ?? 0.5;
+      const nCie = resCierre ?? 0.5;
+      const nCob = cobertura ?? 0.5;
+      const nota = Math.round((nWr * 0.35 + nElx * 0.25 + nCon * 0.20 + nCie * 0.10 + nCob * 0.10) * 10 * 10) / 10;
+      const letra = nota >= 8.5 ? "S" : nota >= 7 ? "A" : nota >= 5.5 ? "B" : nota >= 4 ? "C" : "D";
+
+      return {
+        mazo, cartas: arr[0].mi_mazo, n, wr, ic, elxMedia: elxMedia !== null ? Math.round(elxMedia * 10) / 10 : null,
+        consistencia: consis !== null ? Math.round(consis * 100) : null,
+        resCierre: resCierre !== null ? Math.round(resCierre * 100) : null,
+        cobertura: cobertura !== null ? Math.round(cobertura * 100) : null,
+        nota, letra,
+      };
+    })
+    .sort((a, b) => b.nota - a.nota);
+
   // pesadillas y fortalezas: cartas del rival con más partidas, ordenadas por winrate
   const cuentaCartas = {};
   for (const p of ps) for (const c of (p.mazo_rival ?? [])) {
@@ -176,7 +249,7 @@ export function modelo(data, mio = true) {
   const pesadillas = matchups.filter((x) => x.wr < 45).slice(0, 8);
   const fortalezas = matchups.filter((x) => x.wr > 55).sort((a, b) => b.wr - a.wr).slice(0, 8);
 
-  return { ps, todas, resumen, winrate, elixir, mediaElixir, mediana, iqr, limite, elixirVictorias, elixirDerrotas, elxTendencia, franjas, tasaCerrada, porPosicion, pctCambioMazo, pesadillas, fortalezas, estado: estado(ps, mio), horas: porHora(validas) };
+  return { ps, todas, resumen, winrate, elixir, mediaElixir, mediana, iqr, limite, elixirVictorias, elixirDerrotas, elxTendencia, franjas, tasaCerrada, porPosicion, pctCambioMazo, pesadillas, fortalezas, mazosCalif, estado: estado(ps, mio), horas: porHora(validas) };
 }
 
 // Mensaje principal: titular corto, consejo y porcentaje para la barra de elixir.
