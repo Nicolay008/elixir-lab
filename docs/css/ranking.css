@@ -66,3 +66,15 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
 .pie-legal { margin: 0; font-size: .72rem; opacity: .85; line-height: 1.4; }
 
 .pie-legal a{color:var(--elixir,#b44fd9);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+
+/* Ranking v68: rating con medalla tenue y columnas fijas en móvil */
+.ranking-rating{display:inline-flex;align-items:center;justify-content:flex-end;gap:.25rem;font-variant-numeric:tabular-nums}
+.ranking-medalla{width:12px;height:12px;flex:none;opacity:.5}
+@media (max-width:600px){
+  .ranking-fila{grid-template-columns:2rem minmax(0,1fr) 5rem 1.1rem;grid-template-rows:auto auto;column-gap:6px;row-gap:2px;align-items:center}
+  .ranking-puesto{grid-column:1;grid-row:1;font-size:1rem}
+  .ranking-jugador{grid-column:2;grid-row:1;min-width:0}
+  .ranking-rating{grid-column:3;grid-row:1;justify-self:end;font-size:15px}
+  .ranking-mov{grid-column:4;grid-row:1;justify-self:center}
+  .ranking-clan{grid-column:2/5;grid-row:2;text-align:left;font-size:11px;opacity:.7}
+}

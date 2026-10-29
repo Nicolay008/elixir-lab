@@ -1,5 +1,5 @@
-import { iniciarBarra } from './barra.js?v=60';
-import { t } from './i18n.js?v=60';
+import { iniciarBarra } from './barra.js?v=62';
+import { t } from './i18n.js?v=62';
 
 const PASO = 25;   // filas por vez
 // copiar: portapapeles. Copiar en el juego: en el móvil abre el juego en la misma pestaña (el enlace caduca); en PC, en otra pestaña, donde el juego muestra el QR
@@ -54,9 +54,10 @@ function enlaceMazo(deck) {
 function antiguedad(partidaAt) {
   if (!partidaAt) return '';
   const dias = Math.floor((Date.now() - new Date(partidaAt)) / 86400000);
-  if (dias === 0) return 'Jugado hoy';
-  if (dias === 1) return 'Jugado ayer';
-  return dias > 3 ? `Hace ${dias} días · posiblemente desactualizado` : `Hace ${dias} días`;
+  // días desde la última partida del jugador (no es la antigüedad de los datos)
+  if (dias === 0) return t('Jugó hoy', 'Played today');
+  if (dias === 1) return t('Jugó ayer', 'Played yesterday');
+  return t(`Última partida hace ${dias} días`, `Last match ${dias} days ago`);
 }
 
 async function ultimaFoto(locationId) {
@@ -117,6 +118,9 @@ function renderMazo(m) {
     </article>`;
 }
 
+// medalla tenue junto al rating (son las medallas de Senda de Leyendas)
+const ICONO_MEDALLA = '<svg class="ranking-medalla" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.6 13.2 L7 21 L12 19 L17 21 L15.4 13.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+
 function renderFilas(filas, mazosPorTag) {
   return filas.map(f => {
     const fila = `
@@ -124,7 +128,7 @@ function renderFilas(filas, mazosPorTag) {
       <span class="ranking-puesto">${f.puesto}</span>
       <span class="ranking-mov">${pintarMovimiento(f.cambio)}</span>
       <span class="ranking-jugador"><a href="jugador.html?tag=${encodeURIComponent(f.tag)}">${f.nombre}</a></span>
-      <span class="ranking-rating">${f.rating}</span>
+      <span class="ranking-rating">${f.rating}${ICONO_MEDALLA}</span>
       <span class="ranking-clan" title="${f.motivo ?? ''}">${f.clan ?? ''}</span>
     </div>`;
     const m = mazosPorTag[f.tag];
