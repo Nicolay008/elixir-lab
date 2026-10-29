@@ -436,3 +436,24 @@ footer a{color:inherit}
 .meta-proy { margin: .4rem 0; padding-left: 1.1rem; }
 .meta-linea { margin: .3rem 0; }
 .meta-etiqueta { font-weight: 700; margin-right: .3rem; }
+
+/* Meta v51: acordeón, vía de escalones, mazo en iconos */
+.meta-det > summary { cursor: pointer; list-style: none; display: flex; gap: .6rem; align-items: baseline; flex-wrap: wrap; }
+.meta-det > summary::-webkit-details-marker { display: none; }
+.meta-resumen { opacity: .75; font-size: .85rem; }
+.segs { display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3px; margin: .4rem 0; }
+.seg { height: 10px; border-radius: 4px; background: var(--borde, #2a2f3a); }
+.seg.lleno { background: var(--elixir, #b44fd9); opacity: .55; }
+.seg.actual { background: var(--elixir, #b44fd9); outline: 2px solid var(--elixir, #b44fd9); outline-offset: 2px; }
+.segs.manual .seg.actual { background: transparent; border: 2px dashed var(--elixir, #b44fd9); outline: none; }
+.via-info { display: flex; align-items: center; gap: .5rem; font-size: .85rem; }
+.via-origen { opacity: .7; font-style: italic; }
+.lapiz { background: none; border: 1px solid var(--borde, #2a2f3a); border-radius: 6px; padding: .15rem .3rem; cursor: pointer; color: inherit; }
+.meta-select { font: inherit; margin-top: .3rem; padding: .15rem .35rem; border-radius: 6px; }
+.barra-meta, .barra-wr { display: block; height: 6px; border-radius: 3px; background: var(--borde, #2a2f3a); overflow: hidden; }
+.barra-meta > span, .barra-wr > span { display: block; height: 100%; background: var(--elixir, #b44fd9); }
+.rec { margin: .5rem 0; }
+.rec-cartas { display: flex; flex-wrap: wrap; gap: .25rem; margin: .3rem 0; }
+.mz-ico img { width: 28px; height: 28px; }
+.rec-wr { display: flex; align-items: center; gap: .5rem; font-size: .85rem; }
+.rec-wr .barra-wr { width: 90px; flex-shrink: 0; }
