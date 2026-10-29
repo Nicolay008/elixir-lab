@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=53";
-import { pintarMeta } from "./meta.js?v=53";
-import { modelo, filtrarModo } from "./stats.js?v=53";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=53";
-import { reloj } from "./clock.js?v=53";
-import { partidas } from "./partidas.js?v=53";
+import { consultar, seguir } from "./api.js?v=56";
+import { pintarMeta } from "./meta.js?v=56";
+import { modelo, filtrarModo } from "./stats.js?v=56";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=56";
+import { reloj } from "./clock.js?v=56";
+import { partidas } from "./partidas.js?v=56";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=53";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=53";
-import * as seguidos from "./seguidos.js?v=53";
-import { ICONOS, escudoLiga } from "./iconos.js?v=53";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=56";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=56";
+import * as seguidos from "./seguidos.js?v=56";
+import { ICONOS, escudoLiga } from "./iconos.js?v=56";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -29,7 +29,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=53";
+import { iniciarBarra } from "./barra.js?v=56";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo

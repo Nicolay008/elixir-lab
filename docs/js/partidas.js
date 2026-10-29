@@ -1,7 +1,7 @@
 // Lista de partidas: cabecera, mazos y un desplegable con la comparación cara a cara.
-import { t, LANG } from "./i18n.js?v=53";
-import { dia, hora } from "./stats.js?v=53";
-import { ICONOS } from "./iconos.js?v=53";
+import { t, LANG } from "./i18n.js?v=56";
+import { dia, hora } from "./stats.js?v=56";
+import { ICONOS } from "./iconos.js?v=56";
 
 let catalogo = null;
 async function cargarCatalogo() {
