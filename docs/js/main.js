@@ -1,14 +1,14 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=46";
-import { modelo, filtrarModo } from "./stats.js?v=46";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=46";
-import { reloj } from "./clock.js?v=46";
-import { partidas } from "./partidas.js?v=46";
+import { consultar, seguir } from "./api.js?v=47";
+import { modelo, filtrarModo } from "./stats.js?v=47";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=47";
+import { reloj } from "./clock.js?v=47";
+import { partidas } from "./partidas.js?v=47";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=46";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=46";
-import * as seguidos from "./seguidos.js?v=46";
-import { ICONOS, escudoLiga } from "./iconos.js?v=46";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=47";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=47";
+import * as seguidos from "./seguidos.js?v=47";
+import { ICONOS, escudoLiga } from "./iconos.js?v=47";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -28,7 +28,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=46";
+import { iniciarBarra } from "./barra.js?v=47";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -297,37 +297,47 @@ function pintarVistaMazos() {
     const opacidad = Math.max(0.3, Math.min(1, (d.ic[1] - d.ic[0] < 30) ? 1 : (d.ic[1] - d.ic[0] < 50) ? 0.7 : 0.4));
     const wrColor = d.wr >= 55 ? "ok" : d.wr >= 45 ? "mid" : "bad";
     return `<div class="mc-item" data-idx="${idx}">
-      <div class="mc-letra ${letraCls}">${d.letra}</div>
-      <div class="mc-cartas">${iconos}</div>
-      <div class="mc-barra-wrap"><div class="mc-barra ${wrColor}" style="width:${d.wr}%;opacity:${opacidad}"></div></div>
-      <span class="mc-wr">${d.wr} %</span>
-      <span class="mc-n">${d.n}p</span>
+      <div class="mc-fila1">
+        <div class="mc-letra ${letraCls}">${d.letra}</div>
+        <div class="mc-cartas">${iconos}</div>
+        <svg class="mc-flecha" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="mc-fila2">
+        <div class="mc-barra-wrap"><div class="mc-barra ${wrColor}" style="width:${d.wr}%;opacity:${opacidad}"></div></div>
+        <span class="mc-wr">${d.wr} %</span>
+        <span class="mc-n">${d.n}p</span>
+      </div>
     </div>
     <div class="mc-detalle" id="mcDetalle${idx}" hidden>
       <div class="mc-det-grid">
         <div><span class="mc-det-label">${t("Partidas", "Matches")}</span><span class="mc-det-val">${d.n}</span></div>
         <div><span class="mc-det-label">${t("Confianza", "Confidence")}</span><span class="mc-det-val">${d.ic[0]}-${d.ic[1]} %</span></div>
-        <div><span class="mc-det-label">${t("Elixir perdido", "Elixir leaked")}</span><span class="mc-det-val">${d.elxMedia ?? "–"}</span></div>
-        <div><span class="mc-det-label">${t("Consistencia", "Consistency")}</span><span class="mc-det-val">${d.consistencia !== null ? d.consistencia + " %" : "–"}</span></div>
-        <div><span class="mc-det-label">${t("Cerradas", "Close games")}</span><span class="mc-det-val">${d.resCierre !== null ? d.resCierre + " %" : "–"}</span></div>
-        <div><span class="mc-det-label">${t("Cobertura", "Coverage")}</span><span class="mc-det-val">${d.cobertura !== null ? d.cobertura + " %" : "–"}</span></div>
+        <div><span class="mc-det-label">${t("Elixir perdido", "Elixir leaked")}</span><span class="mc-det-val">${d.elxMedia ?? "\u2013"}</span></div>
+        <div><span class="mc-det-label">${t("Consistencia", "Consistency")}</span><span class="mc-det-val">${d.consistencia !== null ? d.consistencia + " %" : "\u2013"}</span></div>
+        <div><span class="mc-det-label">${t("Cerradas", "Close games")}</span><span class="mc-det-val">${d.resCierre !== null ? d.resCierre + " %" : "\u2013"}</span></div>
+        <div><span class="mc-det-label">${t("Cobertura", "Coverage")}</span><span class="mc-det-val">${d.cobertura !== null ? d.cobertura + " %" : "\u2013"}</span></div>
         <div><span class="mc-det-label">${t("Nota", "Score")}</span><span class="mc-det-val">${d.nota}</span></div>
       </div>
+      <button class="mc-filtrar" type="button" data-mazo="${idx}">${t("Ver estadísticas de este mazo", "View stats for this deck")}</button>
     </div>`;
   }).join("");
   $("vistaMazos").innerHTML = html || `<p class="muted">${t("Menos de 5 partidas por mazo.", "Less than 5 matches per deck.")}</p>`;
   $("vistaMazos").querySelectorAll(".mc-item").forEach((el) => {
-    // tap to expand detail
     el.addEventListener("click", () => {
       const det = $("mcDetalle" + el.dataset.idx);
-      det.hidden = !det.hidden;
+      const abierto = !det.hidden;
+      det.hidden = abierto;
+      el.classList.toggle("abierto", !abierto);
     });
-    // long press or double tap to filter by this deck
-    el.addEventListener("dblclick", () => {
-      const d = m.mazosCalif[parseInt(el.dataset.idx)];
+  });
+  $("vistaMazos").querySelectorAll(".mc-filtrar").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const d = m.mazosCalif[parseInt(btn.dataset.mazo)];
       if (!d) return;
-      mazoFiltro = mazoFiltro === d.mazo ? null : d.mazo;
+      mazoFiltro = d.mazo;
       pintarChipMazo();
+      verPestana("estadisticas");
       if (ultimo) pintar(ultimo);
     });
   });
