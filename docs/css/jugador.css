@@ -378,7 +378,7 @@ footer a{color:inherit}
 .nav-grafica[hidden]{display:none}
 
 /* ===== Pestaña Mazos: vista compacta con desplegable ===== */
-#vistaMazos{display:flex;flex-direction:column;gap:.25rem}
+#vistaMazos:not([hidden]){display:flex;flex-direction:column;gap:.25rem}
 .mc-item{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;border-radius:.75rem;background:var(--surface);cursor:pointer;transition:background .15s}
 .mc-item:hover{background:color-mix(in srgb,var(--surface) 60%,var(--elixir))}
 .mc-letra{font-family:'Lilita One',sans-serif;font-size:1.4rem;width:1.6rem;text-align:center;flex:none;line-height:1}
