@@ -519,6 +519,18 @@ fieldset.folded .desc{display:none}
 .x-link{display:inline-flex;align-items:center;gap:.35rem;color:inherit;font-weight:800;text-decoration:none}
 .x-link:hover{text-decoration:underline}
 .x-ico{flex:none}
+
+/* Diálogo Acerca de v64: texto justificado, aviso legal y autoría en píldora */
+dialog#about.ab{text-align:justify;hyphens:auto;-webkit-hyphens:auto;line-height:1.5}
+dialog#about.ab h2,dialog#about.ab h3{text-align:left}
+dialog#about.ab h2{text-align:center;margin-bottom:.75rem}
+dialog#about.ab ul.next li{text-align:justify}
+dialog#about.ab .fine.legal{margin:1rem 0 0;padding-top:.75rem;border-top:1px solid var(--line);font-size:.72rem;text-align:justify}
+dialog#about.ab .studio{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:1.1rem 0 .8rem;text-align:center;font-size:.85rem;color:var(--muted)}
+dialog#about.ab .studio .x-link{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;border:1.5px solid var(--elixir);border-radius:999px;color:var(--ink);font-weight:800;font-size:.95rem;text-decoration:none;transition:background .15s}
+dialog#about.ab .studio .x-link:hover{background:color-mix(in srgb,var(--elixir) 18%,transparent);text-decoration:none}
+dialog#about.ab .studio .x-ico{width:14px;height:14px}
+dialog#about.ab #aboutClose{display:block;margin:1rem auto 0}
 </style>
 </head>
 <body>
@@ -875,7 +887,7 @@ fieldset.folded .desc{display:none}
     </div>
   </div>
 </main>
-<dialog id="about">
+<dialog id="about" class="ab">
   <h2 data-en="About Elixir Lab">Acerca de Elixir Lab</h2>
   <p data-en="Analyze your real matches and train what matters most in them. It started as a way to study my own matches; now it’s for the whole community.">Analiza tus partidas reales y entrena lo que más pesa en ellas. Nació para estudiar mis propias partidas; ahora es para toda la comunidad.</p>
   <h3 data-en="What you can do">Qué puedes hacer</h3>
@@ -887,6 +899,7 @@ fieldset.folded .desc{display:none}
   <h3 data-en="Want to contribute?">¿Quieres colaborar?</h3>
   <p data-en="Report bugs or suggest ideas in the repository’s &lt;a href=&quot;https://github.com/Nicolay008/elixir-lab/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Issues&lt;/a&gt;, or improve the code with a pull request. Every bit helps, and if it’s useful to you, a ⭐ on GitHub helps more people find it.">Reporta errores o propón ideas en la sección <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> del repositorio, o mejora el código con un pull request. Toda ayuda suma, y si te sirve, una ⭐ en GitHub ayuda a que más gente lo encuentre.</p>
   <p class="fine" data-en="&lt;b&gt;Your data:&lt;/b&gt; Clash Royale matches are public in the game’s API. When you follow a tag, we store its history, which will be visible to anyone who looks up that tag. If nobody follows a tag for 6 months, its history is deleted automatically.&lt;br&gt;Is your tag followed and you’d rather your history not be stored? Ask in &lt;a href=&quot;https://github.com/Nicolay008/elixir-lab/issues&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Issues&lt;/a&gt; and we’ll remove it."><b>Tus datos:</b> las partidas de Clash Royale son públicas en la API del juego. Al seguir un tag, guardamos su historial, que será visible para quien consulte ese tag. Si nadie sigue un tag durante 6 meses, su historial se borra automáticamente.<br>¿Tu tag está seguido y prefieres que no se guarde tu historial? Pídelo en <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> y lo retiramos.</p>
+  <p class="fine legal" data-en="Elixir Lab is unofficial fan content, not endorsed by Supercell. For more information see Supercell’s Fan Content Policy: &lt;a href=&quot;https://www.supercell.com/fan-content-policy&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;www.supercell.com/fan-content-policy&lt;/a&gt;.">Este material no es oficial y no está respaldado por Supercell. Para más información, consulta la política de contenido de fans de Supercell: <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener">www.supercell.com/fan-content-policy</a>.</p>
   <p class="studio" data-en="Developed by &lt;a href=&quot;https://x.com/NickolayPaul&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot; class=&quot;x-link&quot;&gt;&lt;svg class=&quot;x-ico&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;14&quot; height=&quot;14&quot; aria-hidden=&quot;true&quot;&gt;&lt;path d=&quot;M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z&quot; fill=&quot;currentColor&quot;/&gt;&lt;/svg&gt;NickolayPaul&lt;/a&gt;">Desarrollado por <a href="https://x.com/NickolayPaul" target="_blank" rel="noopener" class="x-link"><svg class="x-ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>NickolayPaul</a></p>
   <button class="btn" id="aboutClose" data-en="Close">Cerrar</button>
 </dialog>
