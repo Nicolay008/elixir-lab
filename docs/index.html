@@ -538,6 +538,12 @@ html:not(.en) .en{display:none}
 dialog#about.ab a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 dialog#about.ab .studio .x-link{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1.05rem;border:2px solid var(--elixir);border-radius:999px;color:var(--elixir);font-weight:800;font-size:.95rem;text-decoration:none;cursor:pointer}
 dialog#about.ab .studio .x-link:hover,dialog#about.ab .studio .x-link:focus-visible{background:color-mix(in srgb,var(--elixir) 18%,transparent)}
+
+/* Pie v66 */
+.pie{margin:1.5rem auto 1.25rem;max-width:36rem;padding:0 1rem;text-align:center;font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:.5rem;align-items:center}
+.pie-acerca{font:inherit;font-weight:800;color:var(--elixir);background:none;border:1.5px solid currentColor;border-radius:999px;padding:.35rem .9rem;cursor:pointer;text-decoration:none}
+.pie-legal{margin:0;font-size:.72rem;line-height:1.4;opacity:.9}
+.pie-legal a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -921,7 +927,7 @@ dialog#about.ab .studio .x-link:hover,dialog#about.ab .studio .x-link:focus-visi
 </dialog>
 <footer class="pie">
   <button class="pie-acerca" id="aboutOpen" type="button" data-en="About Elixir Lab · Contribute">Acerca de Elixir Lab · Colabora</button>
-  <p class="pie-legal" data-en="Elixir Lab is unofficial fan content, not endorsed by Supercell. &lt;a href=&quot;https://www.supercell.com/fan-content-policy&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Fan Content Policy&lt;/a&gt;.">Elixir Lab es contenido no oficial y no está respaldado por Supercell. <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener">Política de contenido de fans</a>.</p>
+  <p class="pie-legal"><span data-en="Elixir Lab is unofficial fan content, not endorsed by Supercell.">Elixir Lab es contenido no oficial y no está respaldado por Supercell.</span> <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener" data-en="Fan Content Policy">Política de contenido de fans</a>.</p>
 </footer>
 
 <script>

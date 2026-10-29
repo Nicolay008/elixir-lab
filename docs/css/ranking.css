@@ -64,3 +64,5 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
 .pie-autor { margin: 0; }
 .pie-acerca { font: inherit; font-weight: 800; color: var(--elixir, #b44fd9); background: none; border: 1.5px solid currentColor; border-radius: 999px; padding: .35rem .9rem; cursor: pointer; text-decoration: none; }
 .pie-legal { margin: 0; font-size: .72rem; opacity: .85; line-height: 1.4; }
+
+.pie-legal a{color:var(--elixir,#b44fd9);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
