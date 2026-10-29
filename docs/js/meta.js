@@ -1,7 +1,7 @@
 // Sección Meta (solo perfil propio). La API manda la liga; dentro de la liga el escalón se cuenta
 // con tus partidas ranked desde una referencia guardada en este navegador, y se puede corregir a mano.
-import { t, LANG } from "./i18n.js?v=52";
-import { preparar, filtrarModo } from "./stats.js?v=52";
+import { t, LANG } from "./i18n.js?v=53";
+import { preparar, filtrarModo } from "./stats.js?v=53";
 
 const LIGA_META = 7;                                        // desde aquí se sube por medallas
 const ESCALONES = { 1: 11, 2: 11, 3: 11, 4: 10, 5: 10, 6: 10, 7: 0 };
@@ -138,6 +138,7 @@ export function pintarMeta(el, data, mio, tag, iconoFn = () => "") {
 
   const rec = recomendacion(rankingMazos(ps));
   const corte = mejorCorte(winratePorCorte(ps));
+  const mejor = rec.tipo === "vacio" ? null : rec.mazo;   // para la línea de proyección
   const proy = [];
   if (mejor) proy.push(`<li>${t("Sin disciplina", "Without discipline")} (${pct(mejor.wr)}): ${estimacion(restantes, mejor.wr)}</li>`);
   if (corte) proy.push(`<li>${t(`Con sesiones de ${corte.hasta} (${pct(corte.wr)})`, `With sessions of ${corte.hasta} (${pct(corte.wr)})`)}: ${estimacion(restantes, corte.wr)}</li>`);

@@ -457,3 +457,6 @@ footer a{color:inherit}
 .mz-ico img { width: 28px; height: 28px; }
 .rec-wr { display: flex; align-items: center; gap: .5rem; font-size: .85rem; }
 .rec-wr .barra-wr { width: 90px; flex-shrink: 0; }
+
+/* W/L bajo Elixir perdido: más pequeño y discreto que la cifra principal */
+.resumen dd.detalle-elixir{font-family:inherit;font-size:.62rem;font-weight:600;color:var(--muted);opacity:.7;margin-top:.15rem;letter-spacing:.02em}
