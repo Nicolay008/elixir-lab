@@ -165,7 +165,7 @@ function pintar(data) {
   $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
   $("estado").style.setProperty("--lleno", `${m.estado.lleno}%`);
-  pintarMeta($("meta"), data, !!esMio(), j.tag, (c) => iconoCarta(catalogo || new Map(), c).img);
+  pintarMeta($("meta"), data, !!esMio(), j.tag, (c) => { const u = iconoCarta(catalogo || new Map(), c).img; return u ? `<img src="${u}" alt="" loading="lazy">` : ""; });
   $("muestra").textContent = esMio()
     ? t(`Basadas en tus últimas ${m.resumen.partidas} partidas.`, `Based on your last ${m.resumen.partidas} matches.`)
     : t(`Basadas en sus últimas ${m.resumen.partidas} partidas.`, `Based on their last ${m.resumen.partidas} matches.`);
