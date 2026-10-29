@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=63";
+import { t } from "./i18n.js?v=64";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia

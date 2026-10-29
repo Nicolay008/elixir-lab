@@ -90,3 +90,24 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
   .ranking-fila{column-gap:.9rem}
   .ranking-clan{font-size:.78rem;font-weight:400;opacity:.65;letter-spacing:.01em}
 }
+
+/* Ranking v71: estructura tipo clasificación de juego */
+.ranking-cabecera{display:none}
+.ranking-fila{display:grid;grid-template-columns:2.4rem 1.6rem minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:.75rem;row-gap:.1rem;align-items:center;padding:.6rem .8rem}
+.ranking-puesto{grid-column:1;grid-row:1/3;justify-self:center;width:2.2rem;height:2.2rem;display:grid;place-items:center;border-radius:.6rem;background:var(--line);font-family:"Lilita One",sans-serif;font-size:1rem;color:var(--ink)}
+.ranking-fila.top1 .ranking-puesto{background:#f2c14e;color:#2a1a00}
+.ranking-fila.top2 .ranking-puesto{background:#cfd6de;color:#1d2530}
+.ranking-fila.top3 .ranking-puesto{background:#d08a4e;color:#2a1600}
+.ranking-mov{grid-column:2;grid-row:1/3;justify-self:center;font-size:.85rem}
+.ranking-jugador{grid-column:3;grid-row:1;min-width:0;font-size:.98rem}
+.ranking-clan{grid-column:3;grid-row:2;min-width:0;font-size:.78rem;opacity:.65;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ranking-rating{grid-column:4;grid-row:1/3;justify-self:end;font-family:"Lilita One",sans-serif;font-size:1.25rem;font-weight:400;text-align:right;color:var(--ink)}
+.ranking-mazo{padding:.2rem .8rem .8rem}
+
+@media (max-width:600px){
+  .ranking-fila{grid-template-columns:2rem 1.4rem minmax(0,1fr) auto;column-gap:.55rem;padding:.5rem .6rem}
+  .ranking-puesto{width:1.9rem;height:1.9rem;font-size:.9rem}
+  .ranking-jugador{font-size:.92rem}
+  .ranking-rating{font-size:1.05rem}
+  .ranking-clan{font-size:.7rem}
+}

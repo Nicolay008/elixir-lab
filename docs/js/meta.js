@@ -1,7 +1,7 @@
 // Sección Meta (solo perfil propio). La API manda la liga; dentro de la liga el escalón se cuenta
 // con tus partidas ranked desde una referencia guardada en este navegador, y se puede corregir a mano.
-import { t, LANG } from "./i18n.js?v=63";
-import { preparar, filtrarModo } from "./stats.js?v=63";
+import { t, LANG } from "./i18n.js?v=64";
+import { preparar, filtrarModo } from "./stats.js?v=64";
 
 const LIGA_META = 7;                                        // desde aquí se sube por medallas
 const ESCALONES = { 1: 11, 2: 11, 3: 11, 4: 10, 5: 10, 6: 10, 7: 0 };

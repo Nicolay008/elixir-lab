@@ -1,5 +1,5 @@
-import { iniciarBarra } from './barra.js?v=63';
-import { t } from './i18n.js?v=63';
+import { iniciarBarra } from './barra.js?v=64';
+import { t } from './i18n.js?v=64';
 
 const PASO = 25;   // filas por vez
 // copiar: portapapeles. Copiar en el juego: en el móvil abre el juego en la misma pestaña (el enlace caduca); en PC, en otra pestaña, donde el juego muestra el QR
@@ -124,7 +124,7 @@ const ICONO_MEDALLA = '<svg class="ranking-medalla" width="13" height="13" viewB
 function renderFilas(filas, mazosPorTag) {
   return filas.map(f => {
     const fila = `
-    <div class="ranking-fila">
+    <div class="ranking-fila${f.puesto <= 3 ? ` top${f.puesto}` : ''}">
       <span class="ranking-puesto">${f.puesto}</span>
       <span class="ranking-mov">${pintarMovimiento(f.cambio)}</span>
       <span class="ranking-jugador"><a href="jugador.html?tag=${encodeURIComponent(f.tag)}">${f.nombre}</a></span>
