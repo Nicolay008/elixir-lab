@@ -362,7 +362,7 @@ footer a{color:inherit}
 .tendencia.ok{color:var(--ok)}
 .tendencia.bad{color:var(--bad)}
 .tendencia.mid{color:var(--gold)}
-.detalle-elixir{font-size:.72rem;color:var(--muted);font-weight:600;margin-top:.15rem}
+.detalle-elixir{font-size:.6rem;color:var(--muted);font-weight:600;margin-top:.1rem;letter-spacing:.02em;opacity:.7}
 
 /* ===== Leyenda del mapa de calor ===== */
 .leyenda-calor{display:flex;align-items:center;gap:.5rem;margin-bottom:.6rem}
