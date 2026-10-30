@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entrenar · Elixir Lab</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%22-34%20-56%2068%20100%22%3E%3Cpath%20d%3D%22M-9%20-26%20L-9%20-6%20L-30%2034%20C-32%2039%20-29%2042%20-24%2042%20L24%2042%20C29%2042%2032%2039%2030%2034%20L9%20-6%20L9%20-26%20Z%22%20fill%3D%22none%22%20stroke%3D%22%23C03ED2%22%20stroke-width%3D%225%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M-20%2018%20L20%2018%20L28%2035%20C29%2038%2027%2040%2024%2040%20L-24%2040%20C-27%2040%20-29%2038%20-28%2035%20Z%22%20fill%3D%22%23D255E4%22/%3E%3Crect%20x%3D%22-14%22%20y%3D%22-32%22%20width%3D%2228%22%20height%3D%227%22%20rx%3D%222%22%20fill%3D%22%23C03ED2%22/%3E%3Cpath%20d%3D%22M0%20-54%20C4%20-48%207%20-44%207%20-40%20C7%20-36%204%20-34%200%20-34%20C-4%20-34%20-7%20-36%20-7%20-40%20C-7%20-44%20-4%20-48%200%20-54%20Z%22%20fill%3D%22%23E06AF0%22/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F3EEF8; --surface:#FFFFFF; --ink:#2A1846; --muted:#6B5A86;
+  --elixir:#B52FC7; --elixir-2:#E06AF0; --gold:#C98A12; --ok:#1E9A5A; --bad:#D2344A;
+  --line:#DCCFEA; --track:#E7DCF2;
+  --glass:rgba(255,255,255,.78); --glow:rgba(181,47,199,.28); --bg2:#E6D9F5; --hex:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2256%22%20height%3D%2297%22%20viewBox%3D%220%200%2056%2097%22%3E%3Cpath%20d%3D%22M28%200%20L56%2016%20L56%2048%20L28%2064%20L0%2048%20L0%2016%20Z%20M28%2064%20L28%2097%22%20fill%3D%22none%22%20stroke%3D%22rgba%28120%2C70%2C170%2C0.10%29%22%20stroke-width%3D%221%22/%3E%3C/svg%3E");
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#170D27; --surface:#241638; --ink:#F2EAFB; --muted:#B4A3CC;
+    --elixir:#D255E4; --elixir-2:#F08CFB; --gold:#F2C14E; --ok:#4FD18C; --bad:#FF6B7D;
+    --line:#3A2754; --track:#33224B;
+    --glass:rgba(36,22,56,.72); --glow:rgba(210,85,228,.38); --bg2:#2E1650; --hex:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2256%22%20height%3D%2297%22%20viewBox%3D%220%200%2056%2097%22%3E%3Cpath%20d%3D%22M28%200%20L56%2016%20L56%2048%20L28%2064%20L0%2048%20L0%2016%20Z%20M28%2064%20L28%2097%22%20fill%3D%22none%22%20stroke%3D%22rgba%28200%2C150%2C255%2C0.07%29%22%20stroke-width%3D%221%22/%3E%3C/svg%3E");
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#170D27; --surface:#241638; --ink:#F2EAFB; --muted:#B4A3CC;
+  --elixir:#D255E4; --elixir-2:#F08CFB; --gold:#F2C14E; --ok:#4FD18C; --bad:#FF6B7D;
+  --line:#3A2754; --track:#33224B;
+  --glass:rgba(36,22,56,.72); --glow:rgba(210,85,228,.38); --bg2:#2E1650; --hex:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2256%22%20height%3D%2297%22%20viewBox%3D%220%200%2056%2097%22%3E%3Cpath%20d%3D%22M28%200%20L56%2016%20L56%2048%20L28%2064%20L0%2048%20L0%2016%20Z%20M28%2064%20L28%2097%22%20fill%3D%22none%22%20stroke%3D%22rgba%28200%2C150%2C255%2C0.07%29%22%20stroke-width%3D%221%22/%3E%3C/svg%3E");
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background-color:var(--bg);background-image:var(--hex),radial-gradient(120% 70% at 50% -10%,var(--bg2),var(--bg) 70%);background-attachment:fixed;color:var(--ink);
+  font-family:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
+main{max-width:44rem;margin:0 auto;padding:4.5rem 1rem 2rem}
+h1,.display{font-family:"Lilita One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;font-weight:400;letter-spacing:.01em}
+h1{font-size:2rem;line-height:1.1;margin:.5rem 0 .25rem}
+p{margin:.25rem 0 1rem;color:var(--muted)}
+.hidden{display:none!important}
+
+/* setup */
+fieldset{border:0;padding:0;margin:0 0 1.25rem}
+legend{font-weight:800;margin-bottom:.5rem}
+.seg{display:flex;gap:.5rem;flex-wrap:wrap}
+.seg label{flex:1;min-width:4.5rem}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg span{display:block;text-align:center;padding:.65rem .5rem;border:2px solid var(--line);
+  border-radius:.75rem;background:var(--surface);font-weight:800;cursor:pointer}
+.seg input:checked+span{border-color:var(--elixir);color:var(--elixir)}
+.seg input:focus-visible+span{outline:3px solid var(--elixir-2);outline-offset:2px}
+.btn{display:block;width:100%;border:0;border-radius:1rem;padding:1rem;font:inherit;font-weight:800;
+  font-size:1.1rem;cursor:pointer;background:var(--elixir);color:#fff}
+.btn.ghost{background:transparent;color:var(--elixir);border:2px solid var(--elixir);margin-top:.75rem}
+.btn:focus-visible{outline:3px solid var(--elixir-2);outline-offset:3px}
+/* Empezar: botón con relieve, como los del juego, e icono de play */
+#start{display:flex;align-items:center;justify-content:center;gap:.55rem;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));text-shadow:0 1px 0 rgba(60,0,80,.35);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(60,0,80,.22),0 4px 0 color-mix(in srgb,var(--elixir) 60%,#000),0 8px 18px var(--glow);transition:transform .08s,box-shadow .08s}
+#start::before{content:"";width:1.75rem;height:1.75rem;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff'/%3E%3Cstop offset='1' stop-color='%23f1d6f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='16' cy='16' r='15' fill='rgba(60,0,80,.28)'/%3E%3Cpath d='M13 10.5 L22 16 L13 21.5 Z' fill='rgba(60,0,80,.35)' transform='translate(0 1.2)'/%3E%3Cpath d='M13 10.5 L22 16 L13 21.5 Z' fill='url(%23g)' stroke='url(%23g)' stroke-width='2' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat}
+#start:active:not(:disabled){transform:translateY(3px);box-shadow:inset 0 2px 0 rgba(255,255,255,.3),inset 0 -3px 0 rgba(60,0,80,.22),0 1px 0 color-mix(in srgb,var(--elixir) 60%,#000),0 4px 10px var(--glow)}
+#start:disabled{opacity:.6}
+.best{margin-top:1rem;font-weight:600;color:var(--muted)}
+
+/* game */
+.hud{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;margin-bottom:.75rem}
+.hud .streak{color:var(--gold)}
+.card{background:var(--surface);border:2px solid var(--line);border-radius:1.25rem;
+  padding:1.75rem 1rem 1.25rem;text-align:center;margin-bottom:1rem;transition:border-color .15s}
+.card.ok{border-color:var(--ok)} .card.bad{border-color:var(--bad)}
+.card .name{font-size:clamp(1.8rem,8vw,2.6rem);line-height:1.1;min-height:2.9rem}
+.card .rarity{color:var(--muted);font-weight:600;margin-top:.25rem}
+.feedback{min-height:1.6rem;font-weight:800;margin-top:.5rem}
+.feedback.ok{color:var(--ok)} .feedback.bad{color:var(--bad)}
+
+/* the elixir bar timer: the memorable element */
+.bar{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;margin:0 0 1.25rem;
+  padding:4px;border-radius:.75rem;background:var(--track)}
+.bar i{height:14px;border-radius:4px;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));
+  transition:opacity .12s linear}
+.bar i.off{opacity:.12}
+
+.drops{display:grid;grid-template-columns:repeat(3,1fr);gap:.75rem}
+.drop{position:relative;aspect-ratio:1/1.05;border:0;background:none;cursor:pointer;padding:0;
+  font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:2rem;color:#fff}
+.drop::before{content:"";position:absolute;inset:6% 14% 0;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:radial-gradient(circle at 35% 30%,var(--elixir-2),var(--elixir) 70%);
+  clip-path:polygon(50% 0,100% 62%,92% 85%,70% 100%,30% 100%,8% 85%,0 62%);
+  transition:transform .08s}
+.drop span{position:relative;top:.35em;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.drop:active::before{transform:scale(.93)}
+.drop:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px;border-radius:1rem}
+.drop.right::before{background:var(--ok)} .drop.wrong::before{background:var(--bad)}
+.drop:disabled{cursor:default}
+
+/* results */
+.score{font-size:3.5rem;line-height:1;color:var(--elixir);margin:.5rem 0}
+.stats{display:flex;gap:1.5rem;margin:0 0 1.25rem;font-weight:600;color:var(--muted)}
+.stats b{display:block;color:var(--ink);font-size:1.25rem}
+.misses{list-style:none;margin:0 0 1.25rem;padding:0;border-top:1px solid var(--line)}
+.misses li{display:flex;justify-content:space-between;gap:1rem;padding:.6rem 0;border-bottom:1px solid var(--line)}
+.misses .you{color:var(--bad);font-weight:800}
+.misses .real{color:var(--ok);font-weight:800}
+
+.hist h2{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:1.35rem;margin:1.5rem 0 .25rem}
+.hist p.note{margin:0 0 .5rem;font-size:.95rem}
+.tbl{width:100%;border-collapse:collapse;margin-bottom:.5rem;font-size:.95rem}
+.tbl th{text-align:left;font-weight:800;color:var(--muted);padding:.4rem .25rem;border-bottom:2px solid var(--line)}
+.tbl td{padding:.5rem .25rem;border-bottom:1px solid var(--line)}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tblwrap{overflow-x:auto}
+.tag-bad{color:var(--bad);font-weight:800}
+.tag-ok{color:var(--ok);font-weight:800}
+.link{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;padding:.75rem 0;display:block;margin:0 auto}
+.grade-sub{color:var(--muted);font-weight:600;margin:-.25rem 0 1rem}
+
+.feed{list-style:none;margin:0;padding:0;text-align:left;min-height:9rem}
+.feed li{padding:.45rem .25rem;border-bottom:1px solid var(--line);font-weight:600;animation:pop .25s ease}
+.feed li.start{font-weight:800}
+.feed li.time{color:var(--muted)}
+.feed li.play b{color:var(--elixir)}
+.feed.solo li:not(:last-child){display:none}
+.feed:empty{min-height:0}
+.feed.solo li{font-size:1.35rem;border:0;text-align:center;padding:1.5rem .25rem}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.phase{display:inline-block;font-weight:800;font-size:.85rem;padding:.2rem .6rem;border-radius:999px;
+  background:var(--track);color:var(--elixir);margin-bottom:.5rem}
+.nums{display:grid;grid-template-columns:repeat(6,1fr);gap:.45rem}
+.nbtn{border:0;border-radius:.8rem;padding:.6rem 0;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;
+  font-size:1.6rem;color:#fff;cursor:pointer;background:linear-gradient(180deg,var(--elixir-2),var(--elixir))}
+.nbtn:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
+.nbtn.right{background:var(--ok)} .nbtn.wrong{background:var(--bad)} .nbtn:disabled{cursor:default}
+.breakdown{list-style:none;margin:.75rem 0 1rem;padding:0;text-align:left;font-variant-numeric:tabular-nums}
+.breakdown li{display:flex;justify-content:space-between;gap:1rem;padding:.35rem 0;border-bottom:1px solid var(--line)}
+.breakdown .leak{color:var(--bad);font-weight:800}
+.hint{font-size:.95rem}
+.cimg{display:block;margin:0 auto .5rem;width:132px;height:158px;object-fit:contain}
+.mini{width:2.2em;height:2.6em;object-fit:contain;vertical-align:middle;margin:0 .35em}
+.feed.solo li .mini{width:4.5em;height:5.4em;display:block;margin:0 auto .35rem}
+footer{max-width:30rem;margin:0 auto;padding:0 1rem 1.5rem;font-size:.8rem;color:var(--muted);text-align:center}
+.loaderr{color:var(--bad);font-weight:800}
+.chip{display:inline-block;width:.8em;height:.8em;border-radius:.2em;margin:0 .35em 0 .15em;vertical-align:-.05em}
+.r-com{background:#7A93B8}.r-esp{background:#E8892B}.r-epi{background:#9B3FD1}
+.r-leg{background:linear-gradient(135deg,#3FC6C9,#E7D86A,#D86AC6)}.r-cam{background:#E2B22E;outline:2px solid #8A5A00}
+
+.banner{margin:0 0 1rem;padding:.6rem .9rem;border-radius:.75rem;font-weight:800;text-align:center}
+.banner.rec{background:var(--gold);color:#1b1030}
+.banner.first{background:var(--track);color:var(--ink)}
+.chart{margin:0 0 1.25rem}
+.chart svg{display:block;width:100%;height:auto}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .axis{fill:var(--muted);font-size:10px;font-family:Nunito,system-ui,sans-serif}
+.chart .recline{stroke-width:1.5;stroke-dasharray:5 4;opacity:.9}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.85rem;font-weight:700;color:var(--muted);margin-top:.35rem}
+.legend i{display:inline-block;width:.8em;height:.8em;border-radius:50%;margin-right:.35em;vertical-align:-.05em}
+
+.feed li.play{display:flex;align-items:center;gap:.25rem}
+.feed .mini{width:4em;height:4.8em}
+.feed.solo li.play{flex-direction:column;justify-content:center}
+.feed.solo li .mini{width:8.5em;height:10.2em;margin:0 auto .35rem}
+.feed li.play b{font-size:.9rem}
+.feed:not(.compact):not(.solo) li.play .qdrop.sm{margin-left:auto;margin-right:.5rem}
+.feed.noname li.play img + b{display:none}
+
+.ctrl{display:flex;justify-content:space-between;align-items:center;margin:-.25rem 0 .5rem}
+.ctrl .snd{text-decoration:none;font-size:1.1rem}
+.ctrl .link{padding:.3rem 0;margin:0;font-weight:700}
+
+.tagline{font-size:1.05rem;margin:0 0 1.25rem}
+.top{margin-bottom:1rem}
+/* inicio de la zona de entrenamiento */
+.train-h{display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;margin:0 0 .6rem}
+.train-h b{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;font-weight:400}
+.train-h span{color:var(--muted);font-size:.9rem;font-weight:600}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1.25rem}
+.mode{cursor:pointer}
+.mode input{position:absolute;opacity:0;pointer-events:none}
+.mode .box{display:flex;flex-direction:column;height:100%;padding:.6rem;border:2px solid var(--line);border-radius:1rem;background:var(--surface)}
+.mode input:checked+.box{border-color:var(--elixir);box-shadow:0 0 0 3px var(--track)}
+.mode input:focus-visible+.box{outline:3px solid var(--elixir-2);outline-offset:2px}
+.pv{display:flex;align-items:center;justify-content:center;gap:.3rem;height:84px;border-radius:.65rem;background:var(--track);margin-bottom:.55rem}
+.pv img{height:66px;width:auto}
+.pv.count img{height:46px}
+.pv .clock{font-size:1.1rem}
+.pv .pvname{font-weight:800;font-size:.72rem;overflow-wrap:anywhere;color:var(--ink);max-width:5.5em;text-align:center;line-height:1.1}
+.qdrop{display:grid;place-items:center;width:34px;height:40px;color:#fff;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.2rem;
+  background:radial-gradient(circle at 35% 30%,var(--elixir-2),var(--elixir) 70%);
+  clip-path:polygon(50% 0,100% 62%,92% 85%,70% 100%,30% 100%,8% 85%,0 62%);padding-top:.35rem}
+.mtitle{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.1rem;line-height:1.15}
+.mdesc{font-size:.85rem;color:var(--muted);line-height:1.3;margin-top:.15rem}
+.qdrop.sm{width:26px;height:31px;font-size:1rem;margin-left:.45rem;padding-top:.3rem;flex:none}
+.ix{display:inline-block;width:.72em;height:.88em;vertical-align:-.12em;margin:0 .1em;background:radial-gradient(circle at 35% 30%,var(--elixir-2),var(--elixir) 70%);clip-path:polygon(50% 0,100% 62%,92% 85%,70% 100%,30% 100%,8% 85%,0 62%)}
+.stages{display:grid;grid-template-columns:repeat(3,1fr)}
+.stages span{display:flex;flex-direction:column;align-items:center;gap:.2rem;font-size:.9rem;line-height:1.15}
+.stages span b{display:inline-grid;place-items:center;width:1.4em;height:1.4em;margin-right:.3em;border-radius:50%;background:var(--track);color:var(--elixir);font-size:.85em}
+.check{display:flex;align-items:center;gap:.55rem;font-weight:600;color:var(--muted);margin:0 0 1.25rem;cursor:pointer}
+.check input{width:1.15rem;height:1.15rem;accent-color:var(--elixir)}
+.lives-intro .challenge{display:block;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:1.15rem;margin-bottom:.25rem;color:var(--elixir)}
+.lives-intro{color:var(--ink);background:var(--track);border-radius:.8rem;padding:.7rem .85rem;margin:0 0 1.1rem;font-size:.95rem}
+.seg label{display:flex}
+.seg label>span{flex:1;display:flex;align-items:center;justify-content:center;text-align:center}
+.stages label>span{flex-direction:column}
+
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin:0 0 .75rem}
+#resumeBtn{width:auto;margin:0 auto .75rem;padding:.5rem 1.1rem;font-size:.95rem;border-width:1.5px;border-radius:999px}
+.badge{font:inherit;cursor:pointer;flex:1;text-align:center;padding:.5rem .25rem;border-radius:.8rem;background:var(--surface);border:2px solid var(--line);font-weight:800;font-size:.8rem;color:var(--muted);line-height:1.2}
+.badge .bi{display:block;font-size:1.5rem;filter:grayscale(1);opacity:.35}
+.badge .bi.sm{font-size:1rem;white-space:nowrap;line-height:1.5rem;letter-spacing:-.15em}
+.badge.on{border-color:var(--gold);color:var(--ink)}
+.badge.on .bi{filter:none;opacity:1}
+dialog#about{max-width:28rem;width:calc(100% - 2rem);border:2px solid var(--line);border-radius:1.25rem;background:var(--surface);color:var(--ink);padding:1.25rem 1.25rem 1rem}
+dialog#about::backdrop{background:rgba(10,4,20,.6)}
+dialog#about h2{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:1.5rem;margin:0 0 .5rem}
+dialog#about h3{font-size:1rem;margin:1rem 0 .25rem}
+dialog#about p{margin:.25rem 0 .5rem}
+dialog#about a{color:var(--elixir)}
+dialog#about ul.next{margin:.25rem 0 .5rem;padding-left:0;list-style:none}
+dialog#about ul.next li{margin:.3rem 0}
+dialog#about .studio{margin-top:1rem;font-size:.9rem}
+dialog#about .fine{margin-top:1rem;font-size:.75rem;line-height:1.4;color:var(--muted)}
+footer .link{display:block;margin:0 auto .5rem;font-size:.9rem}
+.top{display:none}
+.brand{display:flex;align-items:center;gap:.45rem}
+.brand .logo{width:1.05em;height:1.55em;flex:none;overflow:visible}
+.topbtns{display:flex;gap:.4rem}
+.top .langbtn,.top .snd{display:none}
+.langbtn{border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;font-size:.85rem;border-radius:999px;padding:.3rem .75rem;cursor:pointer}
+.badge-info{margin:-.25rem 0 .75rem}
+.desc{margin:.45rem 0 0;font-size:.92rem;min-height:1.4em}
+
+.edrops{display:inline-flex;gap:4px;margin-left:.6rem;vertical-align:middle}
+.edrop{display:inline-block;width:15px;height:18px;opacity:0;
+  background:radial-gradient(circle at 35% 30%,var(--elixir-2),var(--elixir) 70%);
+  clip-path:polygon(50% 0,100% 62%,92% 85%,70% 100%,30% 100%,8% 85%,0 62%);
+  animation:dropin .35s ease-out forwards}
+.edrop.lost{background:var(--muted);opacity:0}
+.feed.solo .edrop{width:20px;height:24px}
+@keyframes dropin{from{opacity:0;transform:translateY(-8px) scale(.5)}to{opacity:1;transform:none}}
+
+/* tarjetas de cristal */
+.mode .box,.seg span,.card,.badge,.lives-intro,.tbl,.misses{background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.mode input:checked+.box,.seg input:checked+span{box-shadow:0 0 0 1px var(--elixir),0 0 18px var(--glow)}
+.badge.on{box-shadow:0 0 14px rgba(242,193,78,.25)}
+/* cuentagotas de progreso */
+.pipette{margin:0 0 1rem}
+.pipette svg{display:block;width:100%;height:auto;overflow:visible}
+.pipette .pg-tube{fill:var(--glass);stroke:var(--line);stroke-width:2}
+.pipette .pg-bulb{fill:var(--elixir);opacity:.85}
+.pipette .pg-liquid{transition:width .45s ease}
+.pipette .pg-txt{font:800 14px Nunito,system-ui,sans-serif;fill:var(--ink)}
+
+/* lista compacta al preguntar: las jugadas pasan a fichas */
+.feed.compact{display:flex;flex-wrap:wrap;gap:.35rem;min-height:0}
+.feed.compact li{border:0;padding:.25rem .45rem;border-radius:.6rem;background:var(--track);font-size:.85rem;animation:none}
+.feed.compact li.start{flex-basis:100%;background:none;padding:0 0 .2rem}
+.feed.compact li.play{gap:.2rem}
+.feed.compact .mini{width:1.8em;height:2.2em;margin:0}
+.feed.compact li.play b{font-size:.75rem;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed.compact .qdrop.sm{width:20px;height:24px;font-size:.8rem;margin-left:.2rem}
+.feed.compact .edrops{margin-left:.3rem}
+.feed.compact .edrop{width:10px;height:12px;animation:none;opacity:1}
+.feed.compact .edrop.lost{opacity:.5}
+/* resumen ordenado: misma celda para cada carta, en el orden en que salieron */
+.feed.compact{display:grid;grid-template-columns:repeat(auto-fit,minmax(3.4rem,1fr));gap:.4rem;align-items:start}
+.feed.compact li.start{grid-column:1/-1}
+.feed.compact li.play{flex-direction:column;justify-content:flex-start;gap:.25rem;padding:.35rem .2rem;text-align:center}
+.feed.compact li.play b{display:none}
+.feed.compact .mini{width:2.6em;height:3.1em}
+.feed.compact .qdrop.sm{margin:0}
+.feed.compact li.time{grid-column:1/-1;text-align:center}
+
+/* selectores segmentados: un solo bloque con la opción elegida resaltada */
+.seg{gap:4px;padding:4px;border:1.5px solid var(--line);border-radius:1rem;background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.seg>label{min-width:0}
+.seg>label>span{border:0;border-radius:.75rem;background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;color:var(--muted);padding:.65rem .35rem;transition:background .15s,color .15s}
+.seg>label>input:checked+span{background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff;box-shadow:0 0 16px var(--glow)}
+.seg>label>input:focus-visible+span{outline:2px solid var(--elixir-2);outline-offset:1px}
+.seg.stages>label>input:checked+span b{background:rgba(255,255,255,.25);color:#fff}
+/* la opción elegida se marca sin competir con Empezar */
+.seg>label>input:checked+span{background:var(--track);color:var(--elixir);box-shadow:inset 0 0 0 2px var(--elixir)}
+.seg.stages>label>input:checked+span b{background:var(--elixir);color:#fff}
+/* reglas y explicaciones: plegadas, se abren al tocar */
+.rule{margin:0 0 1rem;color:var(--muted);font-size:.9rem}
+.rule summary{cursor:pointer;font-weight:700;list-style:none;display:inline-flex;align-items:center;gap:.35rem}
+.rule summary::-webkit-details-marker{display:none}
+.rule summary::after{content:"";width:.45em;height:.45em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-.15em);transition:transform .15s}
+.rule[open] summary::after{transform:rotate(-135deg) translateY(-.1em)}
+.rule summary:focus-visible{outline:2px solid var(--elixir-2);outline-offset:2px;border-radius:.3rem}
+.rule p{margin:.35rem 0 0;color:var(--ink)}
+.info-btn{margin-left:.35rem;border:0;background:none;padding:0 .2rem;font:inherit;font-weight:700;color:var(--muted);cursor:pointer;vertical-align:baseline}
+.info-btn[aria-expanded="true"]{color:var(--elixir)}
+.info-btn:focus-visible{outline:2px solid var(--elixir-2);outline-offset:2px;border-radius:.3rem}
+fieldset.folded .desc{display:none}
+/* tarjetas de modo: solo título e imagen; la explicación aparece al elegir el modo */
+.modes .mode .mdesc{display:none}
+/* carrusel 3D de modos: la tarjeta del centro al frente, las de los lados giradas y en penumbra */
+.modes{position:relative;display:flex;gap:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;
+  margin:0 -1rem .35rem;padding:.6rem 18% .9rem;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent);perspective:900px}
+.modes::-webkit-scrollbar{display:none}
+.modes .mode{flex:0 0 64%;scroll-snap-align:center;padding:0 .2rem}
+.modes .mode .box{height:100%;transform:rotateY(calc(var(--d,0) * -26deg)) scale(calc(1 - var(--a,0) * .14));opacity:calc(1 - var(--a,0) * .5);transform-origin:center;will-change:transform}
+.modes .mode .pv{height:118px}
+.modes .mode .pv img{height:86px}
+.modes .mode .pv.count img{height:60px}
+.modes .mode .pv.cyc img{height:54px}
+.modes .mode .mtitle{font-size:1.25rem}
+.modes .mode input:checked+.box{box-shadow:0 0 0 1px var(--elixir),0 10px 26px var(--glow)}
+.modes .mode.soon .box{border-style:dashed}
+.modes .mode.soon .mtitle{color:var(--muted)}
+.modes .mode.soon .conv{width:80%;max-width:150px}
+.modes .mode.soon.center .box{border-color:var(--muted)}
+#setup.on-decide .modes .mode input:checked+.box{border-color:var(--line);box-shadow:none}
+.cdots{display:flex;justify-content:center;gap:.4rem;margin:0 0 1rem}
+.cdots i{width:7px;height:7px;border-radius:4px;background:var(--line);transition:width .2s,background .2s}
+.cdots i.on{width:20px;background:var(--elixir)}
+.soon-note{margin:0 0 1rem;color:var(--muted)}
+#setup.on-decide #costOpts,#setup.on-decide #countOpts,#setup.on-decide #cycleOpts,#setup.on-decide #start,#setup.on-decide #resumeBtn,#setup.on-decide #practiceHard,#setup.on-decide #best{display:none!important}
+@media (prefers-reduced-motion:reduce){.modes .mode .box{transform:scale(calc(1 - var(--a,0) * .08))}}
+.mintro{margin:0 0 .9rem;font-size:1rem;font-weight:700;color:var(--ink)}
+.cfg-h{margin:1.1rem 0 .7rem;padding-top:.9rem;border-top:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;font-size:1.15rem}
+
+/* modo ciclo */
+.modes .mode.wide{grid-column:1/-1}
+.mode.wide .box{flex-direction:row;align-items:center;gap:.75rem}
+.mode.wide .pv{width:42%;flex:none;margin:0}
+.mode.wide .mtxt{display:flex;flex-direction:column}
+.pv.cyc{gap:.2rem}
+/* rango por habilidad: cada modo progresa por su cuenta */
+.rank{display:flex;align-items:center;gap:.3rem;margin-top:auto;padding-top:.5rem;font-size:.74rem;font-weight:800;color:var(--muted)}
+.rank i{width:16px;height:5px;border-radius:3px;background:var(--line)}
+.rank i.on{background:var(--gold)}
+.rank b{margin-left:.15rem;color:var(--ink);font-weight:800;white-space:nowrap}
+.rank.new b{color:var(--muted);font-weight:600}
+.mode.wide .rank{margin-top:.4rem}
+/* Decide: donde confluyen las tres habilidades */
+.decide{display:flex;align-items:center;gap:.75rem;margin:1.5rem 0 0;padding:.55rem .75rem;border:2px dashed var(--line);border-radius:1rem;opacity:.85}
+.decide .conv{width:96px;flex:none}
+.decide .mtxt{display:flex;flex-direction:column}
+.decide .mtitle{color:var(--muted)}
+/* Laboratorio de entrenamiento: busca tu perfil (lleva a jugador.html?tag=) */
+.lab{margin:0 0 1rem;padding:.7rem .75rem .75rem;border:2px solid var(--elixir);border-radius:1rem;background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 0 18px var(--glow)}
+.lab .lhead{display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem}
+.lab .spark{width:46px;height:28px;flex:none}
+.lab .mtxt{display:flex;flex-direction:column;min-width:0}
+.lab .mdesc{font-size:.82rem}
+.lab .lsearch{display:flex;gap:.45rem}
+.lab .lfield{flex:1;min-width:0;display:flex;align-items:center;border:2px solid var(--line);border-radius:.7rem;background:var(--surface)}
+.lab .lfield:focus-within{border-color:var(--elixir-2)}
+.lab .lfield b{padding:0 .1rem 0 .65rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;color:var(--elixir)}
+.lab .lfield input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:.6rem .5rem .6rem .15rem}
+.lab .lfield input::placeholder{color:var(--muted);font-weight:600;letter-spacing:0;text-transform:none}
+.lab button{flex:none;border:0;border-radius:.7rem;padding:0 1rem;font:inherit;font-weight:800;color:#fff;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));cursor:pointer}
+.lab button:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* Ranking: fila delgada bajo el Laboratorio, lleva a ranking.html */
+.rk-link{display:flex;align-items:center;gap:.65rem;margin:-.35rem 0 1.1rem;padding:.45rem .75rem;border-radius:.9rem;color:var(--ink);text-decoration:none}
+.rk-link:hover{background:var(--track)}
+.rk-link:focus-visible{outline:3px solid var(--elixir-2);outline-offset:2px}
+.rk-link .cup{width:30px;height:30px;flex:none}
+.rk-link .mtxt{display:flex;flex-direction:column;flex:1;min-width:0}
+.rk-link .mtitle{font-size:1rem}
+.rk-link .mdesc{font-size:.8rem}
+.rk-link .chev{width:14px;height:14px;flex:none;stroke:var(--muted)}
+.next-skill{margin-bottom:.6rem}
+.feed li.start{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem .6rem}
+.feed li.start .anc{font-weight:800}
+.ebar{display:inline-flex;gap:3px}
+.ebar i{width:13px;height:13px;border-radius:3px;background:var(--line);transition:background .12s}
+.ebar i.on{background:linear-gradient(var(--elixir-2),var(--elixir))}
+.feed li.start .ev{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.25rem;color:var(--elixir);min-width:1.3em}
+.feed.compact li.start{display:flex;padding:0 0 .2rem}
+.feed.compact .ebar i{width:9px;height:9px}
+.feed.compact li.start .ev{font-size:1rem}
+.anchor-tip{margin:.35rem 0 0;font-weight:700;color:var(--gold)}
+.hp.pre{opacity:.45;filter:saturate(.6);transition:opacity .3s}
+.hp.hit .cardf{animation:hit .45s ease}
+@keyframes hit{0%{transform:scale(1.25)}60%{transform:scale(.95)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.hp.hit .cardf{animation:none}}
+.hunt-ctx{font-size:.84rem;line-height:1.3;color:var(--muted);margin:.15rem 0 .35rem;text-align:left}
+.pv.cyc img{height:44px}
+.pv.cyc .qs{display:grid;place-items:center;width:30px;height:38px;border-radius:.4rem;background:var(--glass);border:1.5px solid var(--line);font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;color:var(--muted)}
+.cyc-card{padding:1rem .8rem}
+.cyc-label{text-align:left;font-size:.8rem;font-weight:800;color:var(--muted);margin:.35rem 0 .3rem}
+.cyc-deck{display:grid;grid-template-columns:repeat(8,1fr);gap:.25rem;margin-bottom:.4rem}
+.cyc-deck img{width:100%;aspect-ratio:5/6;object-fit:contain}
+.cyc-deck .nm,.cyc-row .nm{display:grid;place-items:center;aspect-ratio:5/6;border-radius:.4rem;background:var(--track);font-size:.55rem;font-weight:800;line-height:1.05;padding:2px;overflow:hidden}
+.cyc-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.4rem;perspective:600px}
+.slot{position:relative;aspect-ratio:5/6;border-radius:.6rem;background:var(--track);border:1.5px dashed var(--line);display:grid;place-items:center;
+  font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.6rem;color:var(--muted);overflow:hidden}
+.slot img{width:100%;height:100%;object-fit:contain}
+.slot.known{border-style:solid;border-color:var(--elixir)}
+.slot.target{box-shadow:0 0 0 3px var(--gold)}
+.slot.flip{animation:flip .45s ease}
+@keyframes flip{0%{transform:rotateY(90deg)}100%{transform:rotateY(0)}}
+.cyc-q{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.8rem 0 .2rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.35rem;line-height:1.2}
+.cyc-q img{width:3.2rem;height:3.8rem;object-fit:contain}
+.yn{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.yn .nbtn{font-size:1.5rem;padding:.9rem 0}
+
+/* ciclo v2: mano arriba, arena, jugadas recientes */
+.cyc-hand{display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,4fr);gap:.45rem;align-items:end}
+.nxw{display:flex;flex-direction:column;align-items:stretch;gap:.15rem;text-align:center}
+.nxw .cap{font-size:.7rem;font-weight:800;color:var(--muted)}
+.cyc-row4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem;perspective:600px}
+.cardf{position:relative;width:100%;aspect-ratio:5/6;transition:transform .2s,filter .2s}
+.cardf.face img{width:100%;height:100%;object-fit:contain;display:block}
+.cardf.face .nm{display:grid;place-items:center;width:100%;height:100%;border-radius:.55rem;background:var(--track);font-size:.62rem;font-weight:800;line-height:1.1;padding:3px;text-align:center}
+.cardf.back{display:grid;place-items:center;border-radius:.55rem;background:linear-gradient(180deg,#5B2D8C,#3A1A63);border:1.5px solid #8F5BC7;
+  color:#D9BFF5;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.5rem;box-shadow:inset 0 0 0 3px rgba(255,255,255,.06)}
+.cardf.empty{border-radius:.55rem;border:1.5px dashed var(--line);background:transparent}
+.cardf.lift{transform:translateY(-12px);filter:drop-shadow(0 8px 12px var(--glow))}
+.cardf.flip{animation:flip .45s ease}
+.cardf.target{border-radius:.6rem;box-shadow:0 0 0 3px var(--gold);filter:drop-shadow(0 0 10px rgba(242,183,5,.45))}
+.arena{position:relative;height:92px;margin:.7rem 0 .2rem;border:1.5px dashed var(--line);border-radius:.9rem;display:grid;place-items:center}
+.arena-lbl{position:absolute;top:.3rem;left:.6rem;font-size:.7rem;font-weight:800;color:var(--muted)}
+.arena .cardf{width:auto;height:76px}
+.arena .cardf.fall{animation:fall .45s cubic-bezier(.2,.8,.3,1)}
+@keyframes fall{0%{transform:translateY(-90px) scale(.85);opacity:0}100%{transform:none;opacity:1}}
+.rc{display:flex;flex-direction:column;align-items:center}
+.rc{min-width:0}
+.rc .cap{font-size:.62rem;font-weight:700;color:var(--muted);margin-top:.2rem;white-space:nowrap}
+.cyc-q img{border-radius:.4rem}
+
+/* ciclo v3: jerarquía — la mano es lo que se descubre */
+.hand-lbl{text-align:center;font-weight:800;font-size:1rem;margin:.1rem 0 .6rem}
+.hand-lbl b{color:var(--elixir-2)}
+.hand-big{gap:.5rem}
+.hand-big .cardf.back{font-size:2rem;box-shadow:inset 0 0 0 3px rgba(255,255,255,.06),0 0 18px var(--glow)}
+.clues{margin-top:1.1rem;padding-top:.7rem;border-top:1px solid var(--line)}
+.clues .cyc-label{text-align:center;font-size:.72rem}
+.clue-row{gap:.35rem}
+.clue-row .cardf{width:70%;margin:0 auto}
+.clue-row .cardf.back{font-size:1.1rem}
+.cardf.fall{animation:fall .45s cubic-bezier(.2,.8,.3,1)}
+.rc .cap.nx{color:var(--elixir-2)}
+.overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:1rem;background:rgba(10,4,20,.6);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.help-card{max-width:24rem;width:100%;text-align:left}
+.help-card h2{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-weight:400;margin:0 0 .8rem;text-align:center}
+.help-steps{list-style:none;padding:0;margin:0 0 1rem;display:grid;gap:.7rem}
+.help-steps li{display:flex;gap:.6rem;align-items:flex-start;line-height:1.35}
+.help-steps b{flex:none;display:grid;place-items:center;width:1.7rem;height:1.7rem;border-radius:50%;background:linear-gradient(180deg,var(--elixir-2),var(--elixir));color:#fff}
+.help-steps em{font-style:normal;font-weight:800;color:var(--elixir-2)}
+
+.help-hand{display:flex;align-items:flex-end;gap:.5rem;margin:.2rem 0 1rem}
+.hh-next{flex:0 0 42px;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.2rem;font-size:.6rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.hh-next>div{width:100%}
+.hh-cards{flex:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.35rem;padding-top:12px}
+.help-key{margin:0 0 1rem;padding:.6rem .75rem;border-radius:.7rem;background:var(--track);text-align:center;line-height:1.35}
+.help-key b{color:var(--elixir-2)}
+
+/* caza la carta */
+.seg.stages.five{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.seg.stages.five>label>span{padding:.55rem .2rem}
+.hunt-top{display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem}
+.hunt-target{flex:0 0 28%}
+.hunt-target .cardf{box-shadow:0 0 0 3px var(--gold);border-radius:.6rem;filter:drop-shadow(0 0 12px rgba(242,183,5,.4))}
+.hunt-info{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;min-width:0}
+.hunt-info .cyc-label{margin:0}
+.hunt-name{font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1.35rem;line-height:1.1}
+.pips{display:flex;gap:.3rem;margin-top:.2rem}
+.pips i{width:1.6rem;height:.55rem;border-radius:.3rem;background:var(--track);border:1px solid var(--line);transition:background .2s}
+.pips i.on{background:linear-gradient(90deg,var(--elixir-2),var(--elixir));border-color:transparent}
+.pips-lbl{font-size:.75rem;font-weight:800;color:var(--muted)}
+.hunt-tip{min-height:1.3em;text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);margin:.2rem 0 .5rem}
+.hunt-tip.warn{color:var(--bad)}
+.hunt-line{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.4rem}
+.hp{position:relative;border:0;background:none;padding:0;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:.15rem;font:inherit;color:inherit}
+.hp .tag{font-size:.6rem;font-weight:800;padding:.05rem .4rem;border-radius:999px;background:var(--track);color:var(--muted)}
+.hp.rival .tag{background:rgba(181,47,199,.18);color:var(--elixir-2)}
+.hp.me .cardf{opacity:.55;filter:grayscale(.5)}
+.hp.me .tag{background:rgba(63,169,245,.18);color:#3FA9F5}
+.hp.tgt .cardf{box-shadow:0 0 0 2.5px var(--gold);border-radius:.55rem}
+.hp.counted .cardf{box-shadow:0 0 0 2.5px var(--elixir-2);border-radius:.55rem}
+.hp .num{position:absolute;top:-.35rem;right:-.2rem;width:1.3rem;height:1.3rem;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:800;color:#fff;background:linear-gradient(180deg,var(--elixir-2),var(--elixir))}
+.hp.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.cnt{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
+.cnt .nbtn{font-size:1.5rem;padding:.8rem 0}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}.edrop{animation:none;opacity:1}}
+/* ===== Pantalla ancha: minijuegos en cuadrícula en vez de carrusel, imágenes más grandes ===== */
+@media (min-width:720px){
+  footer{max-width:44rem;margin:0 auto}
+  .modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(11.5rem,1fr));gap:.9rem;margin:0 0 1.25rem;padding:0;overflow:visible;scroll-snap-type:none;-webkit-mask-image:none;mask-image:none;perspective:none}
+  .modes .mode{flex:none;width:auto;padding:0}
+  .modes .mode .box{transform:none;opacity:1}
+  .modes .mode .pv{height:auto;min-height:150px}
+  .modes .mode .pv img{height:110px}
+  .modes .mode .pv.count img{height:80px}
+  .modes .mode .pv.cyc img{height:72px}
+  .modes .mode .mtitle{font-size:1.35rem}
+  .cdots{display:none}
+}
+
+/* ===== Barra fija (importada de jugador.css para index) ===== */
+.barra-fija{position:fixed;top:0;left:0;right:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
+  padding:calc(.45rem + env(safe-area-inset-top,0px)) max(1rem,env(safe-area-inset-right,0px)) .45rem max(1rem,env(safe-area-inset-left,0px));
+  background:var(--glass);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-bottom:1.5px solid var(--line)}
+.brand-mini{display:flex;align-items:center;gap:.35rem;font-family:"Lilita One","Arial Rounded MT Bold",sans-serif;font-size:1rem;color:var(--ink);text-decoration:none;flex:none}
+.logo-mini{width:.7rem;height:1.05rem;flex:none;overflow:visible}
+.barra-acciones{display:flex;align-items:center;gap:.4rem;flex:none}
+.barra-fija .idioma{font-size:.8rem;padding:.25rem .6rem;border:2px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:800;border-radius:999px;cursor:pointer}
+.subir{width:2rem;height:2rem;display:grid;place-items:center;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;cursor:pointer;padding:0}
+.subir[hidden]{display:none}
+@media (min-width:720px){.barra-fija{padding-left:max(1rem,calc((100vw - 44rem) / 2 + 1rem));padding-right:max(1rem,calc((100vw - 44rem) / 2 + 1rem))}}
+.barra-nav{display:flex;align-items:center;gap:.55rem;flex:none}
+.nav-link{display:flex;align-items:center;color:var(--muted);text-decoration:none;transition:color .15s;flex:none}
+.nav-link:hover{color:var(--ink)}
+.nav-link[aria-current="page"]{color:var(--elixir)}
+.nav-link[aria-current="page"] .nav-ico [fill-opacity]{fill-opacity:.35}
+.nav-ico{width:1.1rem;height:1.1rem;flex:none;display:block}
+
+
+.x-link{display:inline-flex;align-items:center;gap:.35rem;color:inherit;font-weight:800;text-decoration:none}
+.x-link:hover{text-decoration:underline}
+.x-ico{flex:none}
+
+/* Diálogo Acerca de v64: texto justificado, aviso legal y autoría en píldora */
+dialog#about.ab{text-align:justify;hyphens:auto;-webkit-hyphens:auto;line-height:1.5}
+dialog#about.ab h2,dialog#about.ab h3{text-align:left}
+dialog#about.ab h2{text-align:center;margin-bottom:.75rem}
+dialog#about.ab ul.next li{text-align:justify}
+dialog#about.ab .fine.legal{margin:1rem 0 0;padding-top:.75rem;border-top:1px solid var(--line);font-size:.72rem;text-align:justify}
+dialog#about.ab .studio{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:1.1rem 0 .8rem;text-align:center;font-size:.85rem;color:var(--muted)}
+dialog#about.ab .studio .x-link{display:inline-flex;align-items:center;gap:.45rem;padding:.45rem 1rem;border:1.5px solid var(--elixir);border-radius:999px;color:var(--ink);font-weight:800;font-size:.95rem;text-decoration:none;transition:background .15s}
+dialog#about.ab .studio .x-link:hover{background:color-mix(in srgb,var(--elixir) 18%,transparent);text-decoration:none}
+dialog#about.ab .studio .x-ico{width:14px;height:14px}
+dialog#about.ab #aboutClose{display:block;margin:1rem auto 0}
+
+/* Diálogo bilingüe v65: .es / .en, enlaces visibles */
+html.en .es{display:none}
+html:not(.en) .en{display:none}
+dialog#about.ab a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+dialog#about.ab .studio .x-link{display:inline-flex;align-items:center;gap:.45rem;padding:.5rem 1.05rem;border:2px solid var(--elixir);border-radius:999px;color:var(--elixir);font-weight:800;font-size:.95rem;text-decoration:none;cursor:pointer}
+dialog#about.ab .studio .x-link:hover,dialog#about.ab .studio .x-link:focus-visible{background:color-mix(in srgb,var(--elixir) 18%,transparent)}
+
+/* Pie v66 */
+.pie{margin:1.5rem auto 1.25rem;max-width:36rem;padding:0 1rem;text-align:center;font-size:.8rem;color:var(--muted);display:flex;flex-direction:column;gap:.5rem;align-items:center}
+.pie-acerca{font:inherit;font-weight:800;color:var(--elixir);background:none;border:1.5px solid currentColor;border-radius:999px;padding:.35rem .9rem;cursor:pointer;text-decoration:none}
+.pie-legal{margin:0;font-size:.72rem;line-height:1.4;opacity:.9}
+.pie-legal a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.aviso-legal{font-size:.74rem;color:var(--muted);text-align:center;margin:.2rem 0 .8rem;line-height:1.4}
+.aviso-legal a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* Pie v79: espacio inferior para que el botón de subir y la barra del móvil no tapen el aviso */
+.pie{margin-bottom:0;padding-bottom:calc(4.5rem + env(safe-area-inset-bottom, 0px))}
+
+/* Inicio v80: escritorio con contenedor centrado y los cuatro modos en una fila */
+@media (min-width:900px){
+  main{max-width:62rem}
+  #setup{max-width:none;margin:0 auto}
+  #setup .modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;align-items:stretch}
+  #setup .modes > label.mode,#setup .modes > .mode{min-width:0;height:100%}
+  #setup .modes .box{height:100%}
+}
+.volver-inicio{font-size:.8rem;font-weight:700;color:var(--muted);text-decoration:none;margin-left:.6rem;white-space:nowrap}
+.volver-inicio:hover{color:var(--elixir)}
+</style>
+</head>
+<body>
+<nav id="barraFija" class="barra-fija" aria-label="Navegación">
+  <div class="barra-nav">
+    <a class="brand-mini" href="./" aria-current="page"><svg class="logo-mini" viewBox="-34 -56 68 100" aria-hidden="true"><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" style="fill:var(--elixir-2)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" style="fill:var(--elixir-2)"/></svg><span>Elixir Lab</span></a>
+    <a class="nav-link" href="jugador.html" aria-label="Laboratorio" data-en-label="Lab"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M15.5 15.5 L20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></a>
+    <a class="nav-link" href="ranking.html" aria-label="Clasificación" data-en-label="Ranking"><svg class="nav-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L3 10 7 13 12 7 17 13 21 10 21 18Z" fill="currentColor" fill-opacity=".18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></a>
+  </div>
+  <div class="barra-acciones">
+    <button class="langbtn snd" id="sndBtn2" aria-label="Sonido"></button>
+    <button id="subir" class="subir" type="button" aria-label="Subir" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+    <button id="idioma" class="idioma" type="button" aria-label="Change language to English">EN</button>
+  </div>
+</nav>
+<main>
+  <!-- SETUP -->
+  <section id="setup">
+    <div class="top"><h1 class="brand"><svg class="logo" viewBox="-34 -56 68 100" aria-hidden="true"><defs><linearGradient id="lgG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--elixir-2)"/><stop offset="1" style="stop-color:var(--elixir)"/></linearGradient></defs><path d="M-9 -26 L-9 -6 L-30 34 C-32 39 -29 42 -24 42 L24 42 C29 42 32 39 30 34 L9 -6 L9 -26 Z" fill="none" style="stroke:var(--elixir)" stroke-width="4" stroke-linejoin="round"/><path d="M-20 18 L20 18 L28 35 C29 38 27 40 24 40 L-24 40 C-27 40 -29 38 -28 35 Z" fill="url(#lgG)"/><rect x="-14" y="-32" width="28" height="7" rx="2" style="fill:var(--elixir)"/><path d="M0 -54 C4 -48 7 -44 7 -40 C7 -36 4 -34 0 -34 C-4 -34 -7 -36 -7 -40 C-7 -44 -4 -48 0 -54 Z" fill="url(#lgG)"/></svg>Elixir Lab</h1><a class="volver-inicio" href="index.html">← Inicio</a><div class="topbtns"><button class="langbtn snd" id="sndBtn" aria-label="Sonido"></button><button class="langbtn" id="langBtn" aria-label="Language"></button></div></div>
+
+    <form class="lab" id="labForm" hidden action="jugador.html" method="get" autocomplete="off">
+      <div class="lhead">
+        <svg class="spark" viewBox="0 0 52 32" aria-hidden="true">
+          <path d="M3 26 L13 18 L21 22 L31 10 L39 15 L47 6" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="stroke:var(--elixir)"/>
+          <circle cx="47" cy="6" r="3.5" style="fill:var(--gold)"/>
+        </svg>
+        <span class="mtxt">
+          <span class="mtitle" data-en="Training lab">Laboratorio de entrenamiento</span>
+          <span class="mdesc" data-en="Your real matches under the microscope: find your real meta, streak, wasted elixir, crowns and best time to play.">Tus partidas reales bajo el microscopio: Descubre tu meta real, racha, elixir perdido, coronas y mejor hora.</span>
+        </span>
+      </div>
+      <div class="lsearch">
+        <label class="lfield"><b aria-hidden="true">#</b><span class="sr" data-en="Player tag">Tag del jugador</span><input id="labTag" name="tag" placeholder="Tu tag del juego" data-ph-en="Your player tag" spellcheck="false" autocapitalize="characters" maxlength="12"></label>
+        <button type="submit" data-en="Search">Buscar</button>
+      </div>
+    </form>
+
+    <a class="rk-link" hidden href="ranking.html">
+      <svg class="cup" viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M9 5 h14 v6 a7 7 0 0 1 -14 0 z" style="fill:var(--gold)"/>
+        <path d="M9 7 H5 a4 4 0 0 0 5 6 M23 7 h4 a4 4 0 0 1 -5 6" fill="none" stroke-width="2" stroke-linecap="round" style="stroke:var(--gold)"/>
+        <path d="M14 18 h4 v4 h-4 z M10 25 h12 v3 h-12 z" style="fill:var(--gold)"/>
+      </svg>
+      <span class="mtxt">
+        <span class="mtitle" data-en="Path of Legends ranking">Ranking de Senda de Leyendas</span>
+        <span class="mdesc" data-en="Top players worldwide and by country, with their decks.">Top global y por país, con sus mazos.</span>
+      </span>
+      <svg class="chev" viewBox="0 0 14 14" aria-hidden="true"><path d="M5 2 L10 7 L5 12" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+
+    <h2 class="train-h"><b data-en="Train">Entrena</b><span data-en="Sharpen your reactions and read your opponent.">Mejora tu reacción y lee a tu rival.</span></h2>
+    <div class="modes" role="radiogroup" aria-label="Modo">
+      <label class="mode">
+        <input type="radio" name="mode" value="cost" checked>
+        <span class="box">
+          <span class="pv" id="pvCost"></span>
+          <span class="mtitle" data-en="Card Mastery">Maestría de cartas</span>
+          <span class="mdesc" data-en="Learn how much elixir &lt;i class=&quot;ix&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; every card costs until you master them all.">Aprende cuánto elixir <i class="ix" aria-hidden="true"></i> cuesta cada carta hasta dominarlas todas.</span>
+          <span class="rank" id="rkCost" aria-live="polite"></span>
+        </span>
+      </label>
+      <label class="mode">
+        <input type="radio" name="mode" value="count">
+        <span class="box">
+          <span class="pv" id="pvCount"></span>
+          <span class="mtitle" data-en="Track your opponent">Controla a tu rival</span>
+          <span class="mdesc" data-en="Learn to keep count of your opponent’s elixir.">Aprende a llevar la cuenta del elixir de tu rival.</span>
+          <span class="rank" id="rkCount" aria-live="polite"></span>
+        </span>
+      </label>
+      <label class="mode">
+        <input type="radio" name="mode" value="cycle">
+        <span class="box">
+          <span class="pv cyc" id="pvCycle"></span>
+          <span class="mtitle" data-en="Read their cycle">Lee su ciclo</span>
+          <span class="mdesc" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</span>
+          <span class="rank" id="rkCycle" aria-live="polite"></span>
+        </span>
+      </label>
+      <div class="mode soon" data-soon="decide" aria-disabled="true">
+        <span class="box">
+          <span class="pv">
+            <svg class="conv" viewBox="0 0 120 64" aria-hidden="true">
+              <path d="M14 12 C52 12 60 32 92 32 M14 32 L92 32 M14 52 C52 52 60 32 92 32" fill="none" stroke-width="2.5" stroke-linecap="round" style="stroke:var(--line)"/>
+              <circle cx="12" cy="12" r="7" style="fill:var(--gold)"/>
+              <circle cx="12" cy="32" r="7" style="fill:var(--elixir)"/>
+              <circle cx="12" cy="52" r="7" style="fill:#3FA9F5"/>
+              <circle cx="100" cy="32" r="13" style="fill:var(--track);stroke:var(--line)" stroke-width="2"/>
+              <path d="M95 31 v-3 a5 5 0 0 1 10 0 v3 M93 31 h14 v9 h-14 z" fill="none" stroke-width="2" stroke-linejoin="round" style="stroke:var(--muted)"/>
+            </svg>
+          </span>
+          <span class="mtitle" data-en="Decide">Decide</span>
+          <span class="rank new"><b data-en="Coming soon">Próximamente</b></span>
+        </span>
+      </div>
+    </div>
+    <div class="cdots" id="cdots" aria-hidden="true"></div>
+
+
+    <div id="decideOpts" class="hidden">
+      <p class="mintro" data-en="All three at once: attack or wait?">Las tres a la vez: ¿atacas o esperas?</p>
+      <p class="soon-note" data-en="Coming soon. Meanwhile, train each skill separately.">Muy pronto. Mientras tanto, entrena cada habilidad por separado.</p>
+    </div>
+
+    <div id="costOpts">
+      <p class="mintro" data-en="Learn how much elixir &lt;i class=&quot;ix&quot; aria-hidden=&quot;true&quot;&gt;&lt;/i&gt; every card costs until you master them all.">Aprende cuánto elixir <i class="ix" aria-hidden="true"></i> cuesta cada carta hasta dominarlas todas.</p>
+      <div class="badges" id="badges" aria-label="Insignias de Maestría"></div>
+      <p class="desc badge-info hidden" id="badgeInfo"></p>
+      <details class="rule"><summary data-en="How many cards can you master?">¿Cuántas cartas eres capaz de dominar?</summary><p data-en="You have 3 towers. Every miss knocks one down; every streak of 10 earns you a crown and rebuilds a tower.">Tienes 3 torres. Cada fallo derriba una; cada racha de 10 aciertos te da una corona y reconstruye una torre.</p></details>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
+      <fieldset>
+        <legend data-en="Difficulty">Dificultad</legend>
+        <div class="seg">
+          <label><input type="radio" name="time" value="8"><span data-en="Easy">Fácil</span></label>
+          <label><input type="radio" name="time" value="5" checked><span data-en="Normal">Normal</span></label>
+          <label><input type="radio" name="time" value="3"><span data-en="Hard">Difícil</span></label>
+        </div>
+        <p class="desc" id="d-time"></p>
+      </fieldset>
+    </div>
+
+    <div id="countOpts" class="hidden">
+      <p class="mintro" data-en="Learn to keep count of your opponent’s elixir.">Aprende a llevar la cuenta del elixir de tu rival.</p>
+      <div class="badges" id="cBadges" aria-label="Insignias"></div>
+      <p class="desc badge-info hidden" id="cBadgeInfo"></p>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
+      <fieldset>
+        <legend data-en="Stage">Etapa</legend>
+        <div class="seg stages">
+          <label><input type="radio" name="diff" value="facil" checked><span data-en="&lt;b&gt;1&lt;/b&gt; First steps"><b>1</b> Primeros pasos</span></label>
+          <label><input type="radio" name="diff" value="intermedio"><span data-en="&lt;b&gt;2&lt;/b&gt; On the clock"><b>2</b> Con reloj</span></label>
+          <label><input type="radio" name="diff" value="medio"><span data-en="&lt;b&gt;3&lt;/b&gt; Real match"><b>3</b> Partida real</span></label>
+        </div>
+        <p class="desc" id="d-diff"></p>
+      </fieldset>
+      <fieldset>
+        <legend data-en="Challenge">Desafío</legend>
+        <div class="seg">
+          <label><input type="radio" name="rtime" value="20" checked><span data-en="⚔️ Training Arena">⚔️ Arena de entrenamiento</span></label>
+          <label><input type="radio" name="rtime" value="10"><span data-en="Ultimate Champion 💀">Campeón definitivo 💀</span></label>
+        </div>
+        <p class="desc" id="d-rtime"></p>
+      </fieldset>
+      <label class="check"><input type="checkbox" id="showNames" checked> <span data-en="Show card names">Mostrar el nombre de las cartas</span></label>
+    </div>
+
+    <div id="cycleOpts" class="hidden">
+      <p class="mintro" data-en="Find out which cards your opponent has available.">Descubre qué cartas tiene disponibles tu rival.</p>
+      <details class="rule"><summary data-en="Every card returns after 4 plays">Cada carta vuelve tras 4 jugadas</summary><p data-en="When your opponent plays a card, they need to play 4 others to have it available again.">Cuando el rival juega una carta, necesita jugar otras 4 para tenerla disponible de nuevo.</p></details>
+      <h3 class="cfg-h" data-en="Set up your match">Configura tu partida</h3>
+      <fieldset>
+        <legend data-en="Stage">Etapa</legend>
+        <div class="seg stages five">
+          <label><input type="radio" name="cyc" value="1" checked><span aria-label="1"><b>1</b></span></label>
+          <label><input type="radio" name="cyc" value="2"><span aria-label="2"><b>2</b></span></label>
+          <label><input type="radio" name="cyc" value="3"><span aria-label="3"><b>3</b></span></label>
+          <label><input type="radio" name="cyc" value="4"><span aria-label="4"><b>4</b></span></label>
+          <label><input type="radio" name="cyc" value="5"><span aria-label="5"><b>5</b></span></label>
+        </div>
+        <p class="desc" id="d-cyc"></p>
+        <button class="link" id="yHelpBtn" type="button" data-en="How do you play?">¿Cómo se juega?</button>
+      </fieldset>
+    </div>
+    <button class="btn ghost hidden" id="resumeBtn"></button>
+    <button class="btn" id="start" data-en="Start">Empezar</button>
+    <button class="btn ghost hidden" id="practiceHard" data-en="Practice my hardest cards">Practicar mis cartas difíciles</button>
+    <div class="best" id="best"></div>
+
+  </section>
+
+  <!-- GAME -->
+  <section id="game" class="hidden" aria-live="polite">
+    <div class="hud">
+      <span id="progress">1 / 20</span>
+      <span class="streak" id="streak">Racha 0</span>
+      <span id="points">0 aciertos</span>
+    </div>
+    <div class="ctrl">
+      <button class="link snd" aria-label="Sonido"></button>
+      <button class="link" id="quit" data-en="Save &amp; quit">Guardar y salir</button>
+    </div>
+    <div class="pipette" id="pipette" aria-hidden="true"></div>
+    <div class="card" id="card">
+      <img id="cardImg" class="cimg" alt="" width="132" height="158" decoding="async">
+      <div class="name display" id="name">—</div>
+      <div class="rarity" id="rarity"></div>
+      <div class="feedback" id="feedback"></div>
+    </div>
+    <div class="bar" id="bar" aria-hidden="true"></div>
+    <div class="drops" id="drops"></div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="results" class="hidden">
+    <h1 data-en="Your score">Tu marca</h1>
+    <div class="score display" id="score"></div>
+    <div class="pipette" id="pipetteRes" aria-hidden="true"></div>
+    <div class="grade-sub" id="gradeSub"></div>
+    <div class="stats">
+      <div data-en="&lt;b id=&quot;acc&quot;&gt;&lt;/b&gt;accuracy"><b id="acc"></b>precisión</div>
+      <div data-en="&lt;b id=&quot;dev&quot;&gt;&lt;/b&gt;elixir off"><b id="dev"></b>elixir desviado</div>
+      <div data-en="&lt;b id=&quot;avg&quot;&gt;&lt;/b&gt;per answer"><b id="avg"></b>por respuesta</div>
+    </div>
+    <div class="banner hidden" id="recBanner"></div>
+    <div class="chart" id="costChart"></div>
+    <div id="missWrap">
+      <p style="color:var(--ink);font-weight:800;margin-bottom:.5rem" data-en="Misses this round">Fallos de esta ronda</p>
+      <ul class="misses" id="misses"></ul>
+    </div>
+    <button class="btn ghost next-skill hidden" id="nsCost"></button>
+    <button class="btn" id="again" data-en="Play again">Jugar otra vez</button>
+    <button class="btn ghost" id="retryMisses" data-en="Retry only the misses">Repetir solo las falladas</button>
+    <button class="btn ghost" id="back" data-en="Change settings">Cambiar ajustes</button>
+
+    <div class="hist" id="histWrap">
+      <h2 data-en="Your hardest cards">Tus cartas más difíciles</h2>
+      <p class="note" data-en="Counts all your attempts: a miss stays recorded even if you get it right later.">Suma todos tus intentos: un fallo queda registrado aunque luego la aciertes.</p>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr data-en="&lt;th&gt;Card&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Misses&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Avg. time&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Off&lt;/th&gt;"><th>Carta</th><th class="num">Fallos</th><th class="num">Tiempo medio</th><th class="num">Desvío</th></tr></thead>
+        <tbody id="hardBody"></tbody>
+      </table></div>
+      <h2 data-en="Previous attempts">Intentos anteriores</h2>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr data-en="&lt;th&gt;Date&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Cards&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Accuracy&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Off&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Time&lt;/th&gt;"><th>Fecha</th><th class="num">Cartas</th><th class="num">Precisión</th><th class="num">Desvío</th><th class="num">Tiempo</th></tr></thead>
+        <tbody id="attemptBody"></tbody>
+      </table></div>
+      <button class="link" id="reset" data-en="Clear history">Borrar historial</button>
+    </div>
+  </section>
+  <!-- COUNT GAME -->
+  <section id="count" class="hidden" aria-live="polite">
+    <div class="hud">
+      <span id="cProgress">1 / 10</span>
+      <span class="streak" id="cStreak">Racha 0</span>
+      <span id="cPoints">0 exactas</span>
+    </div>
+    <div class="ctrl">
+      <button class="link snd" aria-label="Sonido"></button>
+      <button class="link" id="cReplay" data-en="↺ Replay">↺ Ver de nuevo</button>
+      <button class="link" id="cQuit" data-en="Finish">Terminar</button>
+    </div>
+    <div class="card" id="cCard">
+      <span class="phase" id="cPhase"></span>
+      <ul class="feed" id="feed"></ul>
+      <div id="cAsk" class="hidden">
+        <div class="display" id="cQ" style="font-size:1.5rem;margin:.75rem 0 .25rem">¿Cuánto elixir tiene ahora?</div>
+        <div class="feedback" id="cFeedback"></div>
+        <p class="anchor-tip hidden" id="cTip"></p>
+        <ul class="breakdown hidden" id="breakdown"></ul>
+      </div>
+    </div>
+    <div class="bar hidden" id="cBar" aria-hidden="true"></div>
+    <div class="nums hidden" id="nums"></div>
+    <button class="btn hidden" id="cNext" style="margin-top:1rem" data-en="Next">Siguiente</button>
+  </section>
+
+  <!-- COUNT RESULTS -->
+  <section id="countResults" class="hidden">
+    <h1 data-en="Your score">Tu marca</h1>
+    <div class="score display" id="cScore"></div>
+    <div class="grade-sub" id="cSub"></div>
+    <div class="stats">
+      <div data-en="&lt;b id=&quot;cAcc&quot;&gt;&lt;/b&gt;exact"><b id="cAcc"></b>exactas</div>
+      <div data-en="&lt;b id=&quot;cDev&quot;&gt;&lt;/b&gt;elixir off"><b id="cDev"></b>elixir desviado</div>
+      <div data-en="&lt;b id=&quot;cAvg&quot;&gt;&lt;/b&gt;per answer"><b id="cAvg"></b>por respuesta</div>
+    </div>
+    <div class="banner hidden" id="cRecBanner"></div>
+    <div class="chart" id="countChart"></div>
+    <button class="btn ghost next-skill hidden" id="nsCount"></button>
+    <button class="btn" id="cAgain" data-en="Play again">Jugar otra vez</button>
+    <button class="btn ghost" id="cBack" data-en="Change settings">Cambiar ajustes</button>
+    <div class="hist">
+      <h2 data-en="Previous attempts">Intentos anteriores</h2>
+      <div class="tblwrap"><table class="tbl">
+        <thead><tr data-en="&lt;th&gt;Date&lt;/th&gt;&lt;th&gt;Stage&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;🏆&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Exact&lt;/th&gt;&lt;th class=&quot;num&quot;&gt;Off&lt;/th&gt;"><th>Fecha</th><th>Etapa</th><th class="num">🏆</th><th class="num">Exactas</th><th class="num">Desvío</th></tr></thead>
+        <tbody id="cAttemptBody"></tbody>
+      </table></div>
+    </div>
+  </section>
+  <!-- CYCLE GAME -->
+  <section id="cycle" class="hidden" aria-live="polite">
+    <div class="hud">
+      <span id="yProgress">1 / 10</span>
+      <span class="streak" id="yStreak">Racha 0</span>
+      <span id="yPoints">0</span>
+    </div>
+    <div class="ctrl">
+      <button class="link snd" aria-label="Sonido"></button>
+      <button class="link" id="yQuit" data-en="Finish">Terminar</button>
+    </div>
+    <div class="card cyc-card" id="yCard">
+      <div id="yHunt" class="hidden">
+        <div class="hunt-top">
+          <div class="hunt-target" id="hTarget"></div>
+          <div class="hunt-info">
+            <span class="cyc-label" data-en="Target card">Carta objetivo</span>
+            <span class="hunt-name" id="hName"></span>
+            <span class="hunt-ctx" id="hCtx"></span>
+            <div class="pips" id="hPips" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <span class="pips-lbl" id="hPipsLbl"></span>
+          </div>
+        </div>
+        <div class="hunt-tip" id="hTip"></div>
+        <div class="hunt-line" id="hLine"></div>
+      </div>
+      <div id="yBoard">
+      <div class="hand-lbl" data-en="Opponent’s &lt;b&gt;available cards&lt;/b&gt;">Cartas <b>disponibles</b> del rival</div>
+      <div class="cyc-row4 hand-big" id="yHand"></div>
+      <div class="clues">
+        <div class="cyc-label" id="yCluesLbl" data-en="Opponent’s last plays">Últimas jugadas del rival</div>
+        <div class="cyc-row4 clue-row" id="yRecent"></div>
+      </div>
+      </div>
+      <div id="yAsk" class="hidden">
+        <div class="cyc-q" id="yQ"></div>
+        <div class="feedback" id="yFeedback"></div>
+      </div>
+    </div>
+    <div class="bar hidden" id="yBar" aria-hidden="true"></div>
+    <div class="cnt hidden" id="yCnt">
+      <button class="nbtn" data-v="0">0</button><button class="nbtn" data-v="1">1</button><button class="nbtn" data-v="2">2</button><button class="nbtn" data-v="3">3</button><button class="nbtn" data-v="4">4</button>
+    </div>
+    <div class="yn hidden" id="yYN">
+      <button class="nbtn" data-v="1" data-en="Yes">Sí</button>
+      <button class="nbtn" data-v="0" data-en="No">No</button>
+    </div>
+    <button class="btn hidden" id="yNext" style="margin-top:1rem" data-en="Next">Siguiente</button>
+  </section>
+
+  <!-- CYCLE RESULTS -->
+  <section id="cycleResults" class="hidden">
+    <h1 data-en="Your score">Tu marca</h1>
+    <div class="score display" id="yScore"></div>
+    <div class="grade-sub" id="ySub"></div>
+    <div class="banner hidden" id="yRecBanner"></div>
+    <div class="chart" id="cycleChart"></div>
+    <button class="btn ghost next-skill hidden" id="nsCycle"></button>
+    <button class="btn" id="yAgain" data-en="Play again">Jugar otra vez</button>
+    <button class="btn ghost" id="yBack" data-en="Change settings">Cambiar ajustes</button>
+  </section>
+  <div class="overlay hidden" id="yHelp" role="dialog" aria-modal="true" aria-labelledby="yHelpT">
+    <div class="card help-card">
+      <h2 id="yHelpT" data-en="How to read your opponent’s cycle">Cómo leer el ciclo de tu rival</h2>
+      <div class="help-hand" aria-hidden="true">
+        <div class="hh-next"><div id="hhNext"></div><span data-en="Next">Siguiente</span></div>
+        <div class="hh-cards" id="hhCards"></div>
+      </div>
+      <ol class="help-steps">
+        <li data-en="&lt;b&gt;1&lt;/b&gt;&lt;span&gt;Your opponent always has &lt;em&gt;4 cards available&lt;/em&gt; in hand, ready to play.&lt;/span&gt;"><b>1</b><span>El rival siempre tiene <em>4 cartas disponibles</em> en su mano, listas para jugar.</span></li>
+        <li data-en="&lt;b&gt;2&lt;/b&gt;&lt;span&gt;Every time they drop a card in the arena, they must &lt;em&gt;cycle 4 other cards&lt;/em&gt; to have it again.&lt;/span&gt;"><b>2</b><span>Cada vez que suelta una carta en la arena, necesita <em>ciclar otras 4 cartas</em> para volver a tenerla.</span></li>
+      </ol>
+      <p class="help-key" data-en="That’s why &lt;b&gt;their last 4 plays are never available&lt;/b&gt;.">Por eso, <b>sus últimas 4 jugadas nunca están disponibles</b>.</p>
+      <button class="btn" id="yHelpOk" type="button" data-en="Got it">Entendido</button>
+    </div>
+  </div>
+</main>
+<dialog id="about" class="ab">
+  <h2><span class="es">Acerca de Elixir Lab</span><span class="en">About Elixir Lab</span></h2>
+  <p><span class="es">Analiza tus partidas reales y entrena lo que más pesa en ellas. Nació para estudiar mis propias partidas; ahora es para toda la comunidad.</span><span class="en">Analyze your real matches and train what matters most in them. It started as a way to study my own matches; now it’s for the whole community.</span></p>
+  <h3><span class="es">Qué puedes hacer</span><span class="en">What you can do</span></h3>
+  <ul class="next">
+    <li><span class="es">📊 <b>Tu perfil:</b> racha, elixir perdido, coronas y la hora en que mejor juegas.</span><span class="en">📊 <b>Your profile:</b> streak, wasted elixir, crowns and the time of day you play best.</span></li>
+    <li><span class="es">⚔️ <b>Cada partida al detalle:</b> tu mazo y el del rival, el nivel medio de cartas de cada uno y, en los duelos de guerra, ronda por ronda.</span><span class="en">⚔️ <b>Every match in detail:</b> your deck and your opponent’s, each side’s average card level and, in war duels, round by round.</span></li>
+    <li><span class="es">🏆 <b>Ranking de Senda de Leyendas:</b> los mejores del mundo y por país, con sus mazos.</span><span class="en">🏆 <b>Path of Legends ranking:</b> the best players worldwide and by country, with their decks.</span></li>
+    <li><span class="es">🧪 <b>Entrena:</b> el coste de cada carta, el elixir de tu rival y su ciclo.</span><span class="en">🧪 <b>Train:</b> every card’s cost, your opponent’s elixir and their cycle.</span></li>
+  </ul>
+  <h3><span class="es">Lo que viene</span><span class="en">What’s next</span></h3>
+  <ul class="next">
+    <li><span class="es">🧠 <b>Decide:</b> momentos clave de partidas de jugadores top. Elige tu jugada y compárala con la suya.</span><span class="en">🧠 <b>Decide:</b> key moments from top players’ matches. Pick your play and compare it with theirs.</span></li>
+    <li><span class="es">🛡️ <b>Ranking de clanes:</b> que cuente la constancia en Senda de Leyendas, no solo la fuerza.</span><span class="en">🛡️ <b>Clan ranking:</b> rewarding consistency in Path of Legends, not just raw strength.</span></li>
+    <li><span class="es">🎥 <b>Widget para streamers:</b> tu marcador en directo, con metas y retos, para OBS y para el chat.</span><span class="en">🎥 <b>Streamer widget:</b> your live scoreboard, with goals and challenges, for OBS and for chat.</span></li>
+  </ul>
+  <h3><span class="es">Código abierto</span><span class="en">Open source</span></h3>
+  <p><span class="es">Elixir Lab es libre, con licencia MIT. El código está en <a href="https://github.com/Nicolay008/elixir-lab" target="_blank" rel="noopener">GitHub</a>.</span><span class="en">Elixir Lab is free and MIT-licensed. The code is on <a href="https://github.com/Nicolay008/elixir-lab" target="_blank" rel="noopener">GitHub</a>.</span></p>
+  <h3><span class="es">¿Quieres colaborar?</span><span class="en">Want to contribute?</span></h3>
+  <p><span class="es">Reporta errores o propón ideas en la sección <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> del repositorio, o mejora el código con un pull request. Toda ayuda suma, y si te sirve, una ⭐ en GitHub ayuda a que más gente lo encuentre.</span><span class="en">Report bugs or suggest ideas in the repository’s <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a>, or improve the code with a pull request. Every bit helps, and if it’s useful to you, a ⭐ on GitHub helps more people find it.</span></p>
+  <p class="fine"><span class="es"><b>Tus datos:</b> las partidas de Clash Royale son públicas en la API del juego. Al seguir un tag, guardamos su historial, que será visible para quien consulte ese tag. Si nadie sigue un tag durante 6 meses, su historial se borra automáticamente.<br>¿Tu tag está seguido y prefieres que no se guarde tu historial? Pídelo en <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> y lo retiramos.</span><span class="en"><b>Your data:</b> Clash Royale matches are public in the game’s API. When you follow a tag, we store its history, which will be visible to anyone who looks up that tag. If nobody follows a tag for 6 months, its history is deleted automatically.<br>Is your tag followed and you’d rather your history not be stored? Ask in <a href="https://github.com/Nicolay008/elixir-lab/issues" target="_blank" rel="noopener">Issues</a> and we’ll remove it.</span></p>
+  <p class="fine legal"><span class="es">Este material no es oficial y no está respaldado por Supercell. Para más información, consulta la política de contenido de fans de Supercell: <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener">www.supercell.com/fan-content-policy</a>.</span><span class="en">Elixir Lab is unofficial fan content, not endorsed by Supercell. For more information see Supercell’s Fan Content Policy: <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener">www.supercell.com/fan-content-policy</a>.</span></p>
+  <p class="studio"><span class="es">Desarrollado por <a class="x-link" href="https://x.com/NickolayPaul" target="_blank" rel="noopener"><svg class="x-ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>NickolayPaul</a></span><span class="en">Developed by <a class="x-link" href="https://x.com/NickolayPaul" target="_blank" rel="noopener"><svg class="x-ico" viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor"/></svg>NickolayPaul</a></span></p>
+  <button class="btn" id="aboutClose" type="button" data-en="Close">Cerrar</button>
+</dialog>
+<footer class="pie">
+  <button class="pie-acerca" id="aboutOpen" type="button" data-en="About Elixir Lab · Contribute">Acerca de Elixir Lab · Colabora</button>
+  <p class="pie-legal"><span data-en="Elixir Lab is unofficial fan content, not endorsed by Supercell.">Elixir Lab es contenido no oficial y no está respaldado por Supercell.</span> <a href="https://www.supercell.com/fan-content-policy" target="_blank" rel="noopener" data-en="Fan Content Policy">Política de contenido de fans</a>.</p>
+</footer>
+
+<script>
+let CARDS = []; // se carga desde cards.json: [nombre, coste, rareza, icono]
+
+const $ = id => document.getElementById(id);
+// ================= IDIOMA =================
+const LANG_KEY="elixirLang";
+const LANG=(()=>{try{const v=localStorage.getItem(LANG_KEY); if(v==="es"||v==="en") return v;}catch(e){}
+  return (navigator.language||"es").toLowerCase().startsWith("es")?"es":"en";})();
+const L=(es,en)=>LANG==="en"?en:es;
+const troph=n=>Math.round(n*50);   // nota 0-20 → trofeos 0-1000
+const tr=L; // alias para funciones donde "L" es otra variable
+document.documentElement.lang=LANG;
+if(LANG==="en") document.querySelectorAll("[data-en]").forEach(el=>{el.innerHTML=el.dataset.en;});
+document.documentElement.classList.toggle("en", LANG==="en");
+
+// Laboratorio personal: recuerda el último tag consultado en jugador.html y manda ?tag= limpio
+(()=>{
+  const f=document.getElementById("labForm"), t=document.getElementById("labTag");
+  if(!f||!t) return;
+  if(LANG==="en") t.placeholder=t.dataset.phEn;
+  try{ const last=localStorage.getItem("elixirLabTag"); if(last) t.value=last.replace(/^#/,""); }catch(e){}
+  t.addEventListener("input",()=>{ t.value=t.value.replace(/[^0-9a-z]/gi,"").toUpperCase(); });
+  f.addEventListener("submit",e=>{
+    e.preventDefault();
+    const tag=t.value.replace(/[^0-9a-z]/gi,"").toUpperCase();
+    if(!tag){ t.focus(); return; }
+    location.href="jugador.html?tag="+encodeURIComponent(tag);
+  });
+})();
+$("langBtn").textContent=LANG==="en"?"ES":"EN";
+$("langBtn").addEventListener("click",()=>{try{localStorage.setItem(LANG_KEY,LANG==="en"?"es":"en");}catch(e){} location.reload();});
+
+// ================= SONIDO (generado con Web Audio, sin archivos) =================
+const SND_KEY="elixirSound";
+let soundOn=(()=>{try{return localStorage.getItem(SND_KEY)!=="off";}catch(e){return true;}})();
+let actx=null, master=null;
+function audio(){
+  if(!soundOn) return null;
+  if(!actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); master=actx.createGain(); master.gain.value=0.2; master.connect(actx.destination);}catch(e){ return null; } }
+  if(actx.state==="suspended") actx.resume();
+  return actx;
+}
+function tone(freq,dur,{type="sine",to=null,delay=0,vol=1}={}){
+  const a=audio(); if(!a) return;
+  const t=a.currentTime+delay, o=a.createOscillator(), g=a.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq,t); if(to) o.frequency.exponentialRampToValueAtTime(to,t+dur);
+  g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.02);
+}
+function noise(dur,{freq=3000,to=null,q=1,delay=0,vol=.6,shape="decay"}={}){
+  const a=audio(); if(!a) return;
+  const t=a.currentTime+delay, n=Math.floor(a.sampleRate*dur), buf=a.createBuffer(1,n,a.sampleRate), d=buf.getChannelData(0);
+  for(let i=0;i<n;i++){ const x=i/n; d[i]=(Math.random()*2-1)*(shape==="swell"?Math.sin(Math.PI*x):(1-x)); }
+  const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain();
+  src.buffer=buf; f.type="bandpass"; f.frequency.setValueAtTime(freq,t); if(to) f.frequency.exponentialRampToValueAtTime(to,t+dur); f.Q.value=q; g.gain.value=vol;
+  src.connect(f); f.connect(g); g.connect(master); src.start(t);
+}
+const sfx={
+  ok:    ()=>{ tone(523,.12,{vol:.5}); tone(784,.18,{vol:.5,delay:.09}); },        // acierto: campanita suave
+  drop:  ()=>{ tone(420,.11,{to:170,vol:.8}); },                                    // gota de elixir grave
+  err:   ()=>{ tone(190,.07,{type:"square",vol:.35}); tone(150,.1,{type:"square",vol:.35,delay:.1}); }, // error: dos pitidos graves
+  tick:  ()=>{ tone(700,.05,{vol:.25}); },                                          // últimos segundos, suave
+  card:  ()=>{ noise(.2,{freq:700,to:3200,q:1.2,vol:.45,shape:"swell"}); },        // carta que se desliza
+  target:()=>{ noise(.06,{freq:1600,q:.8,vol:.9}); tone(900,.16,{to:180,type:"sawtooth",vol:.3}); }, // carta objetivo: disparo
+  swords:()=>{ noise(.09,{freq:4200,q:3}); noise(.12,{freq:5200,q:4,delay:.09}); tone(2400,.35,{type:"triangle",delay:.09,vol:.25}); }, // empezar
+  fanfare:()=>{ [523,659,784,1047].forEach((f,i)=>tone(f,.18,{type:"triangle",delay:i*.09,vol:.7})); } // corona, récord, insignia
+};
+function renderSnd(){ document.querySelectorAll(".snd").forEach(b=>{ b.textContent=soundOn?"🔊":"🔇"; b.setAttribute("aria-label",soundOn?L("Silenciar","Mute"):L("Activar sonido","Unmute")); }); }
+document.querySelectorAll(".snd").forEach(b=>b.addEventListener("click",()=>{ soundOn=!soundOn; try{localStorage.setItem(SND_KEY,soundOn?"on":"off");}catch(e){} renderSnd(); if(soundOn) sfx.ok(); }));
+renderSnd();
+// tic en los últimos 2 segundos (uno por segundo)
+let lastTickSec=null;
+function warnTick(leftSec){ const sec=Math.ceil(leftSec); if(sec<=2 && sec>0 && sec!==lastTickSec){ lastTickSec=sec; sfx.tick(); } if(sec>2) lastTickSec=null; }
+const RAR_EN={"Común":"Common","Especial":"Rare","Épica":"Epic","Legendaria":"Legendary","Campeón":"Champion"};
+const LOCALE=L("es-PE","en-US");
+const KEY = "elixirQuizV2";
+let deck=[], idx=0, hits=0, streak=0, misses=[], answers=[];
+let timeLimit=5, timer=null, t0=0, locked=false, nextT=null, lives=3, runFull=false;
+const MAX_LIVES=3;
+let crowns=0;
+const heartsTxt=()=>"🏰".repeat(lives)+"💥".repeat(MAX_LIVES-lives)+(crowns?`  👑${crowns}`:"");
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{attempts:[],cards:{}};}catch(e){return {attempts:[],cards:{}};}}
+function save(h){try{localStorage.setItem(KEY,JSON.stringify(h));}catch(e){}}
+function show(id){if(id==="setup"&&typeof carSync==="function") requestAnimationFrame(()=>carSync(false));["setup","game","results","count","countResults","cycle","cycleResults"].forEach(s=>$(s).classList.toggle("hidden",s!==id));}
+const fmt = x => LANG==="en"?x.toFixed(1):x.toFixed(1).replace(".",",");
+
+// historic difficulty: errors first, then slowness
+// clave estable de una carta y su nombre visible
+const cardKey=c=>c[4]||c[0];
+const keyName=k=>{const c=CARDS.find(x=>cardKey(x)===k||x[5]===k||x[0]===k); return c?c[0]:k;};
+// las estadísticas antiguas se guardaron por nombre en español: se pasan a la clave estable
+function migrateStats(){
+  const h=load(); let changed=false;
+  Object.keys(h.cards).forEach(k=>{
+    const c=CARDS.find(x=>x[5]===k);
+    if(c && cardKey(c)!==k){ const dst=h.cards[cardKey(c)]||{seen:0,errors:0,timeSum:0,timeN:0,dev:0}, src=h.cards[k];
+      ["seen","errors","timeSum","timeN","dev"].forEach(f=>dst[f]+=src[f]||0); h.cards[cardKey(c)]=dst; delete h.cards[k]; changed=true; }
+  });
+  if(changed) save(h);
+}
+function hardCards(h){
+  return Object.entries(h.cards)
+    .filter(([,c])=>c.errors>0)
+    .map(([name,c])=>({name,errors:c.errors,seen:c.seen,avg:c.timeN?c.timeSum/c.timeN:null,dev:c.dev}))
+    .sort((a,b)=>b.errors-a.errors||(b.avg||0)-(a.avg||0));
+}
+
+function refreshSetup(){
+  updateDescs(); renderRanks(); if(CARDS.length){ renderPreviews(); renderBadges(); }
+  const mode=document.querySelector('input[name="mode"]:checked').value;
+  const isCount=mode==="count", isCycle=mode==="cycle";
+  renderResume(mode!=="cost");
+  $("costOpts").classList.toggle("hidden",mode!=="cost");
+  $("countOpts").classList.toggle("hidden",!isCount);
+  $("cycleOpts").classList.toggle("hidden",!isCycle);
+  const h=load();
+  const last=h.attempts[h.attempts.length-1];
+  const bestH=h.attempts.length?Math.max(...h.attempts.map(attHits)):0;
+  $("best").textContent = last ? L(`Última partida: ${attHits(last)} cartas · Récord: ${bestH} cartas`,`Last run: ${attHits(last)} cards · Best: ${bestH} cards`) : "";
+  $("practiceHard").classList.toggle("hidden", mode!=="cost" || hardCards(h).length===0);
+  if(isCount){
+    const ch=loadC(); const l=ch.attempts[ch.attempts.length-1];
+    const b=ch.attempts.reduce((m,a)=>!m||a.nota>m.nota?a:m,null);
+    $("best").textContent = l ? L(`Última partida: ${troph(l.nota)} 🏆 · Récord: ${troph(b.nota)} 🏆`,`Last run: ${troph(l.nota)} 🏆 · Best: ${troph(b.nota)} 🏆`) : "";
+  }
+  if(isCycle){
+    const yh=loadY(); const l=yh.attempts[yh.attempts.length-1];
+    const b=yh.attempts.reduce((m,a)=>!m||a.nota>m.nota?a:m,null);
+    $("best").textContent = l ? L(`Última partida: ${troph(l.nota)} 🏆 · Récord: ${troph(b.nota)} 🏆`,`Last run: ${troph(l.nota)} 🏆 · Best: ${troph(b.nota)} 🏆`) : "";
+  }
+}
+
+// build bar + buttons once
+for(let i=0;i<10;i++) $("bar").appendChild(document.createElement("i"));
+for(let n=1;n<=9;n++){
+  const b=document.createElement("button");
+  b.className="drop"; b.dataset.v=n; b.setAttribute("aria-label",L(`${n} de elixir`,`${n} elixir`));
+  b.innerHTML=`<span>${n}</span>`;
+  b.addEventListener("click",()=>answer(n));
+  $("drops").appendChild(b);
+}
+document.addEventListener("keydown",e=>{
+  if($("game").classList.contains("hidden")) return;
+  const n=parseInt(e.key,10); if(n>=1&&n<=9) answer(n);
+});
+
+function start(list){
+  timeLimit = +document.querySelector('input[name="time"]:checked').value;
+  deck=list; idx=0; hits=0; streak=0; misses=[]; answers=[]; lives=MAX_LIVES; crowns=0;
+  runFull = list.length===CARDS.length;   // solo una partida con todas las cartas cuenta para la maestría
+  show("game"); next();
+}
+function startFromSettings(){
+  if(loadRun() && !confirm(L("Tienes una partida guardada. ¿Empezar una nueva? La guardada se perderá.","You have a saved run. Start a new one? The saved one will be lost."))) return;
+  clearRun();
+  start(shuffle(CARDS));
+}
+
+function next(){
+  if(idx>=deck.length || lives<=0) return finish();
+  locked=false;
+  const [name,,rarity]=deck[idx];
+  $("name").textContent=name; $("rarity").textContent=L(rarity,RAR_EN[rarity]||rarity);
+  const im=$("cardImg"), url=deck[idx][3];
+  if(url){im.src=url; im.style.visibility="visible";} else {im.removeAttribute("src"); im.style.visibility="hidden";}
+  $("feedback").textContent=""; $("feedback").className="feedback";
+  $("card").className="card";
+  document.querySelectorAll(".drop").forEach(b=>{b.className="drop";b.disabled=false;});
+  $("progress").textContent=heartsTxt();
+  setPipette("pipette",hits,deck.length);
+  sfx.card();
+  $("streak").textContent=`${L("Racha","Streak")} ${streak}`;
+  $("points").textContent=L(`${hits} acierto${hits===1?"":"s"}`,`${hits} correct`);
+  t0=performance.now();
+  clearInterval(timer); timer=setInterval(tick,50); tick();
+}
+function tick(){
+  const left=Math.max(0,1-(performance.now()-t0)/(timeLimit*1000));
+  const on=Math.ceil(left*10);
+  [...$("bar").children].forEach((s,i)=>s.classList.toggle("off",i>=on));
+  if(left<=0) answer(null);
+}
+
+function answer(v){
+  if(locked) return; locked=true; clearInterval(timer);
+  const [name,cost]=deck[idx];
+  const t=Math.min(timeLimit,(performance.now()-t0)/1000);
+  // elixir desviado: lo que te equivocas al contar; sin respuesta = no contaste nada
+  const dev = v===null ? cost : Math.abs(v-cost);
+  const ok = v===cost;
+  answers.push({name,key:cardKey(deck[idx]),cost,v,t,dev,ok});
+  document.querySelectorAll(".drop").forEach(b=>{
+    b.disabled=true;
+    if(+b.dataset.v===cost) b.classList.add("right");
+    else if(+b.dataset.v===v) b.classList.add("wrong");
+  });
+  if(ok){
+    hits++; streak++; setPipette("pipette",hits,deck.length);
+    $("card").classList.add("ok"); $("feedback").classList.add("ok");
+    let bonus="";
+    if(streak%10===0){ crowns++; setTimeout(sfx.fanfare,150); if(lives<MAX_LIVES){ lives++; bonus=L(" · ¡+1 👑 y torre reconstruida!"," · +1 👑 and tower rebuilt!"); } else bonus=" · "+L("¡+1 👑!","+1 👑!"); }
+    $("progress").textContent=heartsTxt();
+    $("feedback").textContent=L(`Correcto, ${cost} de elixir${bonus}`,`Correct, ${cost} elixir${bonus}`);
+  }else{
+    streak=0; misses.push({card:deck[idx],you:v}); sfx.err();
+    $("card").classList.add("bad"); $("feedback").classList.add("bad");
+    lives--; $("progress").textContent=heartsTxt();
+    $("feedback").textContent = (v===null ? L(`Se acabó el tiempo: cuesta ${cost}`,`Time’s up: it costs ${cost}`) : L(`Cuesta ${cost}, no ${v}`,`It costs ${cost}, not ${v}`)) + (lives<=0?L(" · Cayó tu torre del rey"," · Your King Tower fell"):"");
+  }
+  idx++;
+  nextT=setTimeout(next, ok?650:1300);
+}
+
+function finish(){
+  show("results");
+  const n=answers.length;
+  const acc=hits/n;
+  // nota sobre 20: cada acierto vale 70% por acertar + hasta 30% por rapidez
+  const pts=answers.reduce((s,a)=>s+(a.ok?0.7+0.3*(1-a.t/timeLimit):0),0);
+  const nota=20*pts/n;
+  const dev=answers.reduce((s,a)=>s+a.dev,0);
+  const avgT=answers.reduce((s,a)=>s+a.t,0)/n;
+
+  const done = lives>0 && runFull;  // terminó las cartas sin perder la torre del rey: maestría
+  clearRun();
+  const before=badgeStates();
+  $("score").textContent=`${hits} ${hits===1?L("carta","card"):L("cartas","cards")}`;
+  setPipette("pipetteRes",hits,deck.length);
+  $("gradeSub").textContent= done ? L(`¡Maestría ${DIF_NAME(timeLimit)} completa! · ${fmt(avgT)} s por carta · ${troph(nota)} 🏆`,`${DIF_NAME(timeLimit)} Mastery complete! · ${fmt(avgT)} s per card · ${troph(nota)} 🏆`) : (lives>0 && !runFull) ? L(`Práctica completada: ${hits} de ${deck.length}`,`Practice complete: ${hits} of ${deck.length}`) : L(`Llegaste a ${hits} de ${deck.length}${crowns?` · ${crowns} 👑`:""} · ${troph(nota)} 🏆`,`You reached ${hits} of ${deck.length}${crowns?` · ${crowns} 👑`:""} · ${troph(nota)} 🏆`);
+  $("acc").textContent=`${Math.round(acc*100)}%`;
+  $("dev").textContent=dev;
+  $("avg").textContent=`${fmt(avgT)} s`;
+
+  const ul=$("misses"); ul.innerHTML="";
+  misses.forEach(m=>{
+    const li=document.createElement("li");
+    li.innerHTML=`<span>${m.card[0]}</span><span><span class="you">${m.you===null?L("sin respuesta","no answer"):m.you}</span> → <span class="real">${m.card[1]}</span></span>`;
+    ul.appendChild(li);
+  });
+  $("missWrap").classList.toggle("hidden",misses.length===0);
+  $("retryMisses").classList.toggle("hidden",misses.length===0);
+
+  // guardar historial
+  const h=load();
+  answers.forEach(a=>{
+    const c=h.cards[a.key]||(h.cards[a.key]={seen:0,errors:0,timeSum:0,timeN:0,dev:0});
+    c.seen++; c.dev+=a.dev;
+    if(!a.ok) c.errors++;
+    if(a.v!==null){c.timeSum+=a.t;c.timeN++;}
+  });
+  recordBanner($("recBanner"), h.attempts.filter(a=>a.t===timeLimit).map(attHits), hits);
+  h.attempts.push({date:new Date().toISOString(),n,t:timeLimit,nota,acc,dev,avgT,hits});
+  h.attempts=h.attempts.slice(-100);
+  save(h);
+  // logros de maestría: completar, partida perfecta y récord de velocidad
+  const msgs=[];
+  if(done){
+    const m=loadM(), prev=m[timeLimit]||{};
+    const cur={done:true, perfect:prev.perfect||misses.length===0, bestAvg:prev.bestAvg?Math.min(prev.bestAvg,avgT):avgT};
+    if(prev.bestAvg && avgT<prev.bestAvg) msgs.push(L(`⚡ Nuevo récord de velocidad: ${fmt(avgT)} s por carta`,`⚡ New speed record: ${fmt(avgT)} s per card`));
+    if(!prev.done) msgs.push(L(`👑 Maestría ${DIF_NAME(timeLimit)} conseguida (${mastered().length+1}/3)`,`👑 ${DIF_NAME(timeLimit)} Mastery unlocked (${mastered().length+1}/3)`));
+    m[timeLimit]=cur; saveM(m);
+  }
+  const after=badgeStates();
+  const newB=BADGES.filter((b,i)=>after[i]&&!before[i]);
+  if(newB.length) msgs.unshift(`${L("¡Nueva insignia!","New badge!")} ${newB.map(b=>b.i+" "+bTitle(b)).join(" · ")}`);
+  if(msgs.length){ setTimeout(sfx.fanfare,200); const el=$("recBanner"); el.className="banner rec"; el.textContent=msgs.join(" · "); }
+  renderHistory(h);
+  progressChart($("costChart"), h.attempts.map(a=>({...a,nota:attHits(a)})), a=>a.t, COST_GROUPS, timeLimit, Math.max(20,...h.attempts.map(attHits)));
+  renderNextSkill("cost","nsCost");
+}
+
+function renderHistory(h){
+  const hard=hardCards(h).slice(0,10);
+  $("hardBody").innerHTML = hard.length ? hard.map(c=>
+    `<tr><td>${keyName(c.name)}</td><td class="num tag-bad">${c.errors} ${L("de","of")} ${c.seen}</td><td class="num">${c.avg===null?"—":fmt(c.avg)+" s"}</td><td class="num">${c.dev}</td></tr>`
+  ).join("") : `<tr><td colspan="4">${L("Sin fallos todavía.","No misses yet.")}</td></tr>`;
+  const at=h.attempts.slice(-8).reverse();
+  $("attemptBody").innerHTML = at.map(a=>{
+    const d=new Date(a.date);
+    const day=d.toLocaleDateString(LOCALE,{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"});
+    return `<tr><td>${day}</td><td class="num">${attHits(a)}</td><td class="num">${Math.round(a.acc*100)}%</td><td class="num">${a.dev}</td><td class="num">${fmt(a.avgT)} s</td></tr>`;
+  }).join("");
+}
+
+$("start").addEventListener("click",()=>{
+  sfx.swords();
+  const m=document.querySelector('input[name="mode"]:checked').value;
+  m==="count"?startCount():(m==="cycle"?startCycle():startFromSettings());
+});
+
+// ================= PANTALLA DE INICIO =================
+const IX='<i class="ix" aria-hidden="true"></i>';
+const DESC=L({
+  time:{8:"⏱ 8 s por carta. Para aprender los costes sin presión.",5:"⏱ 5 s por carta. El tiempo que tienes para decidir en una partida real.",3:"⏱ 3 s por carta. Reflejos de pro: ves la carta y ya sabes su coste."},
+  diff:{facil:`El rival suelta 3 o 4 cartas seguidas, sin reloj. Si aciertas, la siguiente ronda trae una carta más.`,
+        intermedio:`Ahora el reloj también cuenta: <b>⏱ 3 segundos = +1 gota de elixir ${IX}</b>. Si aciertas, también suben las cartas.`,
+        medio:`Como en el juego: <b>⏱ 2,8 segundos = +1 gota ${IX}</b>, y las 3 últimas rondas son en doble elixir. Solo verás la última carta que jugó.`},
+  cyc:{1:"<b>Caza la carta.</b> Sigue una carta objetivo: toca cada carta que juegue el rival después de ella. Tus cartas no cuentan. Sin reloj.",2:"<b>¿Cuántas faltan?</b> Igual, pero sin contador: cuenta de cabeza cuántas cartas le faltan para recuperarla.",3:"<b>A la vista.</b> ¿Tiene esa carta disponible? Sus últimas jugadas quedan a la vista, con cuándo vuelve cada una.",4:"<b>De memoria.</b> Cada jugada se ve un momento y se da la vuelta: tienes que recordarlas.",5:"<b>Partida real.</b> Como en el juego: más rápido y sin ayudas. Solo tu memoria."},
+  rtime:{20:`Donde todos empiezan: cada carta muestra su coste en elixir ${IX} y tienes 20 segundos; en la etapa 1, todo el tiempo que necesites.`,10:"La cima de la Senda de Leyendas: sin ayudas y solo 10 segundos. ¿Estás a la altura?"}
+},{
+  time:{8:"⏱ 8 s per card. Learn the costs with no pressure.",5:"⏱ 5 s per card. The time you get to decide in a real match.",3:"⏱ 3 s per card. Pro reflexes: you see the card and already know its cost."},
+  diff:{facil:`Your opponent drops 3 or 4 cards in a row, no clock. Get it right and the next round adds one more card.`,
+        intermedio:`Now the clock counts too: <b>⏱ 3 seconds = +1 elixir drop ${IX}</b>. Get it right and the cards go up too.`,
+        medio:`Just like the game: <b>⏱ 2.8 seconds = +1 drop ${IX}</b>, and the last 3 rounds are double elixir. You only see their latest card.`},
+  cyc:{1:"<b>Hunt the card.</b> Follow one target card: tap every card your opponent plays after it. Your cards don’t count. No timer.",2:"<b>How many left?</b> Same, but no counter: count in your head how many cards they need to get it back.",3:"<b>In sight.</b> Is that card available? Their last plays stay in sight, with when each one returns.",4:"<b>From memory.</b> Each play shows for a moment and flips over: you have to remember them.",5:"<b>Real match.</b> Just like the game: faster and no help. Only your memory."},
+  rtime:{20:`Where everyone starts: each card shows its elixir cost ${IX} and you get 20 seconds; in stage 1, all the time you need.`,10:"The top of the Path of Legends: no help and only 10 seconds. Are you up to it?"}
+});
+const LEVEL_NAME=L({"Fácil":"Primeros pasos","Intermedio":"Con reloj","Medio":"Partida real","Difícil":"Doble elixir"},{"Fácil":"First steps","Intermedio":"On the clock","Medio":"Real match","Difícil":"Double elixir"});
+function updateDescs(){
+  Object.keys(DESC).forEach(k=>{
+    const el=$("d-"+k), r=document.querySelector(`input[name="${k}"]:checked`);
+    if(el&&r) el.innerHTML=DESC[k][r.value];
+  });
+}
+function cardVisual(name){
+  const c=CARDS.find(x=>(x[5]||x[0])===name); if(!c) return "";
+  return c[3]?`<img src="${c[3]}" alt="${c[0]}">`:`<span class="pvname">${c[0]}</span>`;
+}
+function renderPreviews(){
+  $("pvCost").innerHTML=cardVisual("Montapuercos")+`<span class="qdrop">?</span>`;
+  $("pvCount").className="pv count";
+  $("pvCount").innerHTML=cardVisual("Pescador")+cardVisual("Bola de Fuego")+`<span class="clock">⏱</span><span class="qdrop">?</span>`;
+  $("pvCycle").innerHTML=`<span class="qs">?</span><span class="qs">?</span>`+cardVisual("Megacaballero")+`<span class="qs">?</span>`;
+}
+document.querySelectorAll('#setup input[type="radio"]').forEach(r=>r.addEventListener("change",refreshSetup));
+
+// Explicaciones de cada opción: plegadas, se abren con ⓘ junto al título
+document.querySelectorAll("#setup fieldset").forEach((fs,i)=>{
+  const d=fs.querySelector(".desc"), lg=fs.querySelector("legend");
+  if(!d||!lg) return;
+  d.id=d.id||("fd"+i);
+  const b=document.createElement("button");
+  b.type="button"; b.className="info-btn"; b.textContent="ⓘ";
+  b.setAttribute("aria-controls",d.id); b.setAttribute("aria-expanded","false");
+  b.setAttribute("aria-label",L("Ver explicación","Show explanation"));
+  fs.classList.add("folded"); lg.appendChild(b);
+  b.addEventListener("click",()=>{ const open=fs.classList.toggle("folded")===false; b.setAttribute("aria-expanded",String(open)); });
+});
+
+// ================= CARRUSEL DE MODOS =================
+const car=document.querySelector(".modes"), carItems=[...car.children];
+$("cdots").innerHTML=carItems.map(()=>"<i></i>").join("");
+const cdots=[...$("cdots").children];
+const carCenter=()=>car.scrollLeft+car.clientWidth/2;
+function carIdx(){ const c=carCenter(); let b=0,bd=Infinity; carItems.forEach((el,i)=>{const d=Math.abs(el.offsetLeft+el.offsetWidth/2-c); if(d<bd){bd=d;b=i;}}); return b; }
+function carPaint(){
+  const c=carCenter(), k=carIdx();
+  carItems.forEach((el,i)=>{
+    let d=(el.offsetLeft+el.offsetWidth/2-c)/el.offsetWidth; d=Math.max(-1.5,Math.min(1.5,d));
+    el.style.setProperty("--d",d.toFixed(3)); el.style.setProperty("--a",Math.abs(d).toFixed(3));
+    el.style.zIndex=String(10-Math.round(Math.abs(d)*4)); el.classList.toggle("center",i===k);
+  });
+  cdots.forEach((dt,i)=>dt.classList.toggle("on",i===k));
+}
+function carGo(i,smooth=true){
+  const el=carItems[i]; if(!el) return;
+  car.scrollTo({left:el.offsetLeft+el.offsetWidth/2-car.clientWidth/2,behavior:smooth&&!matchMedia("(prefers-reduced-motion: reduce)").matches?"smooth":"auto"});
+}
+function carPick(){
+  const el=carItems[carIdx()], r=el.querySelector('input[name="mode"]');
+  $("setup").classList.toggle("on-decide",!r);
+  $("decideOpts").classList.toggle("hidden",!!r);
+  if(r&&!r.checked){ r.checked=true; r.dispatchEvent(new Event("change",{bubbles:true})); }
+}
+function carSync(smooth=false){ const r=document.querySelector('input[name="mode"]:checked'); const i=carItems.indexOf(r.closest(".mode")); carGo(i,smooth); requestAnimationFrame(carPaint); }
+let carT=0, carRaf=0;
+car.addEventListener("scroll",()=>{
+  if(!carRaf) carRaf=requestAnimationFrame(()=>{carRaf=0; carPaint();});
+  clearTimeout(carT); carT=setTimeout(carPick,140);
+},{passive:true});
+carItems.forEach((el,i)=>el.addEventListener("click",()=>{ if(!el.classList.contains("center")) carGo(i); }));
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.addEventListener("change",()=>{ const i=carItems.indexOf(r.closest(".mode")); if(i!==carIdx()) carGo(i); }));
+window.addEventListener("resize",()=>carSync(false));
+requestAnimationFrame(()=>carSync(false));
+
+// Al tocar un modo: desliza lo justo para que se vean sus opciones y "Empezar"
+document.querySelectorAll('input[name="mode"]').forEach(r=>r.closest("label").addEventListener("click",()=>{
+  if(!r.closest(".mode").classList.contains("center")) return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const opts=["costOpts","countOpts","cycleOpts"].map($).find(el=>!el.classList.contains("hidden"));
+    if(!opts) return;
+    const y=window.scrollY, top=opts.getBoundingClientRect().top+y-12;
+    const endBtn=$("start").getBoundingClientRect().bottom+y+16;
+    const target=Math.min(top, endBtn-window.innerHeight);
+    if(target>y+4) window.scrollTo({top:target,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
+  }));
+}));
+
+$("again").addEventListener("click",startFromSettings);
+$("retryMisses").addEventListener("click",()=>start(shuffle(misses.map(m=>m.card))));
+$("practiceHard").addEventListener("click",()=>{
+  const names=new Set(hardCards(load()).slice(0,15).map(c=>c.name));
+  start(shuffle(CARDS.filter(c=>names.has(cardKey(c))||names.has(c[5])||names.has(c[0]))));
+});
+$("back").addEventListener("click",()=>{refreshSetup();show("setup");});
+$("reset").addEventListener("click",()=>{
+  if(confirm(L("¿Borrar todas tus notas y estadísticas?","Delete all your scores and stats?"))){save({attempts:[],cards:{}});renderHistory(load());refreshSetup();}
+});
+
+
+// ================= GRÁFICO DE PROGRESO =================
+// attempts: lista con .nota; key(a) agrupa (nivel o tiempo); order/colors por grupo
+const attHits=a=>a.hits!==undefined?a.hits:Math.round(a.acc*a.n);
+const fmtV=v=>Number.isInteger(v)?String(v):fmt(v);
+function progressChart(el, attempts, key, groups, current, maxV=20){
+  const W=320,H=170,L=26,R=10,T=12,B=22, iw=W-L-R, ih=H-T-B;
+  const byG={}; attempts.forEach(a=>{(byG[key(a)]=byG[key(a)]||[]).push(a);});
+  const maxN=Math.max(2,...Object.values(byG).map(v=>Math.min(15,v.length)));
+  const x=i=>L+(maxN===1?iw/2:i*iw/(maxN-1)), y=v=>T+ih*(1-v/maxV);
+  let g='';
+  [0,.25,.5,.75,1].map(f=>Math.round(f*maxV)).forEach((v,i)=>{g+=`<line class="grid" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" ${i%2?'opacity=".45"':''}/><text class="axis" x="${L-6}" y="${y(v)+3}" text-anchor="end">${v}</text>`;});
+  g+=`<text class="axis" x="${W-R}" y="${H-6}" text-anchor="end">${tr("intentos →","attempts →")}</text>`;
+  const legend=[];
+  groups.forEach(gr=>{
+    const pts=(byG[gr.id]||[]).slice(-15); if(!pts.length) return;
+    const col=gr.color, isCur=gr.id===current;
+    const best=Math.max(...pts.map(p=>p.nota));
+    if(isCur) g+=`<line class="recline" stroke="${col}" x1="${L}" x2="${W-R}" y1="${y(best)}" y2="${y(best)}"/><text class="axis" x="${W-R}" y="${y(best)-4}" text-anchor="end" style="fill:${col}">${tr("récord","best")} ${fmtV(best)}</text>`;
+    const d=pts.map((p,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(p.nota).toFixed(1)}`).join(' ');
+    g+=`<path d="${d}" fill="none" stroke="${col}" stroke-width="${isCur?3:2}" stroke-linejoin="round" stroke-linecap="round" opacity="${isCur?1:.45}"/>`;
+    pts.forEach((p,i)=>{const last=i===pts.length-1&&isCur;
+      g+=`<circle cx="${x(i).toFixed(1)}" cy="${y(p.nota).toFixed(1)}" r="${last?5:3}" fill="${col}" opacity="${isCur?1:.45}"${last?' stroke="var(--surface)" stroke-width="2"':''}><title>${fmtV(p.nota)}</title></circle>`;});
+    legend.push(`<span><i style="background:${col}"></i>${gr.label}</span>`);
+  });
+  el.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${tr("Evolución de tus notas","Your progress")}">${g}</svg><div class="legend">${legend.join('')}</div>`;
+}
+function recordBanner(el, prevNotas, nota){
+  el.className="banner";
+  if(!prevNotas.length){el.classList.add("first");el.textContent=L("Primera partida en este nivel: ya tienes tu marca a batir","First run at this level: now you have a score to beat");}
+  else if(nota>Math.max(...prevNotas)){el.classList.add("rec"); setTimeout(sfx.fanfare,200);el.textContent=L(`¡Nuevo récord! Superas tu ${fmtV(Math.max(...prevNotas))}`,`New record! You beat your ${fmtV(Math.max(...prevNotas))}`);}
+  else el.classList.add("hidden");
+}
+const COST_GROUPS=[{id:8,label:L("Fácil","Easy"),color:"var(--ok)"},{id:5,label:"Normal",color:"var(--elixir)"},{id:3,label:L("Difícil","Hard"),color:"var(--gold)"}];
+const COUNT_GROUPS=[{id:"Fácil",label:LEVEL_NAME["Fácil"],color:"var(--ok)"},{id:"Intermedio",label:LEVEL_NAME["Intermedio"],color:"#3FA9F5"},{id:"Medio",label:LEVEL_NAME["Medio"],color:"var(--elixir)"},{id:"Difícil",label:LEVEL_NAME["Difícil"],color:"var(--gold)"}];
+
+
+
+
+// ================= CUENTAGOTAS DE PROGRESO =================
+function pipetteSVG(done,total){
+  const f=total?Math.min(1,done/total):0, x0=58, w=232, fw=Math.max(0,w*f);
+  return `<svg viewBox="0 0 320 44" role="img">
+    <defs><linearGradient id="pgG" x1="0" x2="1"><stop offset="0" stop-color="var(--elixir)"/><stop offset="1" stop-color="var(--elixir-2)"/></linearGradient>
+    <clipPath id="pgC"><rect x="${x0}" y="10" width="${w}" height="24" rx="12"/></clipPath></defs>
+    <rect class="pg-bulb" x="4" y="6" width="48" height="32" rx="16"/>
+    <rect class="pg-bulb" x="46" y="15" width="16" height="14" rx="3" opacity=".6"/>
+    <rect class="pg-tube" x="${x0}" y="10" width="${w}" height="24" rx="12"/>
+    <rect class="pg-liquid" clip-path="url(#pgC)" x="${x0}" y="10" width="${fw}" height="24" fill="url(#pgG)"/>
+    <path class="pg-tube" d="M${x0+w-2} 16 L314 22 L${x0+w-2} 28 Z"/>
+    ${f>0?`<circle cx="${x0+fw}" cy="22" r="0"/>`:""}
+    <text class="pg-txt" x="${x0+w/2}" y="27" text-anchor="middle">${done} / ${total}</text>
+  </svg>`;
+}
+function setPipette(id,done,total){ const el=$(id); if(el) el.innerHTML=pipetteSVG(done,total); }
+
+// ================= GUARDAR Y CONTINUAR (Maestría) =================
+const RUN_KEY="elixirRunV1";
+const byKey=k=>CARDS.find(c=>cardKey(c)===k);
+function loadRun(){ try{return JSON.parse(localStorage.getItem(RUN_KEY));}catch(e){return null;} }
+function clearRun(){ try{localStorage.removeItem(RUN_KEY);}catch(e){} }
+function saveRun(){
+  // si hay una carta en pantalla sin responder, vuelve al mazo en otra posición
+  const rest=shuffle(deck.slice(idx));
+  const data={t:timeLimit,full:runFull,done:deck.slice(0,idx).map(cardKey),rest:rest.map(cardKey),
+    hits,streak,lives,crowns,misses:misses.map(m=>({k:cardKey(m.card),you:m.you})),answers,date:new Date().toISOString()};
+  try{localStorage.setItem(RUN_KEY,JSON.stringify(data));}catch(e){}
+}
+function pauseRun(){
+  clearInterval(timer); clearTimeout(nextT); locked=true;
+  if(answers.length && lives>0 && idx<deck.length) saveRun();
+  refreshSetup(); show("setup");
+}
+function resumeRun(){
+  const r=loadRun(); if(!r) return;
+  const done=r.done.map(byKey).filter(Boolean), rest=r.rest.map(byKey).filter(Boolean);
+  timeLimit=r.t; const radio=document.querySelector(`input[name="time"][value="${r.t}"]`); if(radio) radio.checked=true;
+  deck=done.concat(rest); idx=done.length; hits=r.hits; streak=r.streak; lives=r.lives; crowns=r.crowns;
+  misses=r.misses.map(m=>({card:byKey(m.k),you:m.you})).filter(m=>m.card); answers=r.answers; runFull=r.full;
+  clearRun(); sfx.swords(); show("game"); next();
+}
+function renderResume(isCount){
+  const r=loadRun(), b=$("resumeBtn");
+  if(!r || isCount){ b.classList.add("hidden"); return; }
+  const dif={8:L("Fácil","Easy"),5:"Normal",3:L("Difícil","Hard")}[r.t]||"";
+  b.textContent=`▶ ${L("Continuar partida","Continue run")} · ${r.hits} ${L("cartas","cards")}`;
+  b.title=dif;
+  b.classList.remove("hidden");
+}
+document.addEventListener("visibilitychange",()=>{ if(document.hidden && !$("game").classList.contains("hidden") && !locked) pauseRun(); });
+
+// ================= INSIGNIAS Y ACERCA DE =================
+$("aboutOpen").addEventListener("click",()=>$("about").showModal());
+if (new URLSearchParams(location.search).has("acerca")) $("about").showModal();
+$("aboutClose").addEventListener("click",()=>$("about").close());
+const MKEY="elixirMasteryV1";   // {8|5|3: {done, perfect, bestAvg}}
+function loadM(){ try{return JSON.parse(localStorage.getItem(MKEY))||{};}catch(e){return {};} }
+function saveM(m){ try{localStorage.setItem(MKEY,JSON.stringify(m));}catch(e){} }
+const DIF_NAME=t=>({8:L("Fácil","Easy"),5:"Normal",3:L("Difícil","Hard")})[t];
+const bestHits=()=>{const h=load(); return h.attempts.length?Math.max(...h.attempts.map(attHits)):0;};
+const mastered=()=>[8,5,3].filter(t=>(loadM()[t]||{}).done);
+const BADGES=[
+  {i:"🥉",t:L("50 cartas","50 cards"),  on:()=>bestHits()>=50,  how:()=>L("Acierta 50 cartas en una sola partida.","Get 50 cards right in a single run."), prog:()=>L(`Tu récord: ${bestHits()}.`,`Your best: ${bestHits()}.`)},
+  {i:"🥈",t:L("100 cartas","100 cards"),on:()=>bestHits()>=100, how:()=>L("Acierta 100 cartas en una sola partida.","Get 100 cards right in a single run."), prog:()=>L(`Tu récord: ${bestHits()}.`,`Your best: ${bestHits()}.`)},
+  {i:"👑",t:()=>`${L("Maestría","Mastery")} ${mastered().length}/3`, on:()=>mastered().length>0, full:()=>mastered().length===3,
+     how:()=>L(`Completa las ${CARDS.length} cartas sin que caiga tu torre del rey. Hay una maestría por dificultad: Fácil, Normal y Difícil.`,`Complete all ${CARDS.length} cards before your King Tower falls. There’s one Mastery per difficulty: Easy, Normal and Hard.`),
+     prog:()=>[8,5,3].map(t=>{const x=loadM()[t]; return x&&x.done?`${DIF_NAME(t)} ✓ (⚡ ${fmt(x.bestAvg)} s)`:`${DIF_NAME(t)} —`;}).join(" · ")},
+  {i:"💎",t:L("Perfecta","Perfect"), on:()=>Object.values(loadM()).some(x=>x.perfect),
+     how:()=>L(`Completa las ${CARDS.length} cartas sin fallar ninguna.`,`Complete all ${CARDS.length} cards without a single miss.`), prog:()=>""}
+];
+// Controla a tu rival: 8 o más exactas en una sesión completa de 10 rondas
+const cGood=(lvl,insane)=>loadC().attempts.some(a=>a.level===lvl && a.n>=10 && a.ex>=8 && (!insane || a.rt===10 || a.rt===undefined));
+const CBADGES=[
+  {i:"🥉",t:L("Primeros pasos","First steps"),on:()=>cGood("Fácil"),      how:()=>L("Saca 8 o más exactas en una sesión de 10 rondas de Primeros pasos.","Get 8+ exact in a 10-round First steps session."),prog:()=>""},
+  {i:"🥈",t:L("Con reloj","On the clock"),   on:()=>cGood("Intermedio"), how:()=>L("Saca 8 o más exactas en una sesión de 10 rondas de Con reloj.","Get 8+ exact in a 10-round On the clock session."),prog:()=>""},
+  {i:"🥇",t:L("Partida real","Real match"),  on:()=>cGood("Medio"),      how:()=>L("Saca 8 o más exactas en una sesión de 10 rondas de Partida real.","Get 8+ exact in a 10-round Real match session."),prog:()=>""},
+  {i:"💀",t:L("Campeón","Champion"),         on:()=>cGood("Medio",true), how:()=>L("Lo mismo en Partida real, pero con Campeón definitivo.","Same in Real match, but on Ultimate Champion."),prog:()=>""}
+];
+const badgeStates=(list=BADGES)=>list.map(b=>b.on());
+const bTitle=b=>typeof b.t==="function"?b.t():b.t;
+function drawBadges(list,boxId,infoId){
+  $(boxId).innerHTML=list.map((b,i)=>`<button type="button" class="badge${b.on()?" on":""}" data-i="${i}"><span class="bi">${b.i}</span>${bTitle(b)}</button>`).join("");
+  $(boxId).querySelectorAll(".badge").forEach(el=>el.addEventListener("click",()=>{
+    const b=list[+el.dataset.i], got=b.full?b.full():b.on();
+    const info=$(infoId);
+    info.textContent=`${b.i} ${b.how()} ${got?L("¡Conseguida!","Unlocked!"):""} ${b.prog()}`.replace(/\s+/g," ").trim();
+    info.classList.remove("hidden");
+  }));
+}
+function renderBadges(){ drawBadges(BADGES,"badges","badgeInfo"); drawBadges(CBADGES,"cBadges","cBadgeInfo"); }
+
+
+
+// ================= HABILIDADES =================
+// cada modo es una habilidad con su propio rango; ninguna está "por encima" de otra
+const RANKS=L(["Aprendiz","Experto","Maestro","Campeón"],["Apprentice","Expert","Master","Champion"]);
+const SKILL_NAME=L({cost:"Maestría de cartas",count:"Controla a tu rival",cycle:"Lee su ciclo"},{cost:"Card Mastery",count:"Track your opponent",cycle:"Read their cycle"});
+const DOM=700; // trofeos para dar una etapa por dominada
+function skillOf(mode){
+  if(mode==="cost"){
+    const m=loadM(), played=load().attempts.length>0;
+    const tier=m[3]&&m[3].done?3:(m[5]&&m[5].done?2:(m[8]&&m[8].done?1:0));
+    return {played,tier,max:3};
+  }
+  if(mode==="count"){
+    const a=loadC().attempts, best=(f)=>Math.max(0,...a.filter(f).map(x=>troph(x.nota)));
+    const ord={facil:1,intermedio:2,medio:3,dificil:3};
+    let tier=0;
+    for(const lv of ["facil","intermedio","medio"]) if(best(x=>x.level===lv)>=DOM) tier=ord[lv];
+    if(tier===3 && best(x=>(x.level==="medio"||x.level==="dificil")&&x.rt<=10)>=DOM) tier=4;
+    return {played:a.length>0,tier,max:4};
+  }
+  const a=loadY().attempts, best=(lv)=>Math.max(0,...a.filter(x=>x.level===lv).map(x=>troph(x.nota)));
+  const map={2:1,3:2,4:3,5:4}; let tier=0;
+  for(const lv of [2,3,4,5]) if(best(lv)>=DOM) tier=map[lv];
+  return {played:a.length>0,tier,max:4};
+}
+const skillPct=s=>s.tier/s.max;
+function renderRanks(){
+  [["cost","rkCost"],["count","rkCount"],["cycle","rkCycle"]].forEach(([m,id])=>{
+    const s=skillOf(m), r=Math.round(skillPct(s)*3), el=$(id); if(!el) return;
+    el.classList.toggle("new",!s.played);
+    el.innerHTML=[0,1,2].map(i=>`<i class="${s.played&&i<r?"on":""}"></i>`).join("")+`<b>${s.played?RANKS[r]:L("Sin jugar","Not played")}</b>`;
+  });
+}
+function renderNextSkill(cur,id){
+  const el=$(id); el.classList.add("hidden");
+  const me=skillOf(cur);
+  const others=["cost","count","cycle"].filter(m=>m!==cur).map(m=>({m,s:skillOf(m)}));
+  const fresh=others.find(o=>!o.s.played);
+  let pick=null, txt="";
+  if(fresh){ pick=fresh.m; txt=L(`Otra habilidad de partida: ${SKILL_NAME[pick]} →`,`Another match skill: ${SKILL_NAME[pick]} →`); }
+  else{ const low=others.sort((a,b)=>skillPct(a.s)-skillPct(b.s))[0];
+    if(skillPct(low.s)<skillPct(me)){ pick=low.m; txt=L(`${SKILL_NAME[pick]} va por detrás: pruébalo →`,`${SKILL_NAME[pick]} is lagging behind: try it →`); } }
+  if(!pick) return;
+  el.textContent=txt; el.dataset.mode=pick; el.classList.remove("hidden");
+}
+["nsCost","nsCount","nsCycle"].forEach(id=>$(id).addEventListener("click",e=>{
+  const m=e.currentTarget.dataset.mode;
+  document.querySelector(`input[name="mode"][value="${m}"]`).checked=true;
+  refreshSetup(); show("setup"); window.scrollTo({top:0,behavior:"smooth"});
+}));
+
+// ================= MODO CICLO =================
+// regla: 8 cartas, 4 en la mano; el rival puede jugar cualquiera de su mano, esa carta va al final
+// de su ciclo y el hueco lo ocupa su carta siguiente. Así, sus últimas 4 jugadas nunca están en su mano.
+const YKEY="elixirCycleV2", Y_ROUNDS=10, Y_TIME=10;
+function loadY(){
+  try{
+    const h=JSON.parse(localStorage.getItem(YKEY)); if(h) return h;
+    const old=JSON.parse(localStorage.getItem("elixirCycleV1"));
+    if(old&&old.attempts){ const m={attempts:old.attempts.map(a=>({...a,level:a.level+2}))}; saveY(m); return m; }
+  }catch(e){}
+  return {attempts:[]};
+}
+function saveY(h){try{localStorage.setItem(YKEY,JSON.stringify(h));}catch(e){}}
+const Y_NAME=L({1:"Caza la carta",2:"¿Cuántas faltan?",3:"A la vista",4:"De memoria",5:"Partida real"},{1:"Hunt the card",2:"How many left?",3:"In sight",4:"From memory",5:"Real match"});
+const Y_GROUPS=[{id:1,label:Y_NAME[1],color:"#7FD8A0"},{id:2,label:Y_NAME[2],color:"var(--ok)"},{id:3,label:Y_NAME[3],color:"#3FA9F5"},{id:4,label:Y_NAME[4],color:"var(--gold)"},{id:5,label:Y_NAME[5],color:"var(--elixir)"}];
+let yM=1,yRid=0,yStage=1,yIdx=0,yRes=[],yStreak=0,ySc=null,yTimer=null,yT0=0,yLocked=true,yReveal=null;
+for(let i=0;i<10;i++) $("yBar").appendChild(document.createElement("i"));
+const yFace=c=>c[3]?`<img src="${c[3]}" alt="${baseName(c[0])}">`:`<span class="nm">${baseName(c[0])}</span>`;
+const cardEl=(c,cls="")=>c?`<div class="cardf face ${cls}">${yFace(c)}</div>`:`<div class="cardf back ${cls}">?</div>`;
+const emptyEl=()=>`<div class="cardf empty"></div>`;
+const baseCard=c=>CARDS.find(x=>x[0]===baseName(c[0]))||c;
+const backIn=n=>L(`en ${n} ${n===1?"jugada":"jugadas"}`,`in ${n} ${n===1?"play":"plays"}`);
+
+function genCycle(){
+  const deck=pickUnique(8);
+  const order=shuffle(deck), hand=order.slice(0,4), queue=order.slice(4);
+  const plays=[], n=rnd(5,8);
+  for(let i=0;i<n;i++){
+    const slot=Math.floor(Math.random()*4), c=hand[slot];
+    plays.push({c,slot}); queue.push(c); hand[slot]=queue.shift();
+  }
+  const inHand=Math.random()<.5;
+  const pool=inHand?hand:queue;
+  const target=pool[Math.floor(Math.random()*pool.length)];
+  let lastIdx=-1; plays.forEach((p,i)=>{ if(cardKey(p.c)===cardKey(target)) lastIdx=i; });
+  const ago=lastIdx<0?null:plays.length-1-lastIdx;
+  return {deck,plays,hand:[...hand],queue:[...queue],target,inHand,ago};
+}
+const YHELP="elixirCycleHelpV1";
+function yHelp(open){
+  if(open && CARDS.length){
+    // una mano de ejemplo, como en el juego: 4 cartas, una elevada, y la siguiente más pequeña
+    const ex=pickUnique(5);
+    $("hhNext").innerHTML=cardEl(ex[4]);
+    $("hhCards").innerHTML=ex.slice(0,4).map((c,i)=>cardEl(c,i===2?"lift":"")).join("");
+  }
+  $("yHelp").classList.toggle("hidden",!open); if(open) $("yHelpOk").focus();
+}
+$("yHelpBtn").addEventListener("click",()=>yHelp(true));
+$("yHelpOk").addEventListener("click",()=>{ yHelp(false); try{localStorage.setItem(YHELP,"1");}catch(e){} if(yPending){ yPending=false; startCycle(); } });
+let yPending=false;
+function startCycle(){
+  let seen=false; try{seen=!!localStorage.getItem(YHELP);}catch(e){}
+  if(!seen){ yPending=true; yHelp(true); return; }
+  yStage=+document.querySelector('input[name="cyc"]:checked').value;
+  yIdx=0;yRes=[];yStreak=0; show("cycle"); yNextRound();
+}
+// pistas: se llenan desde la derecha; el hueco i vuelve a su mano en i+1 jugadas
+// opts: {faces: mostrar cartas, caps: mostrar "vuelve en…", fresh: animar la última, tk: carta resaltada, reveal: marcar su siguiente}
+function yRenderRecent(list,o={}){
+  const cells=[], pad=4-list.length;
+  for(let i=0;i<4;i++){
+    const c=i<pad?null:list[i-pad], last=i===3;
+    let el;
+    if(!c) el=emptyEl();
+    else if(o.faces||(o.fresh&&last)) el=cardEl(c,[(o.tk&&cardKey(c)===o.tk)?"target":"",o.fresh&&last?"fall":"",o.reveal?"flip":""].join(" "));
+    else el=cardEl(null);
+    const cap = c&&o.caps ? `<span class="cap${o.reveal&&i===0?" nx":""}">${o.reveal&&i===0?L("su siguiente","their next"):backIn(i+1)}</span>` : `<span class="cap">&nbsp;</span>`;
+    cells.push(`<div class="rc">${el}${cap}</div>`);
+  }
+  $("yRecent").innerHTML=cells.join("");
+}
+function yNextRound(){
+  if(yIdx>=Y_ROUNDS) return yFinish();
+  yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
+  if(yStage<=2) return yHuntRound();
+  yM=yStage-2;
+  $("yHunt").classList.add("hidden"); $("yBoard").classList.remove("hidden");
+  ySc=genCycle(); const rid=++yRid;
+  $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
+  $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
+  const ex=yRes.filter(r=>r.ok).length; $("yPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
+  $("yCard").className="card cyc-card";
+  $("yHand").innerHTML=[0,1,2,3].map(()=>cardEl(null)).join("");
+  const recent=[]; yRenderRecent(recent);
+  ["yAsk","yBar","yYN","yCnt","yNext"].forEach(id=>$(id).classList.add("hidden"));
+  $("yFeedback").textContent=""; $("yFeedback").className="feedback";
+  let k=0;
+  const step=()=>{
+    const p=ySc.plays[k], slots=$("yHand").children;
+    // la carta jugada se eleva desde su hueco…
+    slots[p.slot].outerHTML=cardEl(p.c,"lift");
+    sfx.card();
+    yReveal=setTimeout(()=>{
+      // …baja a sus últimas jugadas y su hueco lo ocupa la siguiente (oculta)
+      $("yHand").children[p.slot].outerHTML=cardEl(null,"flip");
+      recent.push(p.c); if(recent.length>4) recent.shift();
+      yRenderRecent(recent,{faces:yM===1,caps:yM===1,fresh:true});
+      k++;
+      const wait=yM===1?1150:(yM===2?950:650);
+      // en memoria, la carta se ve un momento y se da la vuelta
+      if(yM>1) setTimeout(()=>{ if(rid===yRid && $("yAsk").classList.contains("hidden")) yRenderRecent(recent); }, wait-120);
+      yReveal=setTimeout(k<ySc.plays.length?step:yAsk, wait);
+    },yM===3?320:450);
+  };
+  yReveal=setTimeout(step,600);
+}
+function yAsk(){
+  const t=ySc.target, b=baseCard(t);
+  $("yQ").innerHTML=`${b[3]?`<img src="${b[3]}" alt="">`:""}<span>${L(`¿Tiene ${baseName(t[0])} disponible?`,`Is ${baseName(t[0])} available?`)}</span>`;
+  $("yAsk").classList.remove("hidden"); $("yBar").classList.remove("hidden"); $("yYN").classList.remove("hidden");
+  $("yYN").querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
+  requestAnimationFrame(()=>{ const r=$("yYN").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("yYN").scrollIntoView({block:"end",behavior:"smooth"}); });
+  yLocked=false; yT0=performance.now();
+  clearInterval(yTimer); yTimer=setInterval(yTick,50); yTick();
+}
+function yTick(){
+  const left=Math.max(0,1-(performance.now()-yT0)/(Y_TIME*1000));
+  const on=Math.ceil(left*10);
+  [...$("yBar").children].forEach((s,i)=>s.classList.toggle("off",i>=on));
+  warnTick(left*Y_TIME);
+  if(left<=0) yAnswer(null);
+}
+function yAnswer(v){
+  if(yLocked) return; yLocked=true; clearInterval(yTimer);
+  const t=Math.min(Y_TIME,(performance.now()-yT0)/1000);
+  const truth=ySc.inHand, ok=v!==null && (v===1)===truth;
+  yRes.push({ok,t}); ok?yStreak++:yStreak=0; ok?sfx.ok():sfx.err();
+  $("yYN").querySelectorAll(".nbtn").forEach(b=>{ b.disabled=true; const bv=+b.dataset.v===1;
+    if(bv===truth) b.classList.add("right"); else if(v!==null && +b.dataset.v===v) b.classList.add("wrong"); });
+  // revelar su mano real, su siguiente y sus jugadas recientes
+  const tk=cardKey(ySc.target), hl=c=>cardKey(c)===tk?" target":"";
+  $("yHand").innerHTML=ySc.hand.map(c=>cardEl(c,"flip"+hl(c))).join("");
+  yRenderRecent(ySc.queue,{faces:true,caps:true,tk,reveal:true});
+  $("yCard").classList.add(ok?"ok":"bad");
+  const fb=$("yFeedback"); fb.classList.add(ok?"ok":"bad");
+  const name=baseName(ySc.target[0]);
+  let why;
+  if(truth) why = ySc.ago===null ? L(`Sí: todavía no ha jugado ${name}, así que está disponible.`,`Yes: they haven’t played ${name} yet, so it’s available.`)
+                                 : L(`Sí: jugó ${name} hace ${ySc.ago} cartas, así que ya vuelve a estar disponible.`,`Yes: they played ${name} ${ySc.ago} cards ago, so it’s available again.`);
+  else { const back=4-ySc.ago;
+    why = ySc.ago===0 ? L(`No: acaba de jugar ${name}. Vuelve a estar disponible en 4 jugadas.`,`No: they just played ${name}. It’s available again in 4 plays.`)
+                      : L(`No: jugó ${name} hace ${ySc.ago} ${ySc.ago===1?"carta":"cartas"}. Vuelve a estar disponible ${backIn(back)}.`,`No: they played ${name} ${ySc.ago} ${ySc.ago===1?"card":"cards"} ago. It’s available again ${backIn(back)}.`); }
+  fb.textContent=(v===null?L("Se acabó el tiempo. ","Time’s up. "):"")+why;
+  $("yNext").classList.remove("hidden"); $("yNext").focus({preventScroll:true});
+}
+$("yYN").querySelectorAll(".nbtn").forEach(b=>b.addEventListener("click",()=>yAnswer(+b.dataset.v)));
+$("yNext").addEventListener("click",()=>{ yIdx++; yNextRound(); });
+$("yCnt").querySelectorAll(".nbtn").forEach(b=>b.addEventListener("click",()=>yHuntAnswer(+b.dataset.v)));
+document.addEventListener("keydown",e=>{
+  if($("cycle").classList.contains("hidden")) return;
+  if(e.key==="Enter" && !$("yNext").classList.contains("hidden")){ yIdx++; yNextRound(); return; }
+  const k=e.key.toLowerCase();
+  if(yStage<=2){ if(/^[0-4]$/.test(k)) yHuntAnswer(+k); return; }
+  if(k==="s"||k==="y") yAnswer(1); if(k==="n") yAnswer(0);
+});
+
+// ---------- Caza la carta (etapas 1 y 2) ----------
+// Se simula el ciclo real del rival y se elige una carta objetivo dentro de la secuencia;
+// así las cartas posteriores siempre son distintas, como en el juego.
+let yH=null, hCount=new Set();
+function genHunt(){
+  const deck=pickUnique(8), order=shuffle(deck), hand=order.slice(0,4), queue=order.slice(4), plays=[];
+  for(let i=0;i<10;i++){ const slot=Math.floor(Math.random()*4), c=hand[slot]; plays.push(c); queue.push(c); hand[slot]=queue.shift(); }
+  const after=rnd(0,4), before=rnd(1,2), ti=before+rnd(0,2);
+  const rival=plays.slice(ti-before, ti+after+1), tIdx=before;
+  // tus cartas: distracciones que no avanzan su ciclo
+  const used=new Set(deck.map(c=>baseName(c[0])));
+  const mine=shuffle(CARDS.filter(c=>!used.has(baseName(c[0])) && c[0]===baseName(c[0]))).slice(0,rnd(1,3));
+  const seq=rival.map((c,i)=>({c,who:"rival",tgt:i===tIdx,after:i>tIdx}));
+  mine.forEach(c=>{ const pos=rnd(1,seq.length); seq.splice(pos,0,{c,who:"me",tgt:false,after:false}); });
+  // una carta tuya jugada después del objetivo cuenta como "posterior" a efectos del error típico
+  let seenT=false; seq.forEach(x=>{ if(x.tgt) seenT=true; else if(x.who==="me") x.after=seenT; });
+  return {target:rival[tIdx], seq, k:after, left:4-after, mineAfter:seq.filter(x=>x.who==="me"&&x.after).length};
+}
+// el papel de la carta objetivo: lo que el rival no podrá hacer hasta recuperarla
+const WINCON=new Set(["Hog Rider","Royal Giant","Giant","Golem","Balloon","Miner","Graveyard","Goblin Barrel","X-Bow","Mortar","Lava Hound","Ram Rider","Battle Ram","Royal Hogs","Wall Breakers","Elixir Golem","Goblin Drill","Three Musketeers","Electro Giant","Goblin Giant","Skeleton Barrel","Giant Skeleton","Rune Giant","Suspicious Bush","Goblinstein","Goblin Machine","Mighty Miner"]);
+function cardRole(c){
+  const en=(c[4]||"").replace(/ \((Evo|Hero)\)$/,""), id=c[6]||0;
+  if(WINCON.has(en)) return "threat";
+  if(String(id).startsWith("27")) return "building";
+  if(String(id).startsWith("28")) return "spell";
+  return "troop";
+}
+function huntContext(c){
+  const n=baseName(c[0]);
+  if(/^Elixir Collector/.test(c[4]||"")) return L(`Puso un ${n}.`,`They placed an ${n}.`);
+  return {
+    threat:  L(`Te atacó con ${n}.`,`They attacked you with ${n}.`),
+    building:L(`Usó ${n} para defender tu ataque.`,`They used ${n} to defend your push.`),
+    spell:   L(`Gastó ${n}.`,`They spent ${n}.`),
+    troop:   L(`Usó ${n} en su defensa.`,`They used ${n} in their defense.`)
+  }[cardRole(c)];
+}
+function hPips(n){ [...$("hPips").children].forEach((p,i)=>p.classList.toggle("on",i<n)); }
+function hTip(t,warn=false){ const el=$("hTip"); el.textContent=t; el.classList.toggle("warn",warn); }
+function yHuntRound(){
+  yLocked=true; clearInterval(yTimer); clearTimeout(yReveal);
+  yH=genHunt();
+  for(let i=0;i<30 && cardRole(yH.target)==="troop" && Math.random()<.7;i++) yH=genHunt();
+  hCount=new Set(); const rid=++yRid;
+  $("yProgress").textContent=`${yIdx+1} / ${Y_ROUNDS}`;
+  $("yStreak").textContent=`${L("Racha","Streak")} ${yStreak}`;
+  const ex=yRes.filter(r=>r.ok).length; $("yPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
+  $("yCard").className="card cyc-card";
+  $("yBoard").classList.add("hidden"); $("yHunt").classList.remove("hidden");
+  const t=yH.target;
+  $("hTarget").innerHTML=cardEl(t); $("hName").textContent=baseName(t[0]); $("hCtx").textContent=huntContext(t);
+  const help=yStage===1;
+  $("hPips").classList.toggle("hidden",!help); $("hPipsLbl").classList.toggle("hidden",!help);
+  hPips(0); $("hPipsLbl").textContent=L("0 de 4 cartas","0 of 4 cards");
+  hTip(help?L("Toca cada carta que juegue el rival después del objetivo.","Tap every card your opponent plays after the target."):L("Cuenta de cabeza las cartas del rival después del objetivo.","Count in your head your opponent’s cards after the target."));
+  $("hLine").innerHTML="";
+  ["yAsk","yBar","yYN","yCnt","yNext"].forEach(id=>$(id).classList.add("hidden"));
+  $("yFeedback").textContent=""; $("yFeedback").className="feedback";
+  let k=0;
+  const step=()=>{
+    if(rid!==yRid) return;
+    const x=yH.seq[k], i=k;
+    const tag = x.who==="me" ? L("Tú","You") : (x.tgt?L("🎯 Objetivo","🎯 Target"):L("Rival","Opp."));
+    const el=document.createElement("button");
+    el.type="button"; el.className=`hp ${x.who}${x.tgt?" tgt":""}`; el.dataset.i=i;
+    el.innerHTML=cardEl(x.c,"fall")+`<span class="tag">${tag}</span>`;
+    el.addEventListener("click",()=>hTap(el,x,i));
+    $("hLine").appendChild(el);
+    if(x.tgt){ sfx.target(); [...$("hLine").children].forEach(c=>{ if(c!==el) c.classList.add("pre"); }); el.classList.add("hit"); }
+    else sfx.card();
+    k++;
+    yReveal=setTimeout(k<yH.seq.length?step:yHuntAsk, yStage===1?1000:800);
+  };
+  yReveal=setTimeout(step,500);
+}
+function hTap(el,x,i){
+  if(yStage!==1 || !$("yNext").classList.contains("hidden")) return;
+  if(x.who==="me"){ hTip(L("Tus cartas no cuentan: solo avanzan su ciclo las cartas del rival.","Your cards don’t count: only your opponent’s cards move their cycle."),true); el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); sfx.err(); return; }
+  if(!x.after){ hTip(x.tgt?L("Esa es la carta objetivo: empieza a contar con la siguiente del rival.","That’s the target: start counting with your opponent’s next card."):L("Esa la jugó antes del objetivo: no cuenta.","They played that one before the target: it doesn’t count."),true); el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); return; }
+  if(hCount.has(i)) hCount.delete(i); else { if(hCount.size>=4) return; hCount.add(i); }
+  el.classList.toggle("counted",hCount.has(i));
+  hPips(hCount.size); $("hPipsLbl").textContent=L(`${hCount.size} de 4 cartas`,`${hCount.size} of 4 cards`);
+  hTip(L("Bien, sigue contando.","Good, keep counting."));
+}
+function yHuntAsk(){
+  const name=baseName(yH.target[0]);
+  $("yQ").innerHTML=`<span>${L(`¿Cuántas cartas más necesita jugar para recuperar ${name}?`,`How many more cards must they play to get ${name} back?`)}</span>`;
+  $("yAsk").classList.remove("hidden"); $("yCnt").classList.remove("hidden");
+  $("yCnt").querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
+  requestAnimationFrame(()=>{ const r=$("yCnt").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("yCnt").scrollIntoView({block:"end",behavior:"smooth"}); });
+  yLocked=false; yT0=performance.now();
+}
+function yHuntAnswer(v){
+  if(yLocked) return; yLocked=true;
+  const t=Math.min(Y_TIME,(performance.now()-yT0)/1000);
+  const ok=v===yH.left;
+  yRes.push({ok,t}); ok?yStreak++:yStreak=0; ok?sfx.ok():sfx.err();
+  $("yCnt").querySelectorAll(".nbtn").forEach(b=>{ b.disabled=true; const bv=+b.dataset.v;
+    if(bv===yH.left) b.classList.add("right"); else if(bv===v) b.classList.add("wrong"); });
+  // mostrar el conteo correcto: 1, 2, 3, 4 sobre las cartas del rival posteriores al objetivo
+  let n=0;
+  [...$("hLine").children].forEach((el,i)=>{ const x=yH.seq[i];
+    el.classList.toggle("counted", x.who==="rival"&&x.after);
+    if(x.who==="rival"&&x.after){ n++; el.insertAdjacentHTML("beforeend",`<span class="num">${n}</span>`); } });
+  $("hPips").classList.remove("hidden"); $("hPipsLbl").classList.remove("hidden");
+  hPips(yH.k); $("hPipsLbl").textContent=L(`${yH.k} de 4 cartas`,`${yH.k} of 4 cards`); hTip("");
+  $("yCard").classList.add(ok?"ok":"bad");
+  const fb=$("yFeedback"); fb.classList.add(ok?"ok":"bad");
+  const name=baseName(yH.target[0]), k=yH.k, left=yH.left;
+  let msg;
+  if(ok) msg = left===0 ? L(`¡Bien! Jugó 4 cartas después de ${name}: ya vuelve a estar disponible. Ojo: eso no significa que tenga elixir para jugarla ya.`,`Nice! They played 4 cards after ${name}: it’s available again. Careful: that doesn’t mean they have the elixir to play it right now.`)
+                         : L(`¡Bien! Jugó ${k} ${k===1?"carta":"cartas"} después de ${name}: le ${left===1?"falta 1":`faltan ${left}`}.`,`Nice! They played ${k} ${k===1?"card":"cards"} after ${name}: ${left} to go.`);
+  else if(yH.mineAfter && 4-k-yH.mineAfter>=0 && v===4-k-yH.mineAfter) msg=L(`Contaste también tus cartas. Solo cuentan las del rival: jugó ${k} después de ${name}, así que le ${left===1?"falta 1":`faltan ${left}`}.`,`You counted your own cards too. Only your opponent’s count: they played ${k} after ${name}, so ${left} to go.`);
+  else if(3-k>=0 && v===3-k) msg=L(`Para recuperar una carta hacen falta 4 jugadas, no 3. Jugó ${k} después de ${name}: le ${left===1?"falta 1":`faltan ${left}`}.`,`Getting a card back takes 4 plays, not 3. They played ${k} after ${name}: ${left} to go.`);
+  else msg=L(`Jugó ${k} ${k===1?"carta":"cartas"} después de ${name}: le ${left===0?"faltan 0, ya está disponible":left===1?"falta 1":`faltan ${left}`}.`,`They played ${k} ${k===1?"card":"cards"} after ${name}: ${left===0?"0 to go, it’s available":`${left} to go`}.`);
+  fb.textContent=msg;
+  $("yNext").classList.remove("hidden"); $("yNext").focus({preventScroll:true});
+}
+function yFinish(){
+  clearInterval(yTimer); clearTimeout(yReveal);
+  show("cycleResults");
+  const n=yRes.length; if(!n){ refreshSetup(); show("setup"); return; }
+  const ex=yRes.filter(r=>r.ok).length;
+  const pts=yRes.reduce((s,r)=>s+(r.ok?0.7+0.3*(1-r.t/Y_TIME):0),0), nota=20*pts/n;
+  $("yScore").textContent=`${troph(nota)} 🏆`;
+  $("ySub").textContent=`${Y_NAME[yStage]} · ${ex} ${L("de","of")} ${n} ${L("exactas","exact")}`;
+  const h=loadY();
+  recordBanner($("yRecBanner"), h.attempts.filter(a=>a.level===yStage).map(a=>troph(a.nota)), troph(nota));
+  h.attempts.push({date:new Date().toISOString(),level:yStage,n,nota,ex});
+  h.attempts=h.attempts.slice(-100); saveY(h);
+  progressChart($("cycleChart"), h.attempts.map(a=>({...a,nota:troph(a.nota)})), a=>a.level, Y_GROUPS, yStage, 1000);
+  renderNextSkill("cycle","nsCycle");
+}
+$("yQuit").addEventListener("click",()=>{ clearInterval(yTimer); clearTimeout(yReveal); yLocked=true; if(yRes.length) yFinish(); else { refreshSetup(); show("setup"); } });
+$("yAgain").addEventListener("click",()=>{ sfx.swords(); startCycle(); });
+$("yBack").addEventListener("click",()=>{ refreshSetup(); show("setup"); });
+
+// ================= MODO CONTEO =================
+const CKEY="elixirCountV1";
+const LEVELS={
+  facil:{label:"Fácil",maxPlays:4,plays:3,time:false,double:false,solo:false,step:2200,startMin:7},
+  intermedio:{label:"Intermedio",maxPlays:6,plays:3,time:true,double:false,solo:false,step:2200,startMin:3,easyTime:true},
+  medio:{label:"Medio",maxPlays:6,plays:4,time:true,double:false,solo:true,step:1900,startMin:3},
+  dificil:{label:"Difícil",maxPlays:6,plays:6,time:true,double:true,solo:true,step:1700,startMin:3}
+};
+let ANSWER_TIME=20, cCur=null, cPlays=3;
+const RCLASS={"Común":"r-com","Especial":"r-esp","Épica":"r-epi","Legendaria":"r-leg","Campeón":"r-cam"};
+let cLevel=null,cRounds=0,cIdx=0,cRes=[],cStreak=0,cScn=null,cTimer=null,cT0=0,cLocked=false,cReveal=null;
+function loadC(){try{return JSON.parse(localStorage.getItem(CKEY))||{attempts:[]};}catch(e){return {attempts:[]};}}
+function saveC(h){try{localStorage.setItem(CKEY,JSON.stringify(h));}catch(e){}}
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+// n cartas al azar sin repetir la misma carta en dos formas (normal, Evo, Héroe)
+const baseName=n=>n.replace(/ \((Evo|Héroe|Hero)\)$/,"");
+function pickUnique(n){
+  const seen=new Set(), out=[];
+  for(const c of shuffle(CARDS)){ const b=baseName(c[0]); if(seen.has(b)) continue; seen.add(b); out.push(c); if(out.length===n) break; }
+  return out;
+}
+const f1=x=>{const t=(Math.round(x*10)/10).toString(); return LANG==="en"?t:t.replace(".",",");};
+
+for(let i=0;i<10;i++) $("cBar").appendChild(document.createElement("i"));
+for(let n=0;n<=10;n++){
+  const b=document.createElement("button");
+  b.className="nbtn"; b.dataset.v=n; b.textContent=n; b.setAttribute("aria-label",L(`${n} de elixir`,`${n} elixir`));
+  b.addEventListener("click",()=>cAnswer(n));
+  $("nums").appendChild(b);
+}
+
+function genScenario(L){
+  const rate=L.easyTime?1/3:(L.double?1/1.4:1/2.8);
+  // Entrenamiento (sin reloj): primero las cartas, luego un sobrante al azar,
+  // para que cualquier respuesta sea igual de probable
+  // solo se parte de lo que en partida sí sabes: inicio (5) o quieto un rato (10)
+  if(!L.time){
+    const start=(L.plays<=3 && Math.random()<.3)?5:10, anchor=start===5?"open":"full";
+    // se juntan escenarios por respuesta y se elige una respuesta al azar,
+    // para que ninguna (el 0, por ejemplo) salga mucho más que las demás
+    // con 5 de elixir, 2 cartas: con 3 casi siempre se gastaría todo
+    const cap=start===5?3:(L.plays>=4?4:6), np=start===5?2:L.plays, buckets={};
+    for(let tries=0;tries<3000;tries++){
+      const picks=pickUnique(np);
+      const rem=start-picks.reduce((t,c)=>t+c[1],0);
+      if(rem<0||rem>cap||(buckets[rem]&&buckets[rem].length>=3)) continue;
+      (buckets[rem]=buckets[rem]||[]).push(picks);
+    }
+    const keys=Object.keys(buckets);
+    if(keys.length){
+      const rem=+keys[rnd(0,keys.length-1)], picks=buckets[rem][rnd(0,buckets[rem].length-1)];
+      let e=start;
+      const steps=picks.map(card=>{e-=card[1];return {type:"play",card,after:e};});
+      return {start,steps,answer:rem,exact:rem,anchor};
+    }
+  }
+  for(let tries=0;tries<500;tries++){
+    const deck8=pickUnique(8);
+    // inicio de partida: 5 de elixir y el rival espera antes de jugar (solo con elixir normal)
+    const opening = L.time && !L.double && Math.random()<.4;
+    let e=opening?5:10; const start=e; const steps=[]; let ok=true; const recent=[];
+    for(let i=0;i<L.plays;i++){
+      if(L.time && ((i>0 && Math.random()>.25) || (i===0 && (opening || Math.random()<.4)))){
+        const secs=(i===0&&opening)?(L.easyTime?15:rnd(8,17)):(L.easyTime?[3,6,9][rnd(0,2)]:rnd(2,8)), gain=secs*rate, before=e;
+        e=Math.min(10,e+gain);
+        steps.push({type:"time",secs,gain,after:e,leak:before+gain-e,opening:i===0&&opening});
+      }
+      // ciclo real: una carta jugada no vuelve a la mano hasta 4 jugadas después
+      const aff=deck8.filter(c=>c[1]<=Math.floor(e+1e-9) && !recent.includes(c));
+      if(!aff.length){ok=false;break;}
+      const card=aff[Math.floor(Math.random()*aff.length)];
+      e-=card[1]; steps.push({type:"play",card,after:e});
+      recent.push(card); if(recent.length>4) recent.shift();
+    }
+    if(!ok) continue;
+    if(L.time && Math.random()<.6){
+      const secs=L.easyTime?[3,6][rnd(0,1)]:rnd(2,6), gain=secs*rate, before=e;
+      e=Math.min(10,e+gain); steps.push({type:"time",secs,gain,after:e,leak:before+gain-e});
+    }
+    const answer=Math.floor(e+1e-9);
+    // que el 0 no sea la respuesta casi siempre: solo se acepta en 1 de cada 6 casos
+    if(answer===0 && Math.random()<.83) continue;
+    if(e-answer>0.75 || e-answer>1e-9 && e-answer<0.15 && false) continue;
+    return {start,steps,answer,exact:e,opening,anchor:opening?"open":"full"};
+  }
+}
+
+
+// gotas visibles en el nivel "Regla 3 s": cada 3 s aparece una gota; las que se pierden a 10, en gris
+function timeHtml(st){
+  const base = st.opening?L(`⏱ inicio: espera ${st.secs} s sin jugar`,`⏱ start: waits ${st.secs} s without playing`):L(`⏱ pasan ${st.secs} s`,`⏱ ${st.secs} s pass`);
+  if(!cLevel.easyTime) return base;
+  const got=Math.round(st.gain-st.leak), lost=Math.round(st.leak);
+  let d='';
+  for(let i=0;i<got+lost;i++) d+=`<i class="edrop${i>=got?' lost':''}" style="animation-delay:${(i*0.3).toFixed(1)}s"></i>`;
+  return `${base}<span class="edrops" aria-label="+${got} de elixir">${d}</span>`;
+}
+
+function startCount(){
+  cLevel=LEVELS[document.querySelector('input[name="diff"]:checked').value];
+  ANSWER_TIME=+document.querySelector('input[name="rtime"]:checked').value;
+  cRounds=10;
+  cIdx=0;cRes=[];cStreak=0;cPlays=cLevel.plays;
+  show("count"); cNextRound();
+}
+
+function cNextRound(){
+  if(cIdx>=cRounds) return cFinish();
+  cLocked=true; clearInterval(cTimer); clearTimeout(cReveal);
+  // Partida real: las 3 últimas rondas, en doble elixir
+  const dbl = cLevel===LEVELS.medio && cIdx>=cRounds-3;
+  cCur={...cLevel, plays:cPlays, double:cLevel.double||dbl, step:cUntimed()?1000:cLevel.step};
+  // si no hay escenario posible con tantas cartas, prueba con una menos
+  cScn=null;
+  for(let k=cPlays;k>=1&&!cScn;k--) cScn=genScenario({...cCur,plays:k});
+  cPlay();
+}
+function cPlay(){
+  cLocked=true; clearInterval(cTimer); clearTimeout(cReveal);
+  $("cReplay").classList.remove("hidden");
+  $("cProgress").textContent=`${cIdx+1} / ${cRounds}`;
+  $("cStreak").textContent=`${L("Racha","Streak")} ${cStreak}`;
+  const ex=cRes.filter(r=>r.ok).length;
+  $("cPoints").textContent=L(`${ex} exacta${ex===1?"":"s"}`,`${ex} exact`);
+  $("cPhase").innerHTML=cCur.easyTime?`⏱ 3 s = +1 ${IX}`:(cCur.double?L(`Doble elixir · ⏱ 1,4 s = +1 ${IX}`,`Double elixir · ⏱ 1.4 s = +1 ${IX}`):(cCur.time?L(`⏱ 2,8 s = +1 ${IX}`,`⏱ 2.8 s = +1 ${IX}`):(cUntimed()?L("Primeros pasos · sin prisa","First steps · no rush"):L("Primeros pasos · el reloj no cuenta","First steps · the clock doesn’t count"))));
+  $("cCard").className="card";
+  const feed=$("feed"); feed.innerHTML=""; feed.classList.toggle("solo",cCur.solo); feed.classList.remove("compact");
+  feed.classList.toggle("noname",!$("showNames").checked);
+  ["cAsk","cBar","nums","cNext","breakdown","cTip"].forEach(id=>$(id).classList.add("hidden"));
+  $("cFeedback").textContent=""; $("cFeedback").className="feedback";
+  const open=cScn.anchor==="open";
+  const lines=[{cls:"start",html:`<span class="anc">${open?L("🏁 Empieza la partida","🏁 Match starts"):L("⏸ Lleva rato sin jugar","⏸ Hasn’t played for a while")}</span><span class="ebar" aria-hidden="true">${"<i></i>".repeat(10)}</span><b class="ev">${open?5:"?"}</b>`}]
+    .concat(cScn.steps.map(st=>st.type==="time"
+      ?{cls:"time",html:timeHtml(st),n:Math.round(st.gain-st.leak)}
+      :{cls:"play",html:`${st.card[3]?`<img class="mini" src="${st.card[3]}" alt="">`:`<i class="chip ${RCLASS[st.card[2]]}"></i>`}<b>${st.card[0]}</b>${ANSWER_TIME>10?`<span class="qdrop sm" aria-label="cuesta ${st.card[1]}">${st.card[1]}</span>`:""}`}));
+  let k=0;
+  const push=()=>{
+    const li=document.createElement("li"); li.className=lines[k].cls; li.innerHTML=lines[k].html;
+    feed.appendChild(li); k++; if(li.className==="play") sfx.card();
+    if(li.className==="start") fillBar(li, open?5:3, cScn.start);
+    const nd=lines[k-1].n||0; for(let j=0;j<Math.min(nd,5);j++) setTimeout(sfx.drop,j*300);
+    if(k<lines.length) cReveal=setTimeout(push,cCur.step);
+    else cReveal=setTimeout(cAsk,cCur.step);
+  };
+  push();
+}
+
+// Primeros pasos con ayuda: se aprende a calcular sin prisa; el tiempo solo se mide
+const cUntimed=()=>cLevel===LEVELS.facil && ANSWER_TIME>10;
+// barra del rival: en 5 al inicio, o llenándose sola hasta 10 si se quedó quieto
+function fillBar(li,from,to){
+  const segs=[...li.querySelectorAll(".ebar i")], ev=li.querySelector(".ev");
+  segs.forEach((s,i)=>s.classList.toggle("on",i<from));
+  if(from>=to){ ev.textContent=to; return; }
+  let n=from; const iv=setInterval(()=>{ if(!li.isConnected){clearInterval(iv);return;}
+    segs[n].classList.add("on"); n++; if(n>=to){ clearInterval(iv); ev.textContent=to; sfx.drop(); } }, 90);
+}
+// Partida real: se pregunta lo que de verdad usas, un tope (cuánto tiene como mucho)
+const cUpper=()=>cLevel===LEVELS.medio||cLevel===LEVELS.dificil;
+const TIPKEY="elixirAnchorTipV1";
+function cAsk(){
+  if(cCur.solo) $("feed").innerHTML=""; else $("feed").classList.add("compact");
+  $("cQ").textContent=cUpper()?L("¿Cuánto tiene como mucho?","At most, how much do they have?"):L("¿Cuánto elixir tiene ahora?","How much elixir do they have now?");
+  $("cAsk").classList.remove("hidden"); $("cBar").classList.toggle("hidden",cUntimed()); $("nums").classList.remove("hidden");
+  // que los botones queden a la vista sin tener que bajar
+  requestAnimationFrame(()=>{ const r=$("nums").getBoundingClientRect(); if(r.bottom>window.innerHeight) $("nums").scrollIntoView({block:"end",behavior:"smooth"}); });
+  document.querySelectorAll(".nbtn").forEach(b=>{b.className="nbtn";b.disabled=false;});
+  cLocked=false; cT0=performance.now();
+  clearInterval(cTimer); if(!cUntimed()){ cTimer=setInterval(cTick,50); cTick(); }
+}
+function cTick(){
+  const left=Math.max(0,1-(performance.now()-cT0)/(ANSWER_TIME*1000));
+  const on=Math.ceil(left*10);
+  [...$("cBar").children].forEach((s,i)=>s.classList.toggle("off",i>=on));
+  warnTick(left*ANSWER_TIME);
+  if(left<=0) cAnswer(null);
+}
+document.addEventListener("keydown",e=>{
+  if($("count").classList.contains("hidden")) return;
+  if(e.key==="Enter" && !$("cNext").classList.contains("hidden")){cNextClick();return;}
+  if(/^[0-9]$/.test(e.key)) cAnswer(+e.key);
+});
+
+function cAnswer(v){
+  if(cLocked) return; cLocked=true; clearInterval(cTimer);
+  $("cReplay").classList.add("hidden");
+  const tReal=(performance.now()-cT0)/1000, t=Math.min(ANSWER_TIME,tReal);
+  const a=cScn.answer, loose=cUpper()&&v===a+1, ok=v===a||loose, dev=v===null?a:Math.abs(v-a);
+  cRes.push({ok,dev,t,near:v!==null&&Math.abs(v-a)===1});
+  ok?cStreak++:cStreak=0; ok?sfx.ok():sfx.err();
+  const prevPlays=cPlays;
+  cPlays = ok ? Math.min(cLevel.maxPlays, cPlays+1) : Math.max(cLevel.plays, cPlays-1);
+  document.querySelectorAll(".nbtn").forEach(b=>{
+    b.disabled=true;
+    if(+b.dataset.v===a) b.classList.add("right"); else if(+b.dataset.v===v) b.classList.add("wrong");
+  });
+  $("cCard").classList.add(ok?"ok":"bad");
+  const fb=$("cFeedback"); fb.classList.add(ok?"ok":"bad");
+  fb.textContent = loose?L(`Vale: como mucho ${v} (tenía ${a})`,`Fine: at most ${v} (they had ${a})`):ok?L(`Exacto: ${a}${cPlays>prevPlays?` · ¡Sube a ${cPlays} cartas!`:""}`,`Exact: ${a}${cPlays>prevPlays?` · Up to ${cPlays} cards!`:""}`):(v===null?L(`Se acabó el tiempo: tenía ${a}`,`Time’s up: they had ${a}`):L(`Tenía ${a}, dijiste ${v}`,`They had ${a}, you said ${v}`));
+  // la regla del punto de partida, en palabras, solo la primera vez
+  try{ const seen=JSON.parse(localStorage.getItem(TIPKEY))||{}, an=cScn.anchor;
+    if(an && !seen[an]){ $("cTip").textContent=an==="open"?L("Al empezar la partida, los dos tienen 5 de elixir.","At the start of a match, both players have 5 elixir."):L("Si el rival se queda quieto un rato, asume que está a 10.","If your opponent stays idle for a while, assume they’re at 10.");
+      $("cTip").classList.remove("hidden"); seen[an]=1; localStorage.setItem(TIPKEY,JSON.stringify(seen)); } }catch(e){}
+  if(cUntimed()) fb.textContent+=L(` · Respondiste en ${f1(tReal)} s`,` · You answered in ${f1(tReal)} s`);
+  // desglose paso a paso
+  const bd=$("breakdown"); bd.innerHTML="";
+  const row=(l,r,cls="")=>{const li=document.createElement("li");li.innerHTML=`<span class="${cls}">${l}</span><span>${r}</span>`;bd.appendChild(li);};
+  row(cScn.anchor==="open"?L("Empieza la partida con","Match starts with"):L("Quieto un rato: lleno a","Idle for a while: full at"),cScn.start);
+  cScn.steps.forEach(st=>{
+    if(st.type==="play") row(`− ${st.card[1]} ${st.card[0]}`,f1(st.after));
+    else{
+      row(`+ ${f1(st.gain-st.leak)} ${IX} en ${st.secs} s${st.opening?" (espera inicial)":""}`,f1(st.after));
+      if(st.leak>0.05) row(L(`Llegó a 10: desperdició ${f1(st.leak)}`,`Hit 10: wasted ${f1(st.leak)}`),"","leak");
+    }
+  });
+  if(Math.abs(cScn.exact-a)>1e-9) row(L(`Le queda ${f1(cScn.exact)}: puede usar ${a}`,`They have ${f1(cScn.exact)}: can use ${a}`),"");
+  bd.classList.remove("hidden");
+  $("cNext").classList.remove("hidden");
+  $("cNext").focus({preventScroll:true});
+}
+function cNextClick(){ cIdx++; cNextRound(); }
+$("cNext").addEventListener("click",cNextClick);
+$("cReplay").addEventListener("click",cPlay);
+$("cQuit").addEventListener("click",()=>{clearInterval(cTimer);clearTimeout(cReveal);cLocked=true;if(cRes.length) cFinish(); else {refreshSetup();show("setup");}});
+$("quit").addEventListener("click",pauseRun);
+$("resumeBtn").addEventListener("click",resumeRun);
+
+function cFinish(){
+  show("countResults");
+  const n=cRes.length, ex=cRes.filter(r=>r.ok).length;
+  // exacta: 70% + hasta 30% por rapidez; a 1 de distancia: 30%
+  const pts=cRes.reduce((s,r)=>s+(r.ok?0.7+0.3*(1-r.t/ANSWER_TIME):(r.near?0.3:0)),0);
+  const nota=20*pts/n, dev=cRes.reduce((s,r)=>s+r.dev,0), avgT=cRes.reduce((s,r)=>s+r.t,0)/n;
+  $("cScore").textContent=`${troph(nota)} 🏆`;
+  $("cSub").textContent=`${LEVEL_NAME[cLevel.label]}${ANSWER_TIME<=10?" 💀":""} · ${n} ${L("rondas","rounds")}`;
+  $("cAcc").textContent=`${ex} ${L("de","of")} ${n}`;
+  $("cDev").textContent=dev;
+  $("cAvg").textContent=`${fmt(avgT)} s`;
+  const h=loadC();
+  recordBanner($("cRecBanner"), h.attempts.filter(a=>a.level===cLevel.label).map(a=>troph(a.nota)), troph(nota));
+  const cBefore=badgeStates(CBADGES);
+  h.attempts.push({date:new Date().toISOString(),level:cLevel.label,n,nota,ex,dev,rt:ANSWER_TIME});
+  h.attempts=h.attempts.slice(-100); saveC(h);
+  const cNew=CBADGES.filter((b,i)=>b.on()&&!cBefore[i]);
+  if(cNew.length){ setTimeout(sfx.fanfare,200); const el=$("cRecBanner"); el.className="banner rec"; el.textContent=`${L("¡Nueva insignia!","New badge!")} ${cNew.map(b=>b.i+" "+bTitle(b)).join(" · ")}`; }
+  progressChart($("countChart"), h.attempts.map(a=>({...a,nota:troph(a.nota)})), a=>a.level, COUNT_GROUPS, cLevel.label, 1000);
+  renderNextSkill("count","nsCount");
+  $("cAttemptBody").innerHTML=h.attempts.slice(-8).reverse().map(a=>{
+    const d=new Date(a.date);
+    const day=d.toLocaleDateString(LOCALE,{day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString(LOCALE,{hour:"2-digit",minute:"2-digit"});
+    return `<tr><td>${day}</td><td>${LEVEL_NAME[a.level]||a.level}${a.rt===10||a.rt===undefined?" 💀":""}</td><td class="num">${troph(a.nota)}</td><td class="num">${a.ex}/${a.n}</td><td class="num">${a.dev}</td></tr>`;
+  }).join("");
+}
+$("cAgain").addEventListener("click",startCount);
+$("cBack").addEventListener("click",()=>{refreshSetup();show("setup");});
+$("start").disabled=true; $("start").textContent=L("Cargando cartas…","Loading cards…");
+fetch("cards.json").then(r=>{if(!r.ok) throw new Error(r.status); return r.json();})
+  .then(data=>{
+    // cada evolución y cada héroe es una entrada más, con su imagen; el coste es el de la carta normal
+    CARDS=[];
+    data.filter(c=>Number.isInteger(c.coste)).forEach(c=>{
+      // [nombre visible, coste, rareza, imagen, clave estable (inglés), nombre en español]
+      const nm=L(c.nombre,c.nombre_en||c.nombre), en=c.nombre_en||c.nombre;
+      CARDS.push([nm,c.coste,c.rareza,c.icono,en,c.nombre,c.id]);
+      if(c.icono_evo)   CARDS.push([`${nm} (Evo)`,c.coste,c.rareza,c.icono_evo,`${en} (Evo)`,`${c.nombre} (Evo)`,c.id]);
+      if(c.icono_heroe) CARDS.push([`${nm} ${L("(Héroe)","(Hero)")}`,c.coste,c.rareza,c.icono_heroe,`${en} (Hero)`,`${c.nombre} (Héroe)`,c.id]);
+    });
+    CARDS.forEach(c=>{const i=new Image(); i.src=c[3]||"";}); // precarga
+    migrateStats();
+    $("start").disabled=false; $("start").textContent=L("Empezar","Start");
+    refreshSetup();
+  })
+  .catch(err=>{
+    $("start").textContent=L("No se pudo cargar cards.json","Couldn’t load cards.json");
+    $("best").innerHTML='<span class="loaderr">Abre la página con un servidor (no como archivo) y comprueba que cards.json está en la misma carpeta.</span>';
+  });
+</script>
+<script type="module">
+import { iniciarBarra } from "./js/barra.js?v=28";
+iniciarBarra();
+const idiomaBtn = document.getElementById("idioma");
+const es = () => (localStorage.getItem("lang") ?? (navigator.language?.startsWith("en") ? "en" : "es")) !== "en";
+function aplicarIdioma() {
+  const eng = !es();
+  idiomaBtn.textContent = eng ? "ES" : "EN";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    if (!el.dataset.es) el.dataset.es = el.textContent;
+    el.textContent = eng ? el.dataset.en : el.dataset.es;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => {
+    if (!el.dataset.phEs) el.dataset.phEs = el.placeholder;
+    el.placeholder = eng ? el.dataset.phEn : el.dataset.phEs;
+  });
+}
+idiomaBtn.addEventListener("click", () => {
+  localStorage.setItem("lang", es() ? "en" : "es");
+  aplicarIdioma();
+// Sincronizar el botón de sonido de la barra con el original
+const snd2 = document.getElementById("sndBtn2");
+const sndOrig = document.getElementById("sndBtn");
+if (snd2 && sndOrig) {
+  const sync = () => { snd2.textContent = sndOrig.textContent; snd2.setAttribute("aria-label", sndOrig.getAttribute("aria-label")); };
+  new MutationObserver(sync).observe(sndOrig, { childList: true, attributes: true });
+  snd2.addEventListener("click", () => sndOrig.click());
+  setTimeout(sync, 100);
+}
+});
+aplicarIdioma();
+// Sincronizar el botón de sonido de la barra con el original
+const snd2 = document.getElementById("sndBtn2");
+const sndOrig = document.getElementById("sndBtn");
+if (snd2 && sndOrig) {
+  const sync = () => { snd2.textContent = sndOrig.textContent; snd2.setAttribute("aria-label", sndOrig.getAttribute("aria-label")); };
+  new MutationObserver(sync).observe(sndOrig, { childList: true, attributes: true });
+  snd2.addEventListener("click", () => sndOrig.click());
+  setTimeout(sync, 100);
+}
+</script>
+</body>
+</html>
