@@ -563,6 +563,16 @@ dialog#about.ab .studio .x-link:hover,dialog#about.ab .studio .x-link:focus-visi
 /* Entrenar v83: gotas de elixir proporcionadas a la altura de la pantalla */
 .drops{max-width:620px;margin:0 auto;gap:clamp(.5rem,2vw,1rem)}
 .drop{width:min(100%,clamp(110px,26vh,210px));justify-self:center;aspect-ratio:1/1.05;font-size:clamp(1.5rem,4vh,2.2rem)}
+
+/* Entrenar v84: la partida entera cabe en la pantalla, sin scroll */
+#game:not(.hidden){height:calc(100vh - 4rem);height:calc(100dvh - 4rem);display:flex;flex-direction:column;gap:.45rem;overflow:hidden;padding-bottom:.4rem}
+#game:not(.hidden) > .hud,#game:not(.hidden) > .ctrl{flex:none}
+#game:not(.hidden) > .pipette{flex:none;height:clamp(64px,12vh,110px)}
+#game:not(.hidden) > .card{flex:1 1 0;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:.25rem;padding:.5rem .8rem}
+#game:not(.hidden) > .card .cimg{height:auto;width:auto;max-height:clamp(96px,22vh,170px);max-width:100%;margin:0 auto;object-fit:contain}
+#game:not(.hidden) > .bar{flex:none}
+#game:not(.hidden) > .drops{flex:none;margin-top:auto;align-items:end}
+#game:not(.hidden) .drop{width:min(100%,clamp(84px,19vh,170px));font-size:clamp(1.2rem,3.6vh,2rem)}
 </style>
 </head>
 <body>
