@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=64";
-import { pintarMeta } from "./meta.js?v=64";
-import { modelo, filtrarModo } from "./stats.js?v=64";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=64";
-import { reloj } from "./clock.js?v=64";
-import { partidas } from "./partidas.js?v=64";
+import { consultar, seguir } from "./api.js?v=66";
+import { pintarMeta } from "./meta.js?v=66";
+import { modelo, filtrarModo } from "./stats.js?v=66";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=66";
+import { reloj } from "./clock.js?v=66";
+import { partidas } from "./partidas.js?v=66";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=64";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=64";
-import * as seguidos from "./seguidos.js?v=64";
-import { ICONOS, escudoLiga } from "./iconos.js?v=64";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=66";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=66";
+import * as seguidos from "./seguidos.js?v=66";
+import { ICONOS, escudoLiga } from "./iconos.js?v=66";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -29,7 +29,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=64";
+import { iniciarBarra } from "./barra.js?v=66";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -164,6 +164,8 @@ function pintar(data) {
   $("estadoTitulo").textContent = m.estado.titulo;
   $("estadoTexto").textContent = m.estado.texto;
   $("estado").dataset.tono = m.estado.tono;
+  const bFiltro = document.querySelector(`#modos button[data-modo="${grupoModo}"]`);
+  $("estadoFiltro").textContent = `${t("Racha", "Streak")} · ${bFiltro ? bFiltro.textContent.trim() : ""}`;
   $("estado").style.setProperty("--lleno", `${m.estado.lleno}%`);
   pintarMeta($("meta"), data, !!esMio(), j.tag, (c) => { const u = iconoCarta(catalogo || new Map(), c).img; return u ? `<img src="${u}" alt="" loading="lazy">` : ""; });
   $("muestra").textContent = esMio()

@@ -577,3 +577,8 @@ section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius
 .pie-legal { margin: 0; font-size: .72rem; opacity: .85; line-height: 1.4; }
 
 .pie-legal a{color:var(--elixir,#b44fd9);font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+
+/* Tarjeta de estado v74: cabecera con filtro activo */
+.estado-cab{display:flex;align-items:center;justify-content:flex-start;margin:0 0 .35rem}
+.estado-filtro{font-size:.66rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--elixir);padding:.22rem .6rem;border-radius:999px;background:color-mix(in srgb,var(--elixir) 14%,transparent);border:1px solid color-mix(in srgb,var(--elixir) 34%,transparent);line-height:1}
+.estado-filtro:empty{display:none}

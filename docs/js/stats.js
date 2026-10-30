@@ -1,4 +1,4 @@
-import { t } from "./i18n.js?v=64";
+import { t } from "./i18n.js?v=66";
 // Cálculos de la página del jugador. Sin dibujo: solo datos.
 
 export const VENTANA = 10;        // partidas para la tendencia
@@ -265,12 +265,14 @@ export function estado(ps, mio = true, ahora = new Date()) {
   let derrotasFinal = 0;
   for (let k = ps.length - 1; k >= 0 && !ps[k].victoria; k--) derrotasFinal++;
   const enSesion = min < SESION_MIN, descansado = min > 120;
-  const marcador = t(`${ganadas} de ${ult.length}`, `${ganadas} of ${ult.length}`);
+  const marcador = t(`${ganadas} de ${ult.length} victorias`, `${ganadas} of ${ult.length} wins`);
+  const porDerrotasSeguidas = derrotasFinal >= 3;
   const base = { lleno: Math.round(wrUlt) };
 
-  if (derrotasFinal >= 3 || wrUlt <= wrTotal - 10) {
+  // alerta: 3 derrotas seguidas al final, o un winrate reciente bajo (no solo "10 puntos menos que el total")
+  if (porDerrotasSeguidas || (wrUlt <= 40 && wrUlt <= wrTotal - 10)) {
     const titulo = t(`Racha difícil · ${marcador}`, `Rough streak · ${marcador}`);
-    if (enSesion) return { ...base, tono: "alerta", titulo, texto: X("Buen momento para una pausa.", "Viene de varias derrotas seguidas.", "Good time for a break.", "Several losses in a row.") };
+    if (enSesion) return { ...base, tono: "alerta", titulo, texto: porDerrotasSeguidas ? X("Buen momento para una pausa.", "Viene de varias derrotas seguidas.", "Good time for a break.", "Several losses in a row.") : X("Ojo: sus últimas partidas salen por debajo de lo habitual.", "Sus últimas partidas salen por debajo de lo habitual.", "Careful: recent results are below your usual.", "Recent results are below the usual.") };
     if (descansado) return { ...base, tono: "aviso", titulo, texto: X("Ya descansaste: buen momento para remontar.", "Pasó un rato desde su última partida.", "You’re rested: a good time to bounce back.", "Some time has passed since the last match.") };
     return { ...base, tono: "aviso", titulo, texto: X("Juega cuando estés descansado.", "Por debajo de su nivel habitual.", "Play when you’re rested.", "Below the usual level.") };
   }
