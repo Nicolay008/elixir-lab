@@ -111,3 +111,8 @@ main{max-width:44rem;margin:0 auto;padding:1.25rem 1rem 2rem}
   .ranking-rating{font-size:1.05rem}
   .ranking-clan{font-size:.7rem}
 }
+.aviso-legal{font-size:.74rem;color:var(--muted);text-align:center;margin:.2rem 0 .8rem;line-height:1.4}
+.aviso-legal a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* Pie v79: espacio inferior para que el botón de subir y la barra del móvil no tapen el aviso */
+.pie{margin-bottom:0;padding-bottom:calc(4.5rem + env(safe-area-inset-bottom, 0px))}

@@ -590,3 +590,8 @@ section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius
 .mc-item.rec-observacion{border-style:dashed;border-color:var(--elixir)}
 .mc-item.rec-observacion .mc-badge{background:transparent;color:var(--elixir);border:1.5px solid var(--elixir)}
 .mz-l-badge{font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .5rem;border-radius:999px;background:var(--elixir);color:#fff;flex:none;white-space:nowrap}
+.aviso-legal{font-size:.74rem;color:var(--muted);text-align:center;margin:.2rem 0 .8rem;line-height:1.4}
+.aviso-legal a{color:var(--elixir);font-weight:700;text-decoration:underline;text-underline-offset:2px}
+
+/* Pie v79: espacio inferior para que el botón de subir y la barra del móvil no tapen el aviso */
+.pie{margin-bottom:0;padding-bottom:calc(4.5rem + env(safe-area-inset-bottom, 0px))}
