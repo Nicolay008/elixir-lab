@@ -1,15 +1,15 @@
 // Une el buscador, la consulta, los seguidos y el dibujo de la página del jugador.
-import { consultar, seguir } from "./api.js?v=66";
-import { pintarMeta } from "./meta.js?v=66";
-import { modelo, filtrarModo } from "./stats.js?v=66";
-import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=66";
-import { reloj } from "./clock.js?v=66";
-import { partidas } from "./partidas.js?v=66";
+import { consultar, seguir } from "./api.js?v=67";
+import { pintarMeta, mazoRecomendado } from "./meta.js?v=67";
+import { modelo, filtrarModo } from "./stats.js?v=67";
+import { tendencia, coronas, franjasVisibles, setPagina, getPagina, totalPaginas } from "./charts.js?v=67";
+import { reloj } from "./clock.js?v=67";
+import { partidas } from "./partidas.js?v=67";
 let vistaActual = "partidas", graficasListas = false;
-import { t, LANG, aplicar, alternar } from "./i18n.js?v=66";
-import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=66";
-import * as seguidos from "./seguidos.js?v=66";
-import { ICONOS, escudoLiga } from "./iconos.js?v=66";
+import { t, LANG, aplicar, alternar } from "./i18n.js?v=67";
+import { TURNSTILE_SITE_KEY, MAX_SEGUIDOS } from "./config.js?v=67";
+import * as seguidos from "./seguidos.js?v=67";
+import { ICONOS, escudoLiga } from "./iconos.js?v=67";
 
 let catalogo = null;
 function iconoCarta(cat, nombre) {
@@ -29,7 +29,7 @@ async function cargarCatalogo() {
     return catalogo;
   } catch (e) { return new Map(); }
 }
-import { iniciarBarra } from "./barra.js?v=66";
+import { iniciarBarra } from "./barra.js?v=67";
 
 const LIGA_TOP = 7;   // la liga más alta lleva la gema amatista
 let grupoModo = "todos";  // filtro por modo
@@ -292,12 +292,14 @@ $("vistaRacha").addEventListener("click", () => { vista = "racha"; pintarTendenc
 function pintarVistaMazos() {
   if (!m) return;
   const cat = catalogo || new Map();
+  const recMazo = ultimo ? mazoRecomendado(ultimo) : null;
   const legenda = `<div class="mz-leyenda">
     <p class="mz-leyenda-tit">${t("Cómo leer esta lista", "How to read this list")}</p>
     <ul>
       <li><span class="mz-l-letra s">S</span><span>${t("Nota global de 1 a 10 para tu juego. Va de S (mejor) a D.", "Overall score from 1 to 10 for your play. From S (best) to D.")}</span></li>
       <li><span class="mz-l-barra"><span></span></span><span>${t("Porcentaje de victorias. La parte clara muestra el rango probable de tu winrate real.", "Win rate. The light part shows the likely range of your real win rate.")}</span></li>
       <li><span class="mz-l-p">29</span><span>${t("Partidas jugadas con ese mazo.", "Matches played with that deck.")}</span></li>
+      <li><span class="mz-l-badge">${t("Recomendado", "Recommended")}</span><span>${t("El mazo que Meta recomienda por winrate en ranked (15 partidas o más).", "The deck Meta recommends by ranked win rate (15+ matches).")}</span></li>
     </ul>
     <p class="mz-leyenda-pie">${t("Toca un mazo para ver el detalle.", "Tap a deck to see the details.")}</p>
   </div>`;
@@ -307,6 +309,9 @@ function pintarVistaMazos() {
       const { img, nombre } = iconoCarta(cat, c);
       return img ? `<img class="mc-ico" src="${img}" alt="${nombre}" title="${nombre}" loading="lazy">` : `<span class="mc-ico mc-falta">?</span>`;
     }).join("");
+    const esRec = recMazo && recMazo.nombre === d.mazo;
+    const claseRec = esRec ? (recMazo.tipo === "recomendado" ? " rec-recomendado" : " rec-observacion") : "";
+    const badge = esRec ? `<span class="mc-badge">${recMazo.tipo === "recomendado" ? t("Recomendado", "Recommended") : t("En observación", "Under observation")}</span>` : "";
     const letraCls = d.letra === "S" ? "s" : d.letra === "A" ? "a" : d.letra === "B" ? "b" : "c";
     const wrColor = d.wr >= 55 ? "ok" : d.wr >= 45 ? "mid" : "bad";
     const banda = `left:${d.ic[0]}%;width:${Math.max(2, d.ic[1] - d.ic[0])}%`;
@@ -314,10 +319,11 @@ function pintarVistaMazos() {
       const falta = valor === null;
       return `<div class="mc-tile ${clase}${falta ? " mc-tile-falta" : ""}"><span class="mc-det-label">${titulo}</span><span class="mc-det-val">${falta ? t("pocos datos", "low sample") : valor}</span><span class="mc-det-ayuda">${falta ? faltaTxt : ayuda}</span></div>`;
     };
-    return `<article class="mc-item" data-idx="${idx}" role="button" tabindex="0" aria-expanded="false">
+    return `<article class="mc-item${claseRec}" data-idx="${idx}" role="button" tabindex="0" aria-expanded="false">
       <div class="mc-cab">
         <span class="mc-letra ${letraCls}" aria-label="${t("Nota", "Score")} ${d.letra}">${d.letra}</span>
         <div class="mc-nota-bloque"><span class="mc-nota">${d.nota}<small> /10</small></span><span class="mc-sub">${t("nota global", "overall score")}</span></div>
+        ${badge}
         <svg class="mc-flecha" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
       </div>
       <div class="mc-cartas">${iconos}</div>

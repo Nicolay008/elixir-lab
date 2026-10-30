@@ -582,3 +582,11 @@ section.meta { border: 0; padding: 0; margin: 0; background: none; border-radius
 .estado-cab{display:flex;align-items:center;justify-content:flex-start;margin:0 0 .35rem}
 .estado-filtro{font-size:.66rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--elixir);padding:.22rem .6rem;border-radius:999px;background:color-mix(in srgb,var(--elixir) 14%,transparent);border:1px solid color-mix(in srgb,var(--elixir) 34%,transparent);line-height:1}
 .estado-filtro:empty{display:none}
+
+/* Mazos v76: mazo recomendado por Meta, con insignia y borde destacado */
+.mc-badge{margin-left:auto;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:.22rem .55rem;border-radius:999px;background:var(--elixir);color:#fff;line-height:1;white-space:nowrap}
+.mc-flecha{margin-left:.1rem}
+.mc-item.rec-recomendado{border-color:var(--elixir);box-shadow:0 0 0 3px color-mix(in srgb,var(--elixir) 22%,transparent)}
+.mc-item.rec-observacion{border-style:dashed;border-color:var(--elixir)}
+.mc-item.rec-observacion .mc-badge{background:transparent;color:var(--elixir);border:1.5px solid var(--elixir)}
+.mz-l-badge{font-size:.6rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .5rem;border-radius:999px;background:var(--elixir);color:#fff;flex:none;white-space:nowrap}

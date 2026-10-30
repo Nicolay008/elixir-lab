@@ -1,7 +1,7 @@
 // Sección Meta (solo perfil propio). La API manda la liga; dentro de la liga el escalón se cuenta
 // con tus partidas ranked desde una referencia guardada en este navegador, y se puede corregir a mano.
-import { t, LANG } from "./i18n.js?v=66";
-import { preparar, filtrarModo } from "./stats.js?v=66";
+import { t, LANG } from "./i18n.js?v=67";
+import { preparar, filtrarModo } from "./stats.js?v=67";
 
 const LIGA_META = 7;                                        // desde aquí se sube por medallas
 const ESCALONES = { 1: 11, 2: 11, 3: 11, 4: 10, 5: 10, 6: 10, 7: 0 };
@@ -108,6 +108,12 @@ function partidasHasta(pasos, wr) {
   const neto = Math.round((2 * wr - 1) * 10000) / 10000;
   if (neto <= 0) return null;
   return Math.ceil(pasos / neto);
+}
+
+// Mazo que Meta recomienda (solo ranked): { nombre, tipo: "recomendado" | "observacion" } o null
+export function mazoRecomendado(data) {
+  const rec = recomendacion(rankingMazos(preparar(filtrarModo(data, "ranked"))));
+  return rec.tipo === "vacio" ? null : { nombre: rec.mazo.mazo, tipo: rec.tipo };
 }
 
 export function pintarMeta(el, data, mio, tag, iconoFn = () => "") {
