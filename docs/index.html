@@ -551,7 +551,8 @@ dialog#about.ab .studio .x-link:hover,dialog#about.ab .studio .x-link:focus-visi
 
 /* Inicio v80: escritorio con contenedor centrado y los cuatro modos en una fila */
 @media (min-width:900px){
-  #setup{max-width:960px;margin:0 auto}
+  main{max-width:62rem}
+  #setup{max-width:none;margin:0 auto}
   #setup .modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;align-items:stretch}
   #setup .modes > label.mode,#setup .modes > .mode{min-width:0;height:100%}
   #setup .modes .box{height:100%}
